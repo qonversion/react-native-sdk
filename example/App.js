@@ -8,8 +8,9 @@
  */
 
 import React, { Component } from 'react';
-import { Button, Text, View, SafeAreaView} from 'react-native';
-import RNQonversion from 'react-native-qonversion';
+import { Button, Text, View, SafeAreaView, NativeModules } from 'react-native';
+
+const RNQonversion = NativeModules.RNQonversion;
 
 const NO_UID_LABEL = 'No UID yet';
 
@@ -24,12 +25,14 @@ export class QonversionStatus extends Component {
         </Text>
         <Button
           onPress={() => {
-            // RNQonversion.sampleMethod('string', 7, (args) => console.log(args));
-            RNQonversion.launchWithKey('sample', (uid) => {
-              this.setState(() => this.state.uid = uid);
-              console.log(uid);
+            RNQonversion.sampleMethod('string', 7, (args) => {
+              this.setState(() => this.state.uid = args);
+              console.log(args);
             });
-            // console.log(RNQonversion);
+//                        RNQonversion.launchWithKey('sample', (uid) => {
+//                          this.setState(() => this.state.uid = uid);
+//                          console.log(uid);
+//                        });
           }}
           disabled={!(this.state.uid === NO_UID_LABEL)}
           title={
