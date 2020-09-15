@@ -9,6 +9,14 @@ import com.qonversion.android.sdk.Qonversion;
 import com.qonversion.android.sdk.QonversionBillingBuilder;
 import com.qonversion.android.sdk.QonversionCallback;
 
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.Purchase;
+import java.util.List;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
 public class QonversionModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
@@ -26,33 +34,33 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void launchWithKey(String key, Callback callback) {
         Qonversion.initialize(
-                reactContext.mCurrentActivity.application,
+                getCurrentActivity().getApplication(),
                 key,
                 "",
                 buildBilling(),
                 true,
-                getCallback(callback),
+                getCallback(callback)
         );
     }
 
     @ReactMethod
     public void launchWithKeyUserID(String key, String userId) {
         Qonversion.initialize(
-                reactContext.mCurrentActivity.application,
+                getCurrentActivity().getApplication(),
                 key,
                 userId,
                 buildBilling(),
                 true,
-                null,
+                null
         );
     }
 
     @ReactMethod
     public void launchWithKeyAutotrackPurchases(String key, boolean autoTrackPurchases, Callback callback) {
         Qonversion.initialize(
-                reactContext.mCurrentActivity.application,
+                getCurrentActivity().getApplication(),
                 key,
-                userId,
+                "",
                 buildBilling(),
                 autoTrackPurchases,
                 getCallback(callback)
@@ -69,7 +77,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
                 });
     }
 
-    private QonversionCallback getCallback(Callback callback) {
+    private QonversionCallback getCallback(final Callback callback) {
         return new QonversionCallback() {
             @Override
             public void onSuccess(@NotNull String uid) {
@@ -78,7 +86,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull Throwable t) {
-                callback.invoke("Error launching Qonversion: " + t.localizedMessage + ", cause:" + t.cause);
+                callback.invoke("Error launching Qonversion: " + t.getLocalizedMessage() + ", cause:" + t.getCause());
             }
         };
     }
