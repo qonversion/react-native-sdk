@@ -1,23 +1,31 @@
 {
   "name": "react-native-qonversion",
   "title": "React Native Qonversion",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "1.1.2",
+  "description": "Qonversion provides full in-app purchases infrastructure, so you do not need to build your own server for receipt validation. Implement in-app subscriptions, validate user receipts, check subscription status, and provide access to your app features and content using our StoreKit wrapper and Google Play Billing wrapper.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-qonversion.git",
-    "baseUrl": "https://github.com/github_account/react-native-qonversion"
+    "url": "git+https://github.com/qonversion/react-native-sdk.git",
+    "baseUrl": "https://github.com/qonversion/react-native-sdk"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "qonversion",
+    "StoreKit",
+    "SKStoreKit",
+    "Google",
+    "Play",
+    "Billing",
+    "in-app",
+    "Purchases"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "yourname@email.com"
+    "name": "Qonversion",
+    "email": "hi@qonversion.io"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
