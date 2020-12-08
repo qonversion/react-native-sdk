@@ -1,52 +1,54 @@
 <p align="center">
- <a href="https://qonversion.io" target="_blank"><img width="460" height="150" src="https://qonversion.io/img/q_brand.svg"></a>
+ <a href="https://qonversion.io" target="_blank"><img width="360" height="150" src="https://qonversion.io/img/q_brand.svg"></a>
 </p>
 
 <p align="center">
-     <a href="https://qonversion.io"><img width="660" src="https://qonversion.io/img/illustrations/charts.svg"></a></p>
+     <a href="https://qonversion.io"><img width="660" src="https://qonversion.io/img/images/product-center.svg">
+     </a>
+</p>
 
-Get access to the powerful yet simple subscription analytics:
-* Conversion from install to paying user, MRR, LTV, churn and other metrics.
-* Feed the advertising and analytics tools you are already using with the data on high-value users to improve your ads targeting and marketing ROAS.
 
-## Getting started
+<p>
+Qonversion provides full in-app purchases infrastructure, so you do not need to build your own server for receipt validation.
+</p>
 
-`$ npm install react-native-qonversion --save`
 
-### Mostly automatic installation
+<p>
+Implement in-app subscriptions, validate user receipts, check subscription status, and provide access to your app features and content using our StoreKit wrapper and Google Play Billing wrapper.
+</p>
 
-`$ react-native link react-native-qonversion`
+Read more in [documentation](https://docs.qonversion.io).
 
-## Usage
-You need to configure Qonversion once at a starting point of your app.
+[![MIT License](http://img.shields.io/cocoapods/l/Qonversion.svg?style=flat)](http://qonversion.io)
 
-For example, launch Qonversion in `initState` of your top level widget:
 
-```javascript
-import { NativeModules } from 'react-native';
+## Product Center
 
-const { Qonversion } = NativeModules.RNQonversion;
+<p align="center">
+     <a href="https://qonversion.io"><img width="400" src="https://qonversion.io/img/images/product-center-scheme.svg">
+     </a>
+</p>
 
-Qonversion.launchWithKey(YOUR_API_KEY, (uid) => {
-    console.log(uid);
-});
-```
+1. Application calls the purchase method to initialize Qonversion SDK.
+2. Qonversion SDK communicates with StoreKit or Google Billing Client to make a purchase.
+3. If a purchase is successful, the SDK sends a request to Qonversion API for server-to-server validation of purchase. Qonversion server unlocks permissions associated with the product.
+4. SDK returns control to the application with a processing state
 
-Usually Qonversion will track purchases automatically.
+## Analytics
 
-Still, there are few ways to launch Qonversion:
+Monitor your in-app revenue metrics. Understand your customers and make better decisions with precise subscription revenue data.
 
-1. `launchWithKey(String key, Callback callback)` launches Qonversion SDK with the given API key.
-`callback` will return `uid` for Ads integrations.
+<p align="center">
+     <a href="https://qonversion.io"><img width="90%" src="https://qonversion.io/img/screenshots/desktop/mobile_subscription_analytics.jpg">
+     </a>
+</p>
 
-2. `launchWithKeyUserID(String key, String userID)` is the same as previous but allows you to specify client side `userID` (instead of Qonversion user ID) that will be used for matching data in the third party data:
+## Integrations
 
-3. **Under development** `launchWithKeyAutotrackPurchases(String key, bool autoTrackPurchases, Callback callback)` is the same as previous but allows you to turn off auto tracking purchases and track it manually.
+Share your iOS and Android in-app subscription data with your favorite platforms.
 
-#### There are also 2 iOS-specific methods for now:
-1. `addAttributionData(Object data, Number provider, String userID)` will add custom attribution data, where `provider == 0` is AppsFlyer and `provider == 1` is Branch.
-2. `setDebugMode(Bool)` sets debug mode.
 
-## License
-
-Qonversion SDK is available under the MIT license.
+<p align="center">
+     <a href="https://qonversion.io"><img width="500" src="https://qonversion.io/img/illustrations/pic-integration.svg">
+     </a>
+</p>
