@@ -24,6 +24,14 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.Purchase;
+import java.util.List;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
 public class QonversionModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
