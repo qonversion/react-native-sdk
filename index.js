@@ -82,7 +82,6 @@ export default class Qonversion {
 
         RNQonversion.syncPurchases();
     }
-
 }
 
 // Mapper
@@ -91,7 +90,7 @@ class Mapper {
     static convertLaunchResult(launchResult: Object): LaunchResult {
         const products: Map<string, Product> = this.convertProducts(launchResult.products);
         const permissions: Map<string, Permission> = this.convertPermissions(launchResult.permissions);
-        const userProducts: Map<string, Permission> = this.convertProducts(launchResult.user_products);
+        const userProducts: Map<string, Product> = this.convertProducts(launchResult.user_products);
         return new LaunchResult(launchResult.uid, launchResult.timestamp, products, permissions, userProducts)
     }
 
@@ -136,10 +135,6 @@ class Mapper {
             if (product.storeProduct != null) {
                 if (Platform.OS === 'ios') {
                     skProduct = Mapper.convertSKProduct(product.storeProduct);
-
-                    console.log('PALI SYUDA');
-                    console.log(skProduct.subscriptionPeriod);
-                    console.log(product.duration);
                 } else {
                     skuDetails = Mapper.convertSkuDetails(product.storeProduct);
                 }
