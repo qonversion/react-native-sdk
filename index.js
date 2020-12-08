@@ -30,7 +30,7 @@ export default class Qonversion {
 
     static async checkPermissions(): Promise<Map<string, Permission>> {
         const permissions = await RNQonversion.checkPermissions();
-        const mappedPermissions: Permission[] = Mapper.convertPermissions(permissions);
+        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
 
         return mappedPermissions;
     }
@@ -38,7 +38,7 @@ export default class Qonversion {
     static async purchase(productId: string): Promise<Map<string, Permission>> {
         const permissions = await RNQonversion.purchase(productId);
 
-        const mappedPermissions: Permission[] = Mapper.convertPermissions(permissions);
+        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
 
         return mappedPermissions;
     }
@@ -52,17 +52,17 @@ export default class Qonversion {
         if (prorationMode == null) {
             permissions = await RNQonversion.updatePurchase(productId, oldProductId);
         } else {
-            permissions = await RNQonversion.updatePurchase(productId, oldProductId, prorationMode);
+            permissions = await RNQonversion.updatePurchaseWithProrationMode(productId, oldProductId, prorationMode);
         }
 
-        const mappedPermissions: Permission[] = Mapper.convertPermissions(permissions);
+        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
 
         return mappedPermissions;
     }
 
-    static async products(): Promise<LaunchResult> {
+    static async products(): Promise<Map<string, Product>> {
         let products = await RNQonversion.products();
-        const mappedProducts: Product[] = Mapper.convertProducts(products);
+        const mappedProducts: Map<string, Product> = Mapper.convertProducts(products);
 
         return mappedProducts
     }
@@ -70,7 +70,7 @@ export default class Qonversion {
     static async restore(): Promise<Map<string, Permission>> {
         const permissions = await RNQonversion.restore();
 
-        const mappedPermissions: Permission[] = Mapper.convertPermissions(permissions);
+        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
 
         return mappedPermissions;
     }
@@ -89,27 +89,42 @@ export default class Qonversion {
 
 class Mapper {
     static convertLaunchResult(launchResult: Object): LaunchResult {
-        const products: Product[] = this.convertProducts(launchResult.products);
-        const permissions: Permission[] = this.convertPermissions(launchResult.permissions);
-        const userProducts: Product[] = this.convertProducts(launchResult.user_products);
+        const products: Map<string, Product> = this.convertProducts(launchResult.products);
+        const permissions: Map<string, Permission> = this.convertPermissions(launchResult.permissions);
+        const userProducts: Map<string, Permission> = this.convertProducts(launchResult.user_products);
         return new LaunchResult(launchResult.uid, launchResult.timestamp, products, permissions, userProducts)
     }
 
     static convertPermissions(permissions: Object[]): Map<string, Permission> {
-        let mappedPermissions = {};
+        let mappedPermissions = new Map();
 
         for (const [key, permission] of Object.entries(permissions)) {
-            const renewState: RenewState = RenewState[permission.renew_state];
+            let renewState: RenewState = RenewState.UNKNOWN;
+
+            switch (permission.renew_state) {
+                case -1:
+                    renewState = RenewState.NON_RENEWABLE;
+                    break;
+                case 1:
+                    renewState = RenewState.WILL_RENEW;
+                    break;
+                case 2:
+                    renewState = RenewState.CANCELED;
+                    break;
+                case 3:
+                    renewState = RenewState.BILLING_ISSUE;
+                    break;
+            }
 
             const mappedPermission = new Permission(permission.id, permission.associated_product, !!permission.active, renewState, Date(permission.started_timestamp), Date(permission.expiration_timestamp))
-            mappedPermissions[key] = mappedPermission;
+            mappedPermissions.set(key, mappedPermission);
         }
 
         return mappedPermissions
     }
 
     static convertProducts(products: Object[]): Map<string, Product> {
-        let mappedProducts = {};
+        let mappedProducts = new Map();
 
         for (const [key, product] of Object.entries(products)) {
             const productType: ProductType = ProductType[product.type];
@@ -131,7 +146,7 @@ class Mapper {
             }
 
             const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice)
-            mappedProducts[key] = mappedProduct;
+            mappedProducts.set(key, mappedProduct);
         }
 
         return mappedProducts
@@ -233,11 +248,11 @@ export const ProductDuration = Object.freeze({
 })
 
 export const RenewState = Object.freeze({
-    "-1":"NON_RENEWABLE",
-    "0":"UNKNOWN",
-    "1":"WILL_RENEW",
-    "2":"CANCELED",
-    "3":"BILLING_ISSUE"
+    "NON_RENEWABLE":-1,
+    "UNKNOWN":0,
+    "WILL_RENEW":1,
+    "CANCELED":2,
+    "BILLING_ISSUE":3
 })
 
 export const Property = Object.freeze({
@@ -284,7 +299,7 @@ export const SKProductDiscountPaymentMode = Object.freeze({
 })
 
 export class LaunchResult {
-    constructor(uid: string, timestamp: number, products: Product[], permissions: Permission[], userProducts: Product[]) {
+    constructor(uid: string, timestamp: number, products: Map<string, Product>, permissions: Map<string, Permission>, userProducts: Map<string, Product>) {
         this.uid = uid;
         this.timestamp = timestamp;
         this.products = products;
