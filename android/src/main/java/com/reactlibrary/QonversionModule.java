@@ -207,4 +207,9 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void syncPurchases() {
         Qonversion.syncPurchases();
     }
+
+    @ReactMethod
+    public void setDebugMode() {
+        Qonversion.setDebugMode();
+    }
 }

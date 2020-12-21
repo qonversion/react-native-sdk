@@ -33,14 +33,5 @@
   "peerDependencies": {
     "react": "^16.8.1",
     "react-native": ">=0.60.0-rc.0 <1.0.x"
-  },
-  "devDependencies": {
-    "react": "^16.13.1",
-    "react-native": "^0.63.4"
-  },
-  "dependencies": {
-    "babel-preset-react-native": "2.1.0",
-    "fund": "^1.0.0",
-    "react-native": "^0.63.4"
   }
 }
