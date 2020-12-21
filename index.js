@@ -82,6 +82,10 @@ export default class Qonversion {
 
         RNQonversion.syncPurchases();
     }
+
+    static setDebugMode() {
+        RNQonversion.setDebugMode();
+    }
 }
 
 // Mapper

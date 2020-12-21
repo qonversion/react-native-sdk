@@ -95,4 +95,8 @@ RCT_EXPORT_METHOD(restore:(RCTResponseSenderBlock)completion rejecter:(RCTPromis
     }];
 }
 
+RCT_EXPORT_METHOD(setDebugMode) {
+    [Qonversion setDebugMode];
+}
+
 @end
