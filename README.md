@@ -17,7 +17,7 @@ Qonversion provides full in-app purchases infrastructure, so you do not need to 
 Implement in-app subscriptions, validate user receipts, check subscription status, and provide access to your app features and content using our StoreKit wrapper and Google Play Billing wrapper.
 </p>
 
-Read more in [documentation](https://docs.qonversion.io).
+Check the [documentation](https://docs.qonversion.io) to learn details on implementing and using Qonversion SDKs.
 
 [![MIT License](http://img.shields.io/cocoapods/l/Qonversion.svg?style=flat)](http://qonversion.io)
 
@@ -31,8 +31,8 @@ Read more in [documentation](https://docs.qonversion.io).
 
 1. Application calls the purchase method to initialize Qonversion SDK.
 2. Qonversion SDK communicates with StoreKit or Google Billing Client to make a purchase.
-3. If a purchase is successful, the SDK sends a request to Qonversion API for server-to-server validation of purchase. Qonversion server unlocks permissions associated with the product.
-4. SDK returns control to the application with a processing state
+3. If a purchase is successful, the SDK sends a request to Qonversion API for server-to-server purchase validation. Qonversion server receives accurate information on the in-app purchase status and user entitlements.
+4. SDK returns control to the application with a processing state.
 
 ## Analytics
 
@@ -52,3 +52,8 @@ Share your iOS and Android in-app subscription data with your favorite platforms
      <a href="https://qonversion.io"><img width="500" src="https://qonversion.io/img/illustrations/pic-integration.svg">
      </a>
 </p>
+
+
+## License
+
+Qonversion SDK is available under the MIT license.
