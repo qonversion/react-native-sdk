@@ -169,7 +169,7 @@ class Mapper {
             return null;
         }
 
-        let mainOffering: Offering;
+        let mainOffering: Offering | null = null;
         if (offerings.main) {
             mainOffering = this.convertOffering(offerings.main);
         }
@@ -397,9 +397,13 @@ export class Permission {
 }
 
 export class Offerings {
-    constructor(main: Offering, availableOfferings: Offering[]) {
+    constructor(main: Offering | null, availableOfferings: Offering[]) {
         this.main = main;
         this.availableOffering = availableOfferings;
+    }
+
+    offeringForIdentifier(identifier: string): Offering | undefined {
+        return this.availableOffering.find(object => object.id === identifier);
     }
 }
 
@@ -408,6 +412,10 @@ export class Offering {
         this.id = id;
         this.tag = tag;
         this.products = products;
+    }
+
+    productForIdentifier(identifier: string): Product | undefined {
+        return this.products.find(object => object.qonversionID === identifier);
     }
 }
 
