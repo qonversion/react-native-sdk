@@ -12,9 +12,11 @@ import com.qonversion.android.sdk.QUserProperties;
 import com.qonversion.android.sdk.Qonversion;
 import com.qonversion.android.sdk.QonversionError;
 import com.qonversion.android.sdk.QonversionLaunchCallback;
+import com.qonversion.android.sdk.QonversionOfferingsCallback;
 import com.qonversion.android.sdk.QonversionPermissionsCallback;
 import com.qonversion.android.sdk.QonversionProductsCallback;
 import com.qonversion.android.sdk.dto.QLaunchResult;
+import com.qonversion.android.sdk.dto.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
 import com.qonversion.android.sdk.dto.QProduct;
 
@@ -183,6 +185,22 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
                 promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+            }
+        });
+    }
+
+    @ReactMethod
+    public void offerings(final Promise promise) {
+        Qonversion.offerings(new QonversionOfferingsCallback() {
+            @Override
+            public void onSuccess(@NotNull QOfferings offerings) {
+                WritableMap result = EntitiesConverter.mapOfferings(offerings);
+                promise.resolve(result);
+            }
+
+            @Override
+            public void onError(@NotNull QonversionError error) {
+                promise.reject(error.getCode().toString(), error.getDescription());
             }
         });
     }
