@@ -99,4 +99,18 @@ RCT_EXPORT_METHOD(setDebugMode) {
     [Qonversion setDebugMode];
 }
 
+RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [Qonversion offerings:^(QNOfferings * _Nullable offerings, NSError * _Nullable error) {
+        if (error) {
+            reject(@"Error", error.localizedDescription, error);
+            
+            return;
+        }
+        
+        NSDictionary *convertedOfferings = [EntitiesConverter convertOfferings:offerings];
+        completion(@[convertedOfferings]);
+    }];
+}
+
 @end

@@ -67,6 +67,13 @@ export default class Qonversion {
         return mappedProducts
     }
 
+    static async offerings(): Promise<Offerings> {
+        let offerings = await RNQonversion.offerings();
+        const mappedOfferings: Offerings = Mapper.convertOfferings(offerings);
+
+        return mappedOfferings
+    }
+
     static async restore(): Promise<Map<string, Permission>> {
         const permissions = await RNQonversion.restore();
 
@@ -95,7 +102,7 @@ class Mapper {
         const products: Map<string, Product> = this.convertProducts(launchResult.products);
         const permissions: Map<string, Permission> = this.convertPermissions(launchResult.permissions);
         const userProducts: Map<string, Product> = this.convertProducts(launchResult.user_products);
-        return new LaunchResult(launchResult.uid, launchResult.timestamp, products, permissions, userProducts)
+        return new LaunchResult(launchResult.uid, launchResult.timestamp, products, permissions, userProducts);
     }
 
     static convertPermissions(permissions: Object[]): Map<string, Permission> {
@@ -123,32 +130,75 @@ class Mapper {
             mappedPermissions.set(key, mappedPermission);
         }
 
-        return mappedPermissions
+        return mappedPermissions;
     }
 
     static convertProducts(products: Object[]): Map<string, Product> {
         let mappedProducts = new Map();
 
         for (const [key, product] of Object.entries(products)) {
-            const productType: ProductType = ProductType[product.type];
-            const productDuration: ProductDuration = ProductDuration[product.duration];
-
-            let skProduct: SKProduct | null = null;
-            let skuDetails: SkuDetails | null = null;
-
-            if (product.storeProduct != null) {
-                if (Platform.OS === 'ios') {
-                    skProduct = Mapper.convertSKProduct(product.storeProduct);
-                } else {
-                    skuDetails = Mapper.convertSkuDetails(product.storeProduct);
-                }
-            }
-
-            const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice)
+            const mappedProduct = this.convertProduct(product);
             mappedProducts.set(key, mappedProduct);
         }
 
-        return mappedProducts
+        return mappedProducts;
+    }
+
+    static convertProduct(product: Object): Product {
+        const productType: ProductType = ProductType[product.type];
+        const productDuration: ProductDuration = ProductDuration[product.duration];
+
+        let skProduct: SKProduct | null = null;
+        let skuDetails: SkuDetails | null = null;
+
+        if (product.storeProduct != null) {
+            if (Platform.OS === 'ios') {
+                skProduct = Mapper.convertSKProduct(product.storeProduct);
+            } else {
+                skuDetails = Mapper.convertSkuDetails(product.storeProduct);
+            }
+        }
+
+        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice);
+
+        return mappedProduct;
+    }
+
+    static convertOfferings(offerings: Object): Offerings {
+        if (!Array.isArray(offerings.availableOfferings) || offerings.availableOfferings.length === 0) {
+            return null;
+        }
+
+        let mainOffering: Offering;
+        if (offerings.main) {
+            mainOffering = this.convertOffering(offerings.main);
+        }
+
+        let availableOfferings = [];
+
+        offerings.availableOfferings.forEach(offering => {
+            const mappedOffering: Offering = this.convertOffering(offering);
+
+            availableOfferings.push(mappedOffering);
+        });
+
+        return new Offerings(mainOffering, availableOfferings);
+    }
+
+    static convertOffering(offering: Object): Offering {
+        let products = [];
+        offering.products.forEach(product => {
+            const mappedProduct = this.convertProduct(product);
+
+            products.push(mappedProduct);
+        });
+
+        let tag: OfferingTag = OfferingTag[offering.tag];
+        if (tag == null) {
+            tag = OfferingTag["0"];
+        }
+
+        return new Offering(offering.id, tag, products);
     }
 
     static convertSkuDetails(skuDetails: Object): SkuDetails {
@@ -170,7 +220,7 @@ class Mapper {
             skuDetails.title,
             skuDetails.type,
             skuDetails.hashCode,
-            skuDetails.toString)
+            skuDetails.toString);
     }
 
     static convertSKProduct(skProduct: Object): SKProduct {
@@ -297,6 +347,11 @@ export const SKProductDiscountPaymentMode = Object.freeze({
     2:"FREE_TRIAL"
 })
 
+export const OfferingTag = Object.freeze({
+    0:"NONE",
+    1:"MAIN"
+})
+
 export class LaunchResult {
     constructor(uid: string, timestamp: number, products: Map<string, Product>, permissions: Map<string, Permission>, userProducts: Map<string, Product>) {
         this.uid = uid;
@@ -338,6 +393,21 @@ export class Permission {
         this.renewState = renewState;
         this.startedDate = startedDate;
         this.expirationDate = expirationDate;
+    }
+}
+
+export class Offerings {
+    constructor(main: Offering, availableOfferings: Offering[]) {
+        this.main = main;
+        this.availableOffering = availableOfferings;
+    }
+}
+
+export class Offering {
+    constructor(id: string, tag: OfferingTag, products: Product[]) {
+        this.id = id;
+        this.tag = tag;
+        this.products = products;
     }
 }
 

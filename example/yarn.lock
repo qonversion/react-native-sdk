@@ -5481,10 +5481,8 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-qonversion@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-qonversion/-/react-native-qonversion-2.0.2.tgz#359f843bf9edd9c70ed1fad10799bb1ec1a01b7a"
-  integrity sha512-UP0IlltUGGHF6KgRCXHNLPuRKPX7QHXJu52kf2lincpFHYWOabrvn1z87n1zUoPdBo/dNN/nYCSk4T6gWhDZvw==
+"react-native-qonversion@file:..":
+  version "2.1.0"
 
 react-native@0.63.4:
   version "0.63.4"

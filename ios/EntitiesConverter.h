@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)convertLaunchResult:(QNLaunchResult *)launchResult;
 + (NSDictionary *)convertProducts:(NSArray<QNProduct *> *)products;
 + (NSDictionary *)convertPermissions:(NSArray<QNPermission *> *)permissions;
++ (NSDictionary *)convertOfferings:(QNOfferings *)offerings;
 
 @end
 

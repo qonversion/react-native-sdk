@@ -7,6 +7,8 @@
 //
 
 #import "EntitiesConverter.h"
+#import <Qonversion/QNOffering.h>
+#import <Qonversion/QNOfferings.h>
 
 @implementation EntitiesConverter
 
@@ -28,23 +30,29 @@
     NSMutableDictionary *result = [NSMutableDictionary new];
     
     for (QNProduct *product in products) {
-        NSMutableDictionary *productsDict = [@{
-            @"id": product.qonversionID,
-            @"store_id": product.storeID,
-            @"type": @(product.type),
-            @"duration": @(product.duration),
-            @"prettyPrice": product.prettyPrice
-        } mutableCopy];
+        NSDictionary *convertedProduct = [EntitiesConverter convertProduct:product];
         
-        if (product.skProduct) {
-            NSDictionary *skProductInfo = [EntitiesConverter convertSKProduct:product.skProduct];
-            productsDict[@"storeProduct"] = skProductInfo;
-        }
-        
-        result[product.qonversionID] = [productsDict copy];
+        result[product.qonversionID] = convertedProduct;
     }
     
     return result;
+}
+
++ (NSDictionary *)convertProduct:(QNProduct *)product {
+    NSMutableDictionary *productsDict = [@{
+        @"id": product.qonversionID,
+        @"store_id": product.storeID,
+        @"type": @(product.type),
+        @"duration": @(product.duration),
+        @"prettyPrice": product.prettyPrice
+    } mutableCopy];
+    
+    if (product.skProduct) {
+        NSDictionary *skProductInfo = [EntitiesConverter convertSKProduct:product.skProduct];
+        productsDict[@"storeProduct"] = skProductInfo;
+    }
+    
+    return [productsDict copy];
 }
 
 + (NSDictionary *)convertPermissions:(NSArray<QNPermission *> *)permissions {
@@ -132,6 +140,45 @@
     }
     
     return [introductoryPrice copy];
+}
+
++ (NSDictionary *)convertOfferings:(QNOfferings *)offerings {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    
+    if (offerings.main) {
+        result[@"main"] = [EntitiesConverter convertOffering:offerings.main];
+    }
+    
+    NSMutableArray *availableOfferings = [NSMutableArray new];
+    
+    for (QNOffering *offering in offerings.availableOfferings) {
+        NSDictionary *convertedOffering = [EntitiesConverter convertOffering:offering];
+        
+        [availableOfferings addObject:convertedOffering];
+    }
+    
+    result[@"availableOfferings"] = [availableOfferings copy];
+    
+    return [result copy];
+}
+
++ (NSDictionary *)convertOffering:(QNOffering *)offering {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    
+    result[@"id"] = offering.identifier;
+    result[@"tag"] = @(offering.tag);
+    
+    NSMutableArray *convertedProducts = [NSMutableArray new];
+    
+    for (QNProduct *product in offering.products) {
+        NSDictionary *convertedProduct = [EntitiesConverter convertProduct:product];
+        
+        [convertedProducts addObject:convertedProduct];
+    }
+    
+    result[@"products"] = [convertedProducts copy];
+    
+    return [result copy];
 }
 
 @end

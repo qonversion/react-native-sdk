@@ -5,8 +5,12 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.qonversion.android.sdk.dto.QLaunchResult;
+import com.qonversion.android.sdk.dto.QOffering;
+import com.qonversion.android.sdk.dto.QOfferingTag;
+import com.qonversion.android.sdk.dto.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
 import com.qonversion.android.sdk.dto.QProduct;
 import com.qonversion.android.sdk.dto.QProductDuration;
@@ -42,25 +46,72 @@ public class EntitiesConverter {
         WritableMap result = Arguments.createMap();
 
         for (Map.Entry<String, QProduct> entry : products.entrySet()) {
-            WritableMap map = Arguments.createMap();
-            map.putString("id", entry.getValue().getQonversionID());
-            map.putString("store_id", entry.getValue().getStoreID());
-            map.putInt("type", entry.getValue().getType().getType());
-
-            QProductDuration duration = entry.getValue().getDuration();
-            if (duration != null) {
-                map.putInt("duration", duration.getType());
-            }
-
-            SkuDetails skuDetails = entry.getValue().getSkuDetail();
-            if (skuDetails != null) {
-                WritableMap mappedSkuDetails = mapSkuDetails(entry.getValue().getSkuDetail());
-                map.putMap("storeProduct", mappedSkuDetails);
-                map.putString("prettyPrice", entry.getValue().getPrettyPrice());
-            }
-
+            WritableMap map = EntitiesConverter.mapProduct(entry.getValue());
             result.putMap(entry.getKey(), map);
         }
+
+        return result;
+    }
+
+    static WritableMap mapProduct(QProduct product) {
+        WritableMap map = Arguments.createMap();
+        map.putString("id", product.getQonversionID());
+        map.putString("store_id", product.getStoreID());
+        map.putInt("type", product.getType().getType());
+
+        QProductDuration duration = product.getDuration();
+        if (duration != null) {
+            map.putInt("duration", duration.getType());
+        }
+
+        SkuDetails skuDetails = product.getSkuDetail();
+        if (skuDetails != null) {
+            WritableMap mappedSkuDetails = mapSkuDetails(product.getSkuDetail());
+            map.putMap("storeProduct", mappedSkuDetails);
+            map.putString("prettyPrice", product.getPrettyPrice());
+        }
+
+        return map;
+    }
+
+    static WritableMap mapOfferings(QOfferings offerings) {
+        WritableMap result = Arguments.createMap();
+
+        if (offerings.getMain() != null) {
+            WritableMap mainOffering = EntitiesConverter.mapOffering(offerings.getMain());
+            result.putMap("main", mainOffering);
+        }
+
+        WritableArray availableOfferings = Arguments.createArray();
+
+        for (QOffering offering : offerings.getAvailableOfferings()) {
+            WritableMap convertedOffering = EntitiesConverter.mapOffering(offering);
+
+            availableOfferings.pushMap(convertedOffering);
+        }
+
+        result.putArray("availableOfferings", availableOfferings);
+
+        return result;
+    }
+
+    static WritableMap mapOffering(QOffering offering) {
+        WritableMap result = Arguments.createMap();
+        result.putString("id", offering.getOfferingID());
+
+        Integer tagValue = offering.getTag().getTag();
+        if (tagValue != null) {
+            result.putInt("tag", tagValue);
+        }
+
+        WritableArray convertedProducts = Arguments.createArray();
+
+        for (QProduct product : offering.getProducts()) {
+            WritableMap convertedProduct = EntitiesConverter.mapProduct(product);
+            convertedProducts.pushMap(convertedProduct);
+        }
+
+        result.putArray("products", convertedProducts);
 
         return result;
     }
