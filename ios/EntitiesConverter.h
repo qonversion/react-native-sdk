@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)convertProducts:(NSArray<QNProduct *> *)products;
 + (NSDictionary *)convertPermissions:(NSArray<QNPermission *> *)permissions;
 + (NSDictionary *)convertOfferings:(QNOfferings *)offerings;
++ (NSDictionary *)convertIntroEligibility:(NSDictionary<NSString *, QNIntroEligibility *> *)introEligibilityInfo;
 
 @end
 

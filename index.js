@@ -82,6 +82,14 @@ export default class Qonversion {
         return mappedPermissions;
     }
 
+    static async checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, Permission>> {
+        const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
+
+        const mappedEligibility: Map<string, IntroEligibility> = Mapper.convertEligibility(eligibilityInfo);
+
+        return mappedEligibility;
+    }
+
     static syncPurchases() {
         if (Platform.OS === 'ios') {
             return;
@@ -147,6 +155,7 @@ class Mapper {
     static convertProduct(product: Object): Product {
         const productType: ProductType = ProductType[product.type];
         const productDuration: ProductDuration = ProductDuration[product.duration];
+        const trialDuration: TrialDuration = TrialDuration[product.trialDuration];
 
         let skProduct: SKProduct | null = null;
         let skuDetails: SkuDetails | null = null;
@@ -159,7 +168,7 @@ class Mapper {
             }
         }
 
-        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice);
+        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice, trialDuration);
 
         return mappedProduct;
     }
@@ -281,6 +290,33 @@ class Mapper {
             return this.convertProductDiscount(discount);
         });
     }
+
+    static convertEligibility(eligibilityInfo: Object[]): Map<string, IntroEligibility> {
+        let mappedEligibility = new Map();
+
+        for (const info of eligibilityInfo) {
+            const productId = info.productId;
+            const status = Mapper.convertEligibilityStatus(info.status);
+
+            const eligibilityInfo = new IntroEligibility(status);
+            mappedEligibility.set(productId, eligibilityInfo);
+        }
+
+        return mappedEligibility;
+    }
+
+    static convertEligibilityStatus(status: string): EligibilityStatus {
+        switch (status) {
+            case "non_intro_or_trial_product":
+                return EligibilityStatus.NON_INTRO_OR_TRIAL_PRODUCT; break;
+            case "intro_or_trial_eligible":
+                return EligibilityStatus.ELIGIBLE; break;
+            case "intro_or_trial_ineligible":
+                return EligibilityStatus.INELIGIBLE; break;
+            default:
+                return EligibilityStatus.UNKNOWN; break;
+        }
+    }
 }
 
 // Entities
@@ -294,6 +330,19 @@ export const ProductDuration = Object.freeze({
     3:"6_MONTHS",
     4:"ANNUAL",
     5:"LIFETIME"
+})
+
+export const TrialDuration = Object.freeze({
+    "-1":"NOT_AVAILABLE",
+    "1":"THREE_DAYS",
+    "2":"WEEK",
+    "3":"TWO_WEEKS",
+    "4":"MONTH",
+    "5":"TWO_MONTHS",
+    "6":"THREE_MONTHS",
+    "7":"SIX_MONTHS",
+    "8":"YEAR",
+    "9":"OTHER"
 })
 
 export const RenewState = Object.freeze({
@@ -352,6 +401,13 @@ export const OfferingTag = Object.freeze({
     1:"MAIN"
 })
 
+export const EligibilityStatus = Object.freeze({
+    UNKNOWN:"unknown",
+    NON_INTRO_OR_TRIAL_PRODUCT:"non_intro_or_trial_product",
+    ELIGIBLE:"intro_or_trial_eligible",
+    INELIGIBLE:"intro_or_trial_ineligible"
+})
+
 export class LaunchResult {
     constructor(uid: string, timestamp: number, products: Map<string, Product>, permissions: Map<string, Permission>, userProducts: Map<string, Product>) {
         this.uid = uid;
@@ -369,7 +425,8 @@ export class Product {
                 duration: ProductDuration,
                 skuDetails: SkuDetails | null,
                 skProduct: SKProduct | null,
-                prettyPrice: string | undefined) {
+                prettyPrice: string | undefined,
+                trialDuration: TrialDuration | undefined) {
         this.qonversionID = qonversionID;
         this.storeID = storeID;
         this.type = type;
@@ -377,6 +434,7 @@ export class Product {
         this.skuDetails = skuDetails;
         this.skProduct = skProduct;
         this.prettyPrice = prettyPrice;
+        this.trialDuration = trialDuration;
     }
 }
 
@@ -416,6 +474,12 @@ export class Offering {
 
     productForIdentifier(identifier: string): Product | undefined {
         return this.products.find(object => object.qonversionID === identifier);
+    }
+}
+
+export class IntroEligibility {
+    constructor(status: EligibilityStatus | undefined) {
+        this.status = status;
     }
 }
 

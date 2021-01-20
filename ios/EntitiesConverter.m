@@ -9,6 +9,7 @@
 #import "EntitiesConverter.h"
 #import <Qonversion/QNOffering.h>
 #import <Qonversion/QNOfferings.h>
+#import <Qonversion/QNIntroEligibility.h>
 
 @implementation EntitiesConverter
 
@@ -39,12 +40,14 @@
 }
 
 + (NSDictionary *)convertProduct:(QNProduct *)product {
+    NSNumber *trialDuration = product.trialDuration ? @(product.trialDuration) : @(QNTrialDurationNotAvailable);
     NSMutableDictionary *productsDict = [@{
         @"id": product.qonversionID,
         @"store_id": product.storeID,
         @"type": @(product.type),
         @"duration": @(product.duration),
-        @"prettyPrice": product.prettyPrice
+        @"prettyPrice": product.prettyPrice,
+        @"trialDuration": trialDuration
     } mutableCopy];
     
     if (product.skProduct) {
@@ -179,6 +182,27 @@
     result[@"products"] = [convertedProducts copy];
     
     return [result copy];
+}
+
++ (NSDictionary *)convertIntroEligibility:(NSDictionary<NSString *, QNIntroEligibility *> *)introEligibilityInfo {
+    NSDictionary *statuses = @{
+        @(QNIntroEligibilityStatusNonIntroProduct): @"non_intro_or_trial_product",
+        @(QNIntroEligibilityStatusEligible): @"intro_or_trial_eligible",
+        @(QNIntroEligibilityStatusIneligible): @"intro_or_trial_ineligible"
+    };
+    
+    NSMutableArray *convertedData = [NSMutableArray new];
+    
+    for (NSString *key in introEligibilityInfo.allKeys) {
+        QNIntroEligibility *eligibility = introEligibilityInfo[key];
+        NSString *statusValue = statuses[@(eligibility.status)] ? : @"unknonw";
+        
+        NSDictionary *eligibilityInfo = @{@"productId": key, @"status": statusValue};
+        
+        [convertedData addObject:eligibilityInfo];
+    }
+    
+    return [convertedData copy];
 }
 
 @end

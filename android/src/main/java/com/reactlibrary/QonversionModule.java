@@ -5,31 +5,33 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.qonversion.android.sdk.AttributionSource;
 import com.qonversion.android.sdk.QUserProperties;
 import com.qonversion.android.sdk.Qonversion;
+import com.qonversion.android.sdk.QonversionEligibilityCallback;
 import com.qonversion.android.sdk.QonversionError;
 import com.qonversion.android.sdk.QonversionLaunchCallback;
 import com.qonversion.android.sdk.QonversionOfferingsCallback;
 import com.qonversion.android.sdk.QonversionPermissionsCallback;
 import com.qonversion.android.sdk.QonversionProductsCallback;
 import com.qonversion.android.sdk.dto.QLaunchResult;
-import com.qonversion.android.sdk.dto.QOfferings;
+import com.qonversion.android.sdk.dto.offerings.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
-import com.qonversion.android.sdk.dto.QProduct;
+import com.qonversion.android.sdk.dto.products.QProduct;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.Purchase;
+import com.qonversion.android.sdk.dto.eligibility.QEligibility;
+
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -201,6 +203,23 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             @Override
             public void onError(@NotNull QonversionError error) {
                 promise.reject(error.getCode().toString(), error.getDescription());
+            }
+        });
+    }
+
+    @ReactMethod
+    public void checkTrialIntroEligibilityForProductIds(ReadableArray ids, final Promise promise) {
+        List<String> result = Arrays.asList(ids.toArrayList().toArray(new String[ids.size()]));
+        Qonversion.checkTrialIntroEligibilityForProductIds(result, new QonversionEligibilityCallback() {
+            @Override
+            public void onSuccess(@NotNull Map<String, QEligibility> map) {
+                WritableArray result = EntitiesConverter.mapEligibility(map);
+                promise.resolve(result);
+            }
+
+            @Override
+            public void onError(@NotNull QonversionError qonversionError) {
+                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
             }
         });
     }

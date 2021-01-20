@@ -113,4 +113,18 @@ RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTProm
     }];
 }
 
+RCT_EXPORT_METHOD(checkTrialIntroEligibilityForProductIds:(NSArray *)data completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [Qonversion checkTrialIntroEligibilityForProductIds:data completion:^(NSDictionary<NSString *,QNIntroEligibility *> * _Nonnull result, NSError * _Nullable error) {
+        if (error) {
+            reject(@"Error", error.localizedDescription, error);
+            
+            return;
+        }
+        
+        NSDictionary *convertedIntroEligibility = [EntitiesConverter convertIntroEligibility:result];
+        completion(@[convertedIntroEligibility]);
+    }];
+}
+
 @end
