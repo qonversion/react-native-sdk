@@ -90,6 +90,14 @@ export default class Qonversion {
         return mappedEligibility;
     }
 
+    static async experiments(): Promise<Map<string, ExperimentInfo>> {
+        const experiments = await RNQonversion.experiments();
+
+        const mappedExperiments: Map<string, ExperimentInfo> = Mapper.convertExperimentInfo(experiments);
+
+        return mappedExperiments;
+    }
+
     static syncPurchases() {
         if (Platform.OS === 'ios') {
             return;
@@ -317,6 +325,20 @@ class Mapper {
                 return EligibilityStatus.UNKNOWN; break;
         }
     }
+
+    static convertExperimentInfo(experimentInfo: Object[]): ExperimentInfo {
+        let mappedExperimentInfo = new Map();
+
+        for (const info of experimentInfo) {
+            const groupType = info.group.type === 1 ? ExperimentGroupType.GROUP_TYPE_B : ExperimentGroupType.GROUP_TYPE_A;
+            const group = new ExperimentGroup(groupType);
+
+            const experiment = new ExperimentInfo(info.id, group);
+            mappedExperimentInfo.set(experiment.identifier, experiment);
+        }
+
+        return mappedExperimentInfo;
+    }
 }
 
 // Entities
@@ -408,6 +430,11 @@ export const EligibilityStatus = Object.freeze({
     INELIGIBLE:"intro_or_trial_ineligible"
 })
 
+export const ExperimentGroupType = Object.freeze({
+    GROUP_TYPE_A: 0,
+    GROUP_TYPE_B: 1
+})
+
 export class LaunchResult {
     constructor(uid: string, timestamp: number, products: Map<string, Product>, permissions: Map<string, Permission>, userProducts: Map<string, Product>) {
         this.uid = uid;
@@ -480,6 +507,19 @@ export class Offering {
 export class IntroEligibility {
     constructor(status: EligibilityStatus | undefined) {
         this.status = status;
+    }
+}
+
+export class ExperimentInfo {
+    constructor(identifier: string, group: ExperimentGroup) {
+        this.identifier = identifier;
+        this.group = group;
+    }
+}
+
+export class ExperimentGroup {
+    constructor(type: ExperimentGroupType) {
+        this.type = type;
     }
 }
 

@@ -127,4 +127,18 @@ RCT_EXPORT_METHOD(checkTrialIntroEligibilityForProductIds:(NSArray *)data comple
     }];
 }
 
+RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [Qonversion experiments:^(NSDictionary<NSString *,QNExperimentInfo *> * _Nonnull result, NSError * _Nullable error) {
+        if (error) {
+            reject(@"Error", error.localizedDescription, error);
+
+            return;
+        }
+
+        NSArray *experiments = [EntitiesConverter convertExperiments:result];
+        completion(@[experiments]);
+    }];
+}
+
 @end

@@ -10,6 +10,8 @@
 #import <Qonversion/QNOffering.h>
 #import <Qonversion/QNOfferings.h>
 #import <Qonversion/QNIntroEligibility.h>
+#import <Qonversion/QNExperimentInfo.h>
+#import <Qonversion/QNExperimentGroup.h>
 
 @implementation EntitiesConverter
 
@@ -203,6 +205,20 @@
     }
     
     return [convertedData copy];
+}
+
++ (NSArray *)convertExperiments:(NSDictionary<NSString *, QNExperimentInfo *> *)experiments {
+    NSMutableArray *result = [NSMutableArray new];
+    
+    for (NSString *key in experiments.allKeys) {
+        QNExperimentInfo *experimentInfo = experiments[key];
+        NSDictionary *experimentGroup = @{@"type": @(experimentInfo.group.type)};
+        NSDictionary *convertedExperimentInfo = @{@"id": experimentInfo.identifier, @"group": experimentGroup};
+        
+        [result addObject:convertedExperimentInfo];
+    }
+    
+    return [result copy];
 }
 
 @end

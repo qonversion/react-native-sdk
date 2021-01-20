@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.qonversion.android.sdk.dto.QLaunchResult;
+import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
 import com.qonversion.android.sdk.dto.offerings.QOffering;
 import com.qonversion.android.sdk.dto.offerings.QOfferingTag;
 import com.qonversion.android.sdk.dto.offerings.QOfferings;
@@ -127,6 +128,25 @@ public class EntitiesConverter {
             convertedEligibility.putString("status", eligibility.getStatus().getType());
 
             result.pushMap(convertedEligibility);
+        }
+
+        return result;
+    }
+
+    static WritableArray mapExperiments(Map<String, QExperimentInfo> experiments) {
+        WritableArray result = Arguments.createArray();
+
+        for (Map.Entry<String, QExperimentInfo> entry : experiments.entrySet()) {
+            QExperimentInfo experimentInfo = entry.getValue();
+
+            WritableMap convertedExperimentInfo = Arguments.createMap();
+            WritableMap convertedExperimentGroup = Arguments.createMap();
+            convertedExperimentGroup.putInt("type", experimentInfo.getGroup().getType().getType());
+
+            convertedExperimentInfo.putString("id", experimentInfo.getExperimentID());
+            convertedExperimentInfo.putMap("group", convertedExperimentGroup);
+
+            result.pushMap(convertedExperimentInfo);
         }
 
         return result;

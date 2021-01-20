@@ -14,11 +14,13 @@ import com.qonversion.android.sdk.QUserProperties;
 import com.qonversion.android.sdk.Qonversion;
 import com.qonversion.android.sdk.QonversionEligibilityCallback;
 import com.qonversion.android.sdk.QonversionError;
+import com.qonversion.android.sdk.QonversionExperimentsCallback;
 import com.qonversion.android.sdk.QonversionLaunchCallback;
 import com.qonversion.android.sdk.QonversionOfferingsCallback;
 import com.qonversion.android.sdk.QonversionPermissionsCallback;
 import com.qonversion.android.sdk.QonversionProductsCallback;
 import com.qonversion.android.sdk.dto.QLaunchResult;
+import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
 import com.qonversion.android.sdk.dto.offerings.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
 import com.qonversion.android.sdk.dto.products.QProduct;
@@ -214,6 +216,22 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             @Override
             public void onSuccess(@NotNull Map<String, QEligibility> map) {
                 WritableArray result = EntitiesConverter.mapEligibility(map);
+                promise.resolve(result);
+            }
+
+            @Override
+            public void onError(@NotNull QonversionError qonversionError) {
+                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+            }
+        });
+    }
+
+    @ReactMethod
+    public void experiments(final Promise promise) {
+        Qonversion.experiments(new QonversionExperimentsCallback() {
+            @Override
+            public void onSuccess(@NotNull Map<String, QExperimentInfo> map) {
+                WritableArray result = EntitiesConverter.mapExperiments(map);
                 promise.resolve(result);
             }
 
