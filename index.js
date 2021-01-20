@@ -247,8 +247,8 @@ class Mapper {
         }
 
         let discount: SKProductDiscount;
-        if (skProduct.productDiscount) {
-            discount = this.convertProductDiscount(skProduct.productDiscount);
+        if (skProduct.introductoryPrice) {
+            discount = this.convertProductDiscount(skProduct.introductoryPrice);
         }
 
         let discounts: SKProductDiscount[];
@@ -313,16 +313,16 @@ class Mapper {
         return mappedEligibility;
     }
 
-    static convertEligibilityStatus(status: string): EligibilityStatus {
+    static convertEligibilityStatus(status: string): IntroEligibilityStatus {
         switch (status) {
             case "non_intro_or_trial_product":
-                return EligibilityStatus.NON_INTRO_OR_TRIAL_PRODUCT; break;
+                return IntroEligibilityStatus.NON_INTRO_OR_TRIAL_PRODUCT;
             case "intro_or_trial_eligible":
-                return EligibilityStatus.ELIGIBLE; break;
+                return IntroEligibilityStatus.ELIGIBLE;
             case "intro_or_trial_ineligible":
-                return EligibilityStatus.INELIGIBLE; break;
+                return IntroEligibilityStatus.INELIGIBLE;
             default:
-                return EligibilityStatus.UNKNOWN; break;
+                return IntroEligibilityStatus.UNKNOWN;
         }
     }
 
@@ -423,7 +423,7 @@ export const OfferingTag = Object.freeze({
     1:"MAIN"
 })
 
-export const EligibilityStatus = Object.freeze({
+export const IntroEligibilityStatus = Object.freeze({
     UNKNOWN:"unknown",
     NON_INTRO_OR_TRIAL_PRODUCT:"non_intro_or_trial_product",
     ELIGIBLE:"intro_or_trial_eligible",
@@ -505,7 +505,7 @@ export class Offering {
 }
 
 export class IntroEligibility {
-    constructor(status: EligibilityStatus | undefined) {
+    constructor(status: IntroEligibilityStatus | undefined) {
         this.status = status;
     }
 }
