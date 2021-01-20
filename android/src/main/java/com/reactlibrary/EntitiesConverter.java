@@ -16,6 +16,7 @@ import com.qonversion.android.sdk.dto.QPermission;
 import com.qonversion.android.sdk.dto.products.QProduct;
 import com.qonversion.android.sdk.dto.products.QProductDuration;
 import com.qonversion.android.sdk.dto.eligibility.QEligibility;
+import com.qonversion.android.sdk.dto.products.QTrialDuration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +65,11 @@ public class EntitiesConverter {
         QProductDuration duration = product.getDuration();
         if (duration != null) {
             map.putInt("duration", duration.getType());
+        }
+
+        QTrialDuration trialDuration = product.getTrialDuration();
+        if (trialDuration != null) {
+            map.putInt("trialDuration", trialDuration.getType());
         }
 
         SkuDetails skuDetails = product.getSkuDetail();
