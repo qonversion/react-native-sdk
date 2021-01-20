@@ -8,12 +8,15 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.qonversion.android.sdk.dto.QLaunchResult;
-import com.qonversion.android.sdk.dto.QOffering;
-import com.qonversion.android.sdk.dto.QOfferingTag;
-import com.qonversion.android.sdk.dto.QOfferings;
+import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
+import com.qonversion.android.sdk.dto.offerings.QOffering;
+import com.qonversion.android.sdk.dto.offerings.QOfferingTag;
+import com.qonversion.android.sdk.dto.offerings.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
-import com.qonversion.android.sdk.dto.QProduct;
-import com.qonversion.android.sdk.dto.QProductDuration;
+import com.qonversion.android.sdk.dto.products.QProduct;
+import com.qonversion.android.sdk.dto.products.QProductDuration;
+import com.qonversion.android.sdk.dto.eligibility.QEligibility;
+import com.qonversion.android.sdk.dto.products.QTrialDuration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +67,11 @@ public class EntitiesConverter {
             map.putInt("duration", duration.getType());
         }
 
+        QTrialDuration trialDuration = product.getTrialDuration();
+        if (trialDuration != null) {
+            map.putInt("trialDuration", trialDuration.getType());
+        }
+
         SkuDetails skuDetails = product.getSkuDetail();
         if (skuDetails != null) {
             WritableMap mappedSkuDetails = mapSkuDetails(product.getSkuDetail());
@@ -112,6 +120,40 @@ public class EntitiesConverter {
         }
 
         result.putArray("products", convertedProducts);
+
+        return result;
+    }
+
+    static WritableArray mapEligibility(Map<String, QEligibility> eligibilities) {
+        WritableArray result = Arguments.createArray();
+
+        for (Map.Entry<String, QEligibility> entry : eligibilities.entrySet()) {
+            WritableMap convertedEligibility = Arguments.createMap();
+            QEligibility eligibility = entry.getValue();
+            convertedEligibility.putString("productId", entry.getKey());
+            convertedEligibility.putString("status", eligibility.getStatus().getType());
+
+            result.pushMap(convertedEligibility);
+        }
+
+        return result;
+    }
+
+    static WritableArray mapExperiments(Map<String, QExperimentInfo> experiments) {
+        WritableArray result = Arguments.createArray();
+
+        for (Map.Entry<String, QExperimentInfo> entry : experiments.entrySet()) {
+            QExperimentInfo experimentInfo = entry.getValue();
+
+            WritableMap convertedExperimentInfo = Arguments.createMap();
+            WritableMap convertedExperimentGroup = Arguments.createMap();
+            convertedExperimentGroup.putInt("type", experimentInfo.getGroup().getType().getType());
+
+            convertedExperimentInfo.putString("id", experimentInfo.getExperimentID());
+            convertedExperimentInfo.putMap("group", convertedExperimentGroup);
+
+            result.pushMap(convertedExperimentInfo);
+        }
 
         return result;
     }

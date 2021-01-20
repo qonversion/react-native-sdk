@@ -82,6 +82,22 @@ export default class Qonversion {
         return mappedPermissions;
     }
 
+    static async checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, Permission>> {
+        const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
+
+        const mappedEligibility: Map<string, IntroEligibility> = Mapper.convertEligibility(eligibilityInfo);
+
+        return mappedEligibility;
+    }
+
+    static async experiments(): Promise<Map<string, ExperimentInfo>> {
+        const experiments = await RNQonversion.experiments();
+
+        const mappedExperiments: Map<string, ExperimentInfo> = Mapper.convertExperimentInfo(experiments);
+
+        return mappedExperiments;
+    }
+
     static syncPurchases() {
         if (Platform.OS === 'ios') {
             return;
@@ -147,6 +163,7 @@ class Mapper {
     static convertProduct(product: Object): Product {
         const productType: ProductType = ProductType[product.type];
         const productDuration: ProductDuration = ProductDuration[product.duration];
+        const trialDuration: TrialDuration = TrialDuration[product.trialDuration];
 
         let skProduct: SKProduct | null = null;
         let skuDetails: SkuDetails | null = null;
@@ -159,7 +176,7 @@ class Mapper {
             }
         }
 
-        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice);
+        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice, trialDuration);
 
         return mappedProduct;
     }
@@ -230,8 +247,8 @@ class Mapper {
         }
 
         let discount: SKProductDiscount;
-        if (skProduct.productDiscount) {
-            discount = this.convertProductDiscount(skProduct.productDiscount);
+        if (skProduct.introductoryPrice) {
+            discount = this.convertProductDiscount(skProduct.introductoryPrice);
         }
 
         let discounts: SKProductDiscount[];
@@ -281,6 +298,47 @@ class Mapper {
             return this.convertProductDiscount(discount);
         });
     }
+
+    static convertEligibility(eligibilityInfo: Object[]): Map<string, IntroEligibility> {
+        let mappedEligibility = new Map();
+
+        for (const info of eligibilityInfo) {
+            const productId = info.productId;
+            const status = Mapper.convertEligibilityStatus(info.status);
+
+            const eligibilityInfo = new IntroEligibility(status);
+            mappedEligibility.set(productId, eligibilityInfo);
+        }
+
+        return mappedEligibility;
+    }
+
+    static convertEligibilityStatus(status: string): IntroEligibilityStatus {
+        switch (status) {
+            case "non_intro_or_trial_product":
+                return IntroEligibilityStatus.NON_INTRO_OR_TRIAL_PRODUCT;
+            case "intro_or_trial_eligible":
+                return IntroEligibilityStatus.ELIGIBLE;
+            case "intro_or_trial_ineligible":
+                return IntroEligibilityStatus.INELIGIBLE;
+            default:
+                return IntroEligibilityStatus.UNKNOWN;
+        }
+    }
+
+    static convertExperimentInfo(experimentInfo: Object[]): ExperimentInfo {
+        let mappedExperimentInfo = new Map();
+
+        for (const info of experimentInfo) {
+            const groupType = info.group.type === 1 ? ExperimentGroupType.GROUP_TYPE_B : ExperimentGroupType.GROUP_TYPE_A;
+            const group = new ExperimentGroup(groupType);
+
+            const experiment = new ExperimentInfo(info.id, group);
+            mappedExperimentInfo.set(experiment.identifier, experiment);
+        }
+
+        return mappedExperimentInfo;
+    }
 }
 
 // Entities
@@ -294,6 +352,19 @@ export const ProductDuration = Object.freeze({
     3:"6_MONTHS",
     4:"ANNUAL",
     5:"LIFETIME"
+})
+
+export const TrialDuration = Object.freeze({
+    "-1":"NOT_AVAILABLE",
+    "1":"THREE_DAYS",
+    "2":"WEEK",
+    "3":"TWO_WEEKS",
+    "4":"MONTH",
+    "5":"TWO_MONTHS",
+    "6":"THREE_MONTHS",
+    "7":"SIX_MONTHS",
+    "8":"YEAR",
+    "9":"OTHER"
 })
 
 export const RenewState = Object.freeze({
@@ -352,6 +423,18 @@ export const OfferingTag = Object.freeze({
     1:"MAIN"
 })
 
+export const IntroEligibilityStatus = Object.freeze({
+    UNKNOWN:"unknown",
+    NON_INTRO_OR_TRIAL_PRODUCT:"non_intro_or_trial_product",
+    ELIGIBLE:"intro_or_trial_eligible",
+    INELIGIBLE:"intro_or_trial_ineligible"
+})
+
+export const ExperimentGroupType = Object.freeze({
+    GROUP_TYPE_A: 0,
+    GROUP_TYPE_B: 1
+})
+
 export class LaunchResult {
     constructor(uid: string, timestamp: number, products: Map<string, Product>, permissions: Map<string, Permission>, userProducts: Map<string, Product>) {
         this.uid = uid;
@@ -369,7 +452,8 @@ export class Product {
                 duration: ProductDuration,
                 skuDetails: SkuDetails | null,
                 skProduct: SKProduct | null,
-                prettyPrice: string | undefined) {
+                prettyPrice: string | undefined,
+                trialDuration: TrialDuration | undefined) {
         this.qonversionID = qonversionID;
         this.storeID = storeID;
         this.type = type;
@@ -377,6 +461,7 @@ export class Product {
         this.skuDetails = skuDetails;
         this.skProduct = skProduct;
         this.prettyPrice = prettyPrice;
+        this.trialDuration = trialDuration;
     }
 }
 
@@ -416,6 +501,25 @@ export class Offering {
 
     productForIdentifier(identifier: string): Product | undefined {
         return this.products.find(object => object.qonversionID === identifier);
+    }
+}
+
+export class IntroEligibility {
+    constructor(status: IntroEligibilityStatus | undefined) {
+        this.status = status;
+    }
+}
+
+export class ExperimentInfo {
+    constructor(identifier: string, group: ExperimentGroup) {
+        this.identifier = identifier;
+        this.group = group;
+    }
+}
+
+export class ExperimentGroup {
+    constructor(type: ExperimentGroupType) {
+        this.type = type;
     }
 }
 
