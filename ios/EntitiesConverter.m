@@ -88,6 +88,7 @@
     result[@"isDownloadable"] = @(product.isDownloadable);
     result[@"downloadContentVersion"] = product.downloadContentVersion;
     result[@"downloadContentLengths"] = product.downloadContentLengths;
+    result[@"currencyCode"] = product.priceLocale.currencyCode;
     
     if (@available(iOS 11.2, *)) {
         NSMutableDictionary *subscriptionPeriod = [NSMutableDictionary new];
