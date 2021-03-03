@@ -167,16 +167,22 @@ class Mapper {
 
         let skProduct: SKProduct | null = null;
         let skuDetails: SkuDetails | null = null;
+        let price: number | undefined;
+        let currencyCode: string | undefined;
 
         if (product.storeProduct != null) {
             if (Platform.OS === 'ios') {
                 skProduct = Mapper.convertSKProduct(product.storeProduct);
+                price = parseFloat(skProduct.price);
+                currencyCode = skProduct.currencyCode;
             } else {
                 skuDetails = Mapper.convertSkuDetails(product.storeProduct);
+                price = skuDetails.priceAmountMicros / 1000000;
+                currencyCode = skuDetails.priceCurrencyCode;
             }
         }
 
-        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice, trialDuration);
+        const mappedProduct = new Product(product.id, product.store_id, productType, productDuration, skuDetails, skProduct, product.prettyPrice, trialDuration, price, currencyCode);
 
         return mappedProduct;
     }
@@ -269,7 +275,8 @@ class Mapper {
             discount,
             discounts,
             skProduct.subscriptionGroupIdentifier,
-            skProduct.isFamilyShareable
+            skProduct.isFamilyShareable,
+            skProduct.currencyCode
         );
     }
 
@@ -453,7 +460,9 @@ export class Product {
                 skuDetails: SkuDetails | null,
                 skProduct: SKProduct | null,
                 prettyPrice: string | undefined,
-                trialDuration: TrialDuration | undefined) {
+                trialDuration: TrialDuration | undefined,
+                price: number | undefined,
+                currencyCode: string | undefined) {
         this.qonversionID = qonversionID;
         this.storeID = storeID;
         this.type = type;
@@ -462,6 +471,8 @@ export class Product {
         this.skProduct = skProduct;
         this.prettyPrice = prettyPrice;
         this.trialDuration = trialDuration;
+        this.price = price;
+        this.currencyCode = currencyCode;
     }
 }
 
@@ -580,7 +591,8 @@ export class SKProduct {
                 productDiscount: SKProductDiscount | undefined,
                 discounts: SKProductDiscount[] | undefined,
                 subscriptionGroupIdentifier: string | undefined,
-                isFamilyShareable: boolean | undefined) {
+                isFamilyShareable: boolean | undefined,
+                currencyCode: string) {
         this.localizedTitle = localizedTitle;
         this.price = price;
         this.localeIdentifier = localeIdentifier;
@@ -593,6 +605,7 @@ export class SKProduct {
         this.discounts = discounts;
         this.subscriptionGroupIdentifier = subscriptionGroupIdentifier;
         this.isFamilyShareable = isFamilyShareable;
+        this.currencyCode = currencyCode;
     }
 }
 
