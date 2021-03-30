@@ -113,7 +113,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                               'Error',
                               error.message,
                               [
-                                  { text: 'OK' }
+                                  { text: 'OK' },
                               ],
                               { cancelable: true }
                           );
@@ -134,7 +134,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                               'Error',
                               error.message,
                               [
-                                  { text: 'OK' }
+                                  { text: 'OK' },
                               ],
                               { cancelable: true }
                           );
