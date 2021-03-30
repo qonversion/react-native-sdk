@@ -9,8 +9,7 @@ RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode 
 {
     [Qonversion launchWithKey:key completion:^(QNLaunchResult *result, NSError *error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -44,8 +43,7 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)completion rejecter:(
 {
     [Qonversion checkPermissions:^(NSDictionary<NSString *,QNPermission *> *result, NSError *error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -59,8 +57,7 @@ RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBl
 {
     [Qonversion purchase:productId completion:^(NSDictionary *result, NSError *error, BOOL cancelled) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -74,8 +71,7 @@ RCT_EXPORT_METHOD(products:(RCTResponseSenderBlock)completion rejecter:(RCTPromi
 {
     [Qonversion products:^(NSDictionary *result, NSError *error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -89,8 +85,7 @@ RCT_EXPORT_METHOD(restore:(RCTResponseSenderBlock)completion rejecter:(RCTPromis
 {
     [Qonversion restoreWithCompletion:^(NSDictionary *result, NSError *error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -108,8 +103,7 @@ RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTProm
 {
     [Qonversion offerings:^(QNOfferings * _Nullable offerings, NSError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -123,8 +117,7 @@ RCT_EXPORT_METHOD(checkTrialIntroEligibilityForProductIds:(NSArray *)data comple
 {
     [Qonversion checkTrialIntroEligibilityForProductIds:data completion:^(NSDictionary<NSString *,QNIntroEligibility *> * _Nonnull result, NSError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
             
             return;
         }
@@ -138,8 +131,7 @@ RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPr
 {
     [Qonversion experiments:^(NSDictionary<NSString *,QNExperimentInfo *> * _Nonnull result, NSError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(@"Error", error.localizedDescription, error);
 
             return;
         }
