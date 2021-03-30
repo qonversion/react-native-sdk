@@ -141,6 +141,7 @@
     introductorySubscriptionPeriod[@"numberOfUnits"] = @(discount.subscriptionPeriod.numberOfUnits);
     introductorySubscriptionPeriod[@"unit"] = @(discount.subscriptionPeriod.unit);
 
+    introductoryPrice[@"subscriptionPeriod"] = [introductorySubscriptionPeriod copy];
     introductoryPrice[@"paymentMode"] = @(discount.paymentMode);
     
     if (@available(iOS 12.2, *)) {
