@@ -36,11 +36,20 @@ export default class Qonversion {
     }
 
     static async purchase(productId: string): Promise<Map<string, Permission>> {
-        const permissions = await RNQonversion.purchase(productId);
+        try {
+            const permissions = await RNQonversion.purchase(productId);
+            const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
 
-        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+            return mappedPermissions;
+        } catch (e) {
+            const isIOS = Platform.OS === 'ios';
+            const iOSCancelCode = '1';
+            const iOSCancelErrorDomain = 'com.qonversion.io';
+            const androidCancelCode = 'CanceledPurchase';
+            e.userCanceled = (isIOS && e.domain === iOSCancelErrorDomain && e.code === iOSCancelCode) || (!isIOS && e.code === androidCancelCode);
 
-        return mappedPermissions;
+            throw e;
+        }
     }
 
     static async updatePurchase(productId: string, oldProductId: string, prorationMode: ProrationMode = null): Promise<Map<string, Permission>> {
