@@ -593,6 +593,7 @@ export class SKProduct {
                 subscriptionGroupIdentifier: string | undefined,
                 isFamilyShareable: boolean | undefined,
                 currencyCode: string) {
+        this.localizedDescription = localizedDescription;
         this.localizedTitle = localizedTitle;
         this.price = price;
         this.localeIdentifier = localeIdentifier;
@@ -624,6 +625,7 @@ export class SKProductDiscount {
                 paymentMode: SKProductDiscountPaymentMode,
                 identifier: string | undefined,
                 type: SKProductDiscountType) {
+        this.price = price;
         this.localeIdentifier = localeIdentifier;
         this.numberOfPeriods = numberOfPeriods;
         this.subscriptionPeriod = subscriptionPeriod;
