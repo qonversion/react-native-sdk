@@ -19,7 +19,7 @@
     NSDictionary *products = [EntitiesConverter convertProducts:launchResult.products.allValues];
     NSDictionary *userProducts = [EntitiesConverter convertProducts:launchResult.userPoducts.allValues];
     NSDictionary *permissions = [EntitiesConverter convertPermissions:launchResult.permissions.allValues];
-    
+
     return @{
       @"uid": launchResult.uid,
       @"timestamp": @(launchResult.timestamp),
@@ -31,13 +31,13 @@
 
 + (NSDictionary *)convertProducts:(NSArray<QNProduct *> *)products {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     for (QNProduct *product in products) {
         NSDictionary *convertedProduct = [EntitiesConverter convertProduct:product];
-        
+
         result[product.qonversionID] = convertedProduct;
     }
-    
+
     return result;
 }
 
@@ -51,18 +51,18 @@
         @"prettyPrice": product.prettyPrice,
         @"trialDuration": trialDuration
     } mutableCopy];
-    
+
     if (product.skProduct) {
         NSDictionary *skProductInfo = [EntitiesConverter convertSKProduct:product.skProduct];
         productsDict[@"storeProduct"] = skProductInfo;
     }
-    
+
     return [productsDict copy];
 }
 
 + (NSDictionary *)convertPermissions:(NSArray<QNPermission *> *)permissions {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     for (QNPermission *permission in permissions) {
         NSDictionary *permissionDict = @{
             @"id": permission.permissionID,
@@ -74,7 +74,7 @@
         };
         result[permission.permissionID] = permissionDict;
     }
-    
+
     return result;
 }
 
@@ -92,32 +92,32 @@
     if (@available(iOS 10.0, *)) {
         result[@"currencyCode"] = product.priceLocale.currencyCode;
     }
-    
+
     if (@available(iOS 11.2, *)) {
         NSMutableDictionary *subscriptionPeriod = [NSMutableDictionary new];
         subscriptionPeriod[@"numberOfUnits"] = @(product.subscriptionPeriod.numberOfUnits);
         subscriptionPeriod[@"unit"] = @(product.subscriptionPeriod.unit);
-        
+
         result[@"subscriptionPeriod"] = [subscriptionPeriod copy];
-        
+
         NSDictionary *introductoryPrice = [EntitiesConverter convertDiscount:product.introductoryPrice];
         result[@"introductoryPrice"] = [introductoryPrice copy];
-        
+
         if (@available(iOS 12.2, *)) {
             NSArray *discounts = [EntitiesConverter convertDiscounts:product.discounts];
             result[@"discounts"] = discounts;
         }
     }
-    
+
     if (@available(iOS 12.0, *)) {
         result[@"subscriptionGroupIdentifier"] = product.subscriptionGroupIdentifier;
     }
-    
+
     if (@available(iOS 14.0, *)) {
         result[@"isFamilyShareable"] = @(product.isFamilyShareable);
     }
-    
-    
+
+
     return [result copy];
 }
 
@@ -127,7 +127,7 @@
         NSDictionary *introductoryPriceInfo = [EntitiesConverter convertDiscount:discount];
         [result addObject:introductoryPriceInfo];
     }
-    
+
     return [result copy];
 }
 
@@ -136,57 +136,58 @@
     introductoryPrice[@"price"] = [discount.price stringValue];
     introductoryPrice[@"localeIdentifier"] = discount.priceLocale.localeIdentifier;
     introductoryPrice[@"numberOfPeriods"] = @(discount.numberOfPeriods);
-    
+
     NSMutableDictionary *introductorySubscriptionPeriod = [NSMutableDictionary new];
     introductorySubscriptionPeriod[@"numberOfUnits"] = @(discount.subscriptionPeriod.numberOfUnits);
     introductorySubscriptionPeriod[@"unit"] = @(discount.subscriptionPeriod.unit);
 
+    introductoryPrice[@"subscriptionPeriod"] = [introductorySubscriptionPeriod copy];
     introductoryPrice[@"paymentMode"] = @(discount.paymentMode);
-    
+
     if (@available(iOS 12.2, *)) {
         introductoryPrice[@"identifier"] = discount.identifier;
         introductoryPrice[@"type"] = @(discount.type);
     }
-    
+
     return [introductoryPrice copy];
 }
 
 + (NSDictionary *)convertOfferings:(QNOfferings *)offerings {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     if (offerings.main) {
         result[@"main"] = [EntitiesConverter convertOffering:offerings.main];
     }
-    
+
     NSMutableArray *availableOfferings = [NSMutableArray new];
-    
+
     for (QNOffering *offering in offerings.availableOfferings) {
         NSDictionary *convertedOffering = [EntitiesConverter convertOffering:offering];
-        
+
         [availableOfferings addObject:convertedOffering];
     }
-    
+
     result[@"availableOfferings"] = [availableOfferings copy];
-    
+
     return [result copy];
 }
 
 + (NSDictionary *)convertOffering:(QNOffering *)offering {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     result[@"id"] = offering.identifier;
     result[@"tag"] = @(offering.tag);
-    
+
     NSMutableArray *convertedProducts = [NSMutableArray new];
-    
+
     for (QNProduct *product in offering.products) {
         NSDictionary *convertedProduct = [EntitiesConverter convertProduct:product];
-        
+
         [convertedProducts addObject:convertedProduct];
     }
-    
+
     result[@"products"] = [convertedProducts copy];
-    
+
     return [result copy];
 }
 
@@ -196,32 +197,32 @@
         @(QNIntroEligibilityStatusEligible): @"intro_or_trial_eligible",
         @(QNIntroEligibilityStatusIneligible): @"intro_or_trial_ineligible"
     };
-    
+
     NSMutableArray *convertedData = [NSMutableArray new];
-    
+
     for (NSString *key in introEligibilityInfo.allKeys) {
         QNIntroEligibility *eligibility = introEligibilityInfo[key];
         NSString *statusValue = statuses[@(eligibility.status)] ? : @"unknonw";
-        
+
         NSDictionary *eligibilityInfo = @{@"productId": key, @"status": statusValue};
-        
+
         [convertedData addObject:eligibilityInfo];
     }
-    
+
     return [convertedData copy];
 }
 
 + (NSArray *)convertExperiments:(NSDictionary<NSString *, QNExperimentInfo *> *)experiments {
     NSMutableArray *result = [NSMutableArray new];
-    
+
     for (NSString *key in experiments.allKeys) {
         QNExperimentInfo *experimentInfo = experiments[key];
         NSDictionary *experimentGroup = @{@"type": @(experimentInfo.group.type)};
         NSDictionary *convertedExperimentInfo = @{@"id": experimentInfo.identifier, @"group": experimentGroup};
-        
+
         [result addObject:convertedExperimentInfo];
     }
-    
+
     return [result copy];
 }
 
