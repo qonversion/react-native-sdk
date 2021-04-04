@@ -29,11 +29,11 @@ export enum TrialDuration {
 }
 
 export enum RenewState {
-  NON_RENEWABLE = "NON_RENEWABLE",
-  UNKNOWN = "UNKNOWN",
-  WILL_RENEW = "WILL_RENEW",
-  CANCELED = "CANCELED",
-  BILLING_ISSUE = "BILLING_ISSUE"
+  NON_RENEWABLE = -1,
+  UNKNOWN = 0,
+  WILL_RENEW = 1,
+  CANCELED = 2,
+  BILLING_ISSUE = 3
 }
 
 export enum Property {
