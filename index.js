@@ -76,7 +76,7 @@ export default class Qonversion {
         return mappedProducts
     }
 
-    static async offerings(): Promise<Offerings> {
+    static async offerings(): Promise<Offerings | null> {
         let offerings = await RNQonversion.offerings();
         const mappedOfferings: Offerings = Mapper.convertOfferings(offerings);
 
@@ -91,7 +91,7 @@ export default class Qonversion {
         return mappedPermissions;
     }
 
-    static async checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, Permission>> {
+    static async checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, IntroEligibility>> {
         const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
 
         const mappedEligibility: Map<string, IntroEligibility> = Mapper.convertEligibility(eligibilityInfo);
@@ -151,7 +151,7 @@ class Mapper {
                     break;
             }
 
-            const mappedPermission = new Permission(permission.id, permission.associated_product, !!permission.active, renewState, Date(permission.started_timestamp), Date(permission.expiration_timestamp))
+            const mappedPermission = new Permission(permission.id, permission.associated_product, !!permission.active, renewState, new Date(permission.started_timestamp), new Date(permission.expiration_timestamp))
             mappedPermissions.set(key, mappedPermission);
         }
 
@@ -313,6 +313,8 @@ class Mapper {
         const mappedDiscounts: SKProductDiscount[] = discounts.map((discount) => {
             return this.convertProductDiscount(discount);
         });
+
+        return mappedDiscounts;
     }
 
     static convertEligibility(eligibilityInfo: Object[]): Map<string, IntroEligibility> {
