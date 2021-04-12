@@ -149,4 +149,8 @@ RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPr
     }];
 }
 
+RCT_EXPORT_METHOD(setAdvertisingID) {
+    [Qonversion setAdvertisingID];
+}
+
 @end
