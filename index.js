@@ -118,6 +118,12 @@ export default class Qonversion {
     static setDebugMode() {
         RNQonversion.setDebugMode();
     }
+
+    static setAdvertisingID() {
+        if (Platform.OS === 'ios') {
+            RNQonversion.setAdvertisingID();
+        }
+    }
 }
 
 // Mapper
