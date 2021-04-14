@@ -13,7 +13,7 @@ const { RNQonversion } = NativeModules;
 export default class Qonversion {
   static async launchWithKey(
     key: string,
-    observerMode: Boolean = false
+    observerMode: boolean = false
   ): Promise<LaunchResult> {
     const response = await RNQonversion.launchWithKey(key, observerMode);
     const launchResult = Mapper.convertLaunchResult(response);

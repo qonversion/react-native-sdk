@@ -167,7 +167,9 @@ class Mapper {
         !!permission.active,
         renewState,
         new Date(permission.started_timestamp).toString(),
-        new Date(permission.expiration_timestamp).toString()
+        permission.expiration_timestamp
+          ? new Date(permission.expiration_timestamp).toString()
+          : undefined
       );
       mappedPermissions.set(key, mappedPermission);
     }
