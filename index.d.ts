@@ -7,12 +7,12 @@ export enum ProductType {
 }
 
 export enum ProductDuration {
-  WEEKLY = "WEEKLY",
-  MONTHLY = "MONTHLY",
-  THREE_MONTHS = "3_MONTHS",
-  SIX_MONTHS = "6_MONTHS",
-  ANNUAL = "ANNUAL",
-  LIFETIME = "LIFETIME"
+  WEEKLY = 0,
+  MONTHLY = 1,
+  "3_MONTHS" = 2,
+  "6_MONTHS" = 3,
+  ANNUAL = 4,
+  LIFETIME = 5,
 }
 
 export enum TrialDuration {
