@@ -11,7 +11,7 @@ import {
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
   TrialDuration,
-} from "../entities";
+} from "../enums";
 import ExperimentGroup from "./ExperimentGroup";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
@@ -166,9 +166,9 @@ class Mapper {
         permission.associated_product,
         !!permission.active,
         renewState,
-        new Date(permission.started_timestamp).toString(),
+        new Date(permission.started_timestamp),
         permission.expiration_timestamp
-          ? new Date(permission.expiration_timestamp).toString()
+          ? new Date(permission.expiration_timestamp)
           : undefined
       );
       mappedPermissions.set(key, mappedPermission);
@@ -494,7 +494,6 @@ class Mapper {
       default:
         return SKProductDiscountType.SUBSCRIPTION;
     }
-    SKProductDiscountType;
   }
 
   static convertEligibilityStatus(status: string): IntroEligibilityStatus {

@@ -1,4 +1,4 @@
-import { OfferingTag } from "../entities";
+import { OfferingTag } from "../enums";
 import Product from "./Product";
 
 class Offering {

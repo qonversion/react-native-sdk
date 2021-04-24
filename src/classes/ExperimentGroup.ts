@@ -1,4 +1,4 @@
-import { ExperimentGroupType } from "../entities";
+import { ExperimentGroupType } from "../enums";
 
 class ExperimentGroup {
   type: ExperimentGroupType;

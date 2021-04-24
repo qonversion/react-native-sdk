@@ -1,20 +1,20 @@
-import { RenewState } from "../entities";
+import { RenewState } from "../enums";
 
 class Permission {
   permissionID: string;
   productID: string;
   isActive: boolean;
   renewState: RenewState;
-  startedDate: string;
-  expirationDate?: string;
+  startedDate: Date;
+  expirationDate?: Date;
 
   constructor(
     permissionID: string,
     productID: string,
     isActive: boolean,
     renewState: RenewState,
-    startedDate: string,
-    expirationDate: string | undefined
+    startedDate: Date,
+    expirationDate: Date | undefined
   ) {
     this.permissionID = permissionID;
     this.productID = productID;

@@ -14,4 +14,4 @@ export { default as SKProduct } from "./classes/storeProducts/SKProduct";
 export { default as SKSubscriptionPeriod } from "./classes/storeProducts/SKSubscriptionPeriod";
 export { default as SKProductDiscount } from "./classes/storeProducts/SKProductDiscount";
 
-export * from "./entities";
+export * from "./enums";
