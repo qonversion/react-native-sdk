@@ -22,7 +22,7 @@
 
     return @{
       @"uid": launchResult.uid,
-      @"timestamp": @(launchResult.timestamp),
+      @"timestamp": @(launchResult.timestamp * 1000),
       @"products": products,
       @"permissions": permissions,
       @"user_products": userProducts,
@@ -68,8 +68,8 @@
             @"id": permission.permissionID,
             @"associated_product": permission.productID,
             @"renew_state": @(permission.renewState),
-            @"started_timestamp": @(permission.startedDate.timeIntervalSince1970),
-            @"expiration_timestamp": @(permission.expirationDate.timeIntervalSince1970),
+            @"started_timestamp": @(permission.startedDate.timeIntervalSince1970 * 1000),
+            @"expiration_timestamp": @(permission.expirationDate.timeIntervalSince1970 * 1000),
             @"active": @(permission.isActive),
         };
         result[permission.permissionID] = permissionDict;
