@@ -3,9 +3,16 @@ import { NativeModules, Platform } from 'react-native';
 
 const { RNQonversion } = NativeModules;
 
+const keyPrefix = 'com.qonversion.keys';
+const sourceKey = keyPrefix + '.source';
+const versionKey = keyPrefix + '.sourceVersion';
+const sdkVersion = '2.4.6';
+
 export default class Qonversion {
 
     static async launchWithKey(key: string, observerMode: Boolean = false): Promise<LaunchResult> {
+        RNQonversion.storeSDKInfo(sourceKey, 'rn', versionKey, sdkVersion);
+
         const response: Object = await RNQonversion.launchWithKey(key, observerMode);
         const launchResult: LaunchResult = Mapper.convertLaunchResult(response);
 
