@@ -1,30 +1,36 @@
-export enum ProductType {
-  TRIAL = 0,
-  DIRECT_SUBSCRIPTION = 1,
-  ONE_TIME = 2,
-}
+export const ProductType = {
+  "0": "TRIAL",
+  "1": "DIRECT_SUBSCRIPTION",
+  "2": "ONE_TIME",
+} as const;
 
-export enum ProductDuration {
-  WEEKLY = 0,
-  MONTHLY = 1,
-  "3_MONTHS" = 2,
-  "6_MONTHS" = 3,
-  ANNUAL = 4,
-  LIFETIME = 5,
-}
+export type ProductTypes = typeof ProductType[keyof typeof ProductType];
 
-export enum TrialDuration {
-  NOT_AVAILABLE = -1,
-  THREE_DAYS = 1,
-  WEEK = 2,
-  TWO_WEEKS = 3,
-  MONTH = 4,
-  TWO_MONTHS = 5,
-  THREE_MONTHS = 6,
-  SIX_MONTHS = 7,
-  YEAR = 8,
-  OTHER = 9,
-}
+export const ProductDuration = {
+  0: "WEEKLY",
+  1: "MONTHLY",
+  2: "3_MONTHS",
+  3: "6_MONTHS",
+  4: "ANNUAL",
+  5: "LIFETIME",
+} as const;
+
+export type ProductDurations = typeof ProductDuration[keyof typeof ProductDuration];
+
+export const TrialDuration = {
+  "-1": "NOT_AVAILABLE",
+  "1": "THREE_DAYS",
+  "2": "WEEK",
+  "3": "TWO_WEEKS",
+  "4": "MONTH",
+  "5": "TWO_MONTHS",
+  "6": "THREE_MONTHS",
+  "7": "SIX_MONTHS",
+  "8": "YEAR",
+  "9": "OTHER",
+} as const;
+
+export type TrialDurations = typeof TrialDuration[keyof typeof TrialDuration];
 
 export enum RenewState {
   NON_RENEWABLE = -1,
@@ -59,28 +65,33 @@ export enum ProrationMode {
   DEFERRED = 4,
 }
 
-export enum SKPeriodUnit {
-  DAY = "0",
-  WEEK = "1",
-  MONTH = "2",
-  YEAR = "3",
-}
+export const SKPeriodUnit = {
+  0: "DAY",
+  1: "WEEK",
+  2: "MONTH",
+  3: "YEAR",
+} as const;
+export type SKPeriodUnits = typeof SKPeriodUnit[keyof typeof SKPeriodUnit];
 
-export enum SKProductDiscountType {
-  INTRODUCTORY = 0,
-  SUBSCRIPTION = 1,
-}
+export const SKProductDiscountType = {
+  0: "INTRODUCTORY",
+  1: "SUBSCRIPTION",
+} as const;
 
-export enum SKProductDiscountPaymentMode {
-  PAY_AS_YOU_GO = 0,
-  PAY_UP_FRONT = 1,
-  FREE_TRIAL = 2,
-}
+export type SKProductDiscountTypes = typeof SKProductDiscountType[keyof typeof SKProductDiscountType];
 
-export enum OfferingTag {
-  NONE = 0,
-  MAIN = 1,
-}
+export const SKProductDiscountPaymentMode = {
+  0: "PAY_AS_YOU_GO",
+  1: "PAY_UP_FRONT",
+  2: "FREE_TRIAL",
+} as const;
+export type SKProductDiscountPaymentModes = typeof SKProductDiscountPaymentMode[keyof typeof SKProductDiscountPaymentMode];
+
+export const OfferingTag = {
+  0: "NONE",
+  1: "MAIN",
+} as const;
+export type OfferingTags = typeof OfferingTag[keyof typeof OfferingTag];
 
 export enum IntroEligibilityStatus {
   UNKNOWN = "unknown",

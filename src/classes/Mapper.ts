@@ -3,14 +3,15 @@ import { Platform } from "react-native";
 import {
   ExperimentGroupType,
   IntroEligibilityStatus,
-  OfferingTag,
-  ProductDuration,
-  ProductType,
+  OfferingTags,
+  ProductDurations,
+  ProductTypes,
   RenewState,
-  SKPeriodUnit,
-  SKProductDiscountPaymentMode,
-  SKProductDiscountType,
-  TrialDuration,
+  SKPeriodUnits,
+  SKProductDiscountPaymentModes,
+  TrialDurations,
+  SKProductDiscountTypes,
+  OfferingTag,
 } from "../enums";
 import ExperimentGroup from "./ExperimentGroup";
 import ExperimentInfo from "./ExperimentInfo";
@@ -34,9 +35,9 @@ type QLaunchResult = {
 };
 
 type QProduct = {
-  type: number;
-  duration: number;
-  trialDuration: number;
+  type: ProductTypes;
+  duration: ProductDurations;
+  trialDuration: TrialDurations;
   id: string;
   store_id: string;
   prettyPrice?: string;
@@ -85,7 +86,7 @@ type QSKProduct = {
 
 type QSubscriptionPeriod = {
   numberOfUnits: number;
-  unit: string;
+  unit: SKPeriodUnits;
 };
 
 type QProductDiscount = {
@@ -93,9 +94,9 @@ type QProductDiscount = {
   price: string;
   localeIdentifier?: string;
   numberOfPeriods: number;
-  paymentMode: number;
+  paymentMode: SKProductDiscountPaymentModes;
   identifier?: string;
-  type: number;
+  type: SKProductDiscountTypes;
 };
 
 type QPermission = {
@@ -114,7 +115,7 @@ type QOfferings = {
 
 type QOffering = {
   id: string;
-  tag: number;
+  tag: OfferingTags;
   products: Array<QProduct>;
 };
 
@@ -189,14 +190,6 @@ class Mapper {
   }
 
   static convertProduct(product: QProduct): Product {
-    const productType: ProductType = Mapper.convertProductType(product.type);
-    const productDuration: ProductDuration = Mapper.convertProductDuration(
-      product.duration
-    );
-    const trialDuration: TrialDuration = Mapper.convertTrialDuration(
-      product.trialDuration
-    );
-
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
     let price: number | undefined;
@@ -219,12 +212,12 @@ class Mapper {
     const mappedProduct = new Product(
       product.id,
       product.store_id,
-      productType,
-      productDuration,
+      product.type,
+      product.duration,
       skuDetails,
       skProduct,
       product.prettyPrice,
-      trialDuration,
+      product.trialDuration,
       price,
       currencyCode
     );
@@ -264,10 +257,7 @@ class Mapper {
       products.push(mappedProduct);
     });
 
-    let tag: OfferingTag | null = Mapper.convertOfferingTag(offering.tag);
-    if (tag == null) {
-      tag = OfferingTag.NONE;
-    }
+    const tag = offering.tag ?? OfferingTag[0];
 
     return new Offering(offering.id, tag, products);
   }
@@ -337,7 +327,7 @@ class Mapper {
   ): SKSubscriptionPeriod {
     return new SKSubscriptionPeriod(
       subscriptionPeriod.numberOfUnits,
-      Mapper.convertSKPeriodUnit(subscriptionPeriod.unit)
+      subscriptionPeriod.unit
     );
   }
 
@@ -353,9 +343,9 @@ class Mapper {
       discount.localeIdentifier,
       discount.numberOfPeriods,
       subscriptionPeriod,
-      Mapper.convertSKProductDiscountPaymentMode(discount.paymentMode),
+      discount.paymentMode,
       discount.identifier,
-      Mapper.convertSKProductDiscountType(discount.type)
+      discount.type
     );
   }
 
@@ -388,112 +378,6 @@ class Mapper {
     }
 
     return mappedEligibility;
-  }
-
-  static convertProductType(productType: number): ProductType {
-    switch (productType) {
-      case 0:
-        return ProductType.TRIAL;
-      case 1:
-        return ProductType.DIRECT_SUBSCRIPTION;
-      case 2:
-      default:
-        return ProductType.ONE_TIME;
-    }
-  }
-
-  static convertProductDuration(productDuration: number): ProductDuration {
-    switch (productDuration) {
-      case 0:
-        return ProductDuration.WEEKLY;
-      case 1:
-        return ProductDuration.MONTHLY;
-      case 2:
-        return ProductDuration["3_MONTHS"];
-      case 3:
-        return ProductDuration["6_MONTHS"];
-      case 4:
-        return ProductDuration.ANNUAL;
-      case 5:
-      default:
-        return ProductDuration.LIFETIME;
-    }
-  }
-
-  static convertTrialDuration(trialDuration: number): TrialDuration {
-    switch (trialDuration) {
-      case -1:
-        return TrialDuration.NOT_AVAILABLE;
-      case 1:
-        return TrialDuration.THREE_DAYS;
-      case 2:
-        return TrialDuration.WEEK;
-      case 3:
-        return TrialDuration.TWO_WEEKS;
-      case 4:
-        return TrialDuration.MONTH;
-      case 5:
-        return TrialDuration.TWO_MONTHS;
-      case 6:
-        return TrialDuration.THREE_MONTHS;
-      case 7:
-        return TrialDuration.SIX_MONTHS;
-      case 8:
-        return TrialDuration.YEAR;
-      case 9:
-      default:
-        return TrialDuration.OTHER;
-    }
-  }
-
-  static convertOfferingTag(offeringTag: number): OfferingTag {
-    switch (offeringTag) {
-      case 0:
-        return OfferingTag.NONE;
-      case 1:
-      default:
-        return OfferingTag.MAIN;
-    }
-  }
-
-  static convertSKPeriodUnit(skPeriodUnit: string): SKPeriodUnit {
-    switch (skPeriodUnit) {
-      case "0":
-        return SKPeriodUnit.DAY;
-      case "1":
-        return SKPeriodUnit.WEEK;
-      case "2":
-        return SKPeriodUnit.MONTH;
-      case "3":
-      default:
-        return SKPeriodUnit.YEAR;
-    }
-  }
-
-  static convertSKProductDiscountPaymentMode(
-    skProductDiscountPaymentMode: number
-  ): SKProductDiscountPaymentMode {
-    switch (skProductDiscountPaymentMode) {
-      case 0:
-        return SKProductDiscountPaymentMode.PAY_AS_YOU_GO;
-      case 1:
-        return SKProductDiscountPaymentMode.PAY_UP_FRONT;
-      case 2:
-      default:
-        return SKProductDiscountPaymentMode.FREE_TRIAL;
-    }
-  }
-
-  static convertSKProductDiscountType(
-    skProductDisctountType: number
-  ): SKProductDiscountType {
-    switch (skProductDisctountType) {
-      case 0:
-        return SKProductDiscountType.INTRODUCTORY;
-      case 1:
-      default:
-        return SKProductDiscountType.SUBSCRIPTION;
-    }
   }
 
   static convertEligibilityStatus(status: string): IntroEligibilityStatus {
