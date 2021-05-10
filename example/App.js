@@ -52,7 +52,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                 const inApp: Product = products.get('in_app');
                 if (inApp) {
                     inAppTitle = 'Buy for ' + inApp.prettyPrice;
-                    const permission = permissions.get('standart');
+                    const permission = permissions.get('Test Permission');
                     if (permission) {
                         inAppTitle = permission.isActive ? 'Purchased' : inAppTitle;
                     }
@@ -109,14 +109,17 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                           this.setState({loading: false, subscriptionButtonTitle: 'Purchased'});
                       }).catch(error => {
                           this.setState({loading: false});
-                          Alert.alert(
-                              'Error',
-                              error.message,
-                              [
-                                  { text: 'OK' },
-                              ],
-                              { cancelable: true }
-                          );
+
+                          if (error.userCanceled) {
+                              Alert.alert(
+                                  'Error',
+                                  error.message,
+                                  [
+                                      { text: 'OK' },
+                                  ],
+                                  { cancelable: true }
+                              );
+                          }
                       });
                   }}
                   >
@@ -130,14 +133,17 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                           this.setState({loading: false, inAppButtonTitle: 'Purchased'});
                       }).catch(error => {
                           this.setState({loading: false});
-                          Alert.alert(
-                              'Error',
-                              error.message,
-                              [
-                                  { text: 'OK' },
-                              ],
-                              { cancelable: true }
-                          );
+
+                          if (!error.userCanceled) {
+                              Alert.alert(
+                                  'Error',
+                                  error.message,
+                                  [
+                                      { text: 'OK' },
+                                  ],
+                                  { cancelable: true }
+                              );
+                          }
                       });
                   }}
               >
@@ -148,6 +154,8 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                   onPress={() => {
                       this.setState({loading: true});
                       Qonversion.restore().then(permissions => {
+                          this.setState({loading: false});
+
                           let checkActivePermissionsButtonHidden = this.state.checkPermissionsHidden;
                           let inAppTitle = this.state.inAppButtonTitle;
                           let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
@@ -155,7 +163,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                               const permissionsValues = Array.from(permissions.values());
                               checkActivePermissionsButtonHidden = permissionsValues.some(item => item.isActive === true);
 
-                              const standartPermission = permissions.get('standart');
+                              const standartPermission = permissions.get('Test Permission');
                               if (standartPermission && standartPermission.isActive) {
                                   inAppTitle = 'Restored';
                               }
@@ -165,7 +173,6 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                                   subscriptionButtonTitle = 'Restored';
                               }
                           } else {
-                              this.setState({loading: false});
                               Alert.alert(
                                   'Error',
                                   'No purchases to restore',

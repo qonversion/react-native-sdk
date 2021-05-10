@@ -3,9 +3,16 @@ import { NativeModules, Platform } from 'react-native';
 
 const { RNQonversion } = NativeModules;
 
+const keyPrefix = 'com.qonversion.keys';
+const sourceKey = keyPrefix + '.source';
+const versionKey = keyPrefix + '.sourceVersion';
+const sdkVersion = '2.4.6';
+
 export default class Qonversion {
 
     static async launchWithKey(key: string, observerMode: Boolean = false): Promise<LaunchResult> {
+        RNQonversion.storeSDKInfo(sourceKey, 'rn', versionKey, sdkVersion);
+
         const response: Object = await RNQonversion.launchWithKey(key, observerMode);
         const launchResult: LaunchResult = Mapper.convertLaunchResult(response);
 
@@ -76,7 +83,7 @@ export default class Qonversion {
         return mappedProducts
     }
 
-    static async offerings(): Promise<Offerings> {
+    static async offerings(): Promise<Offerings | null> {
         let offerings = await RNQonversion.offerings();
         const mappedOfferings: Offerings = Mapper.convertOfferings(offerings);
 
@@ -91,7 +98,7 @@ export default class Qonversion {
         return mappedPermissions;
     }
 
-    static async checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, Permission>> {
+    static async checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, IntroEligibility>> {
         const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
 
         const mappedEligibility: Map<string, IntroEligibility> = Mapper.convertEligibility(eligibilityInfo);
@@ -117,6 +124,12 @@ export default class Qonversion {
 
     static setDebugMode() {
         RNQonversion.setDebugMode();
+    }
+
+    static setAdvertisingID() {
+        if (Platform.OS === 'ios') {
+            RNQonversion.setAdvertisingID();
+        }
     }
 }
 
@@ -151,7 +164,7 @@ class Mapper {
                     break;
             }
 
-            const mappedPermission = new Permission(permission.id, permission.associated_product, !!permission.active, renewState, Date(permission.started_timestamp), Date(permission.expiration_timestamp))
+            const mappedPermission = new Permission(permission.id, permission.associated_product, !!permission.active, renewState, new Date(permission.started_timestamp), new Date(permission.expiration_timestamp))
             mappedPermissions.set(key, mappedPermission);
         }
 
@@ -313,6 +326,8 @@ class Mapper {
         const mappedDiscounts: SKProductDiscount[] = discounts.map((discount) => {
             return this.convertProductDiscount(discount);
         });
+
+        return mappedDiscounts;
     }
 
     static convertEligibility(eligibilityInfo: Object[]): Map<string, IntroEligibility> {

@@ -5,6 +5,12 @@
 
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)sourceKey source:(NSString *)source versionKey:(NSString *)versionKey version:(NSString *)version) {
+    [[NSUserDefaults standardUserDefaults] setValue:version forKey:versionKey];
+    [[NSUserDefaults standardUserDefaults] setValue:source forKey:sourceKey];
+}
+                  
+
 RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
     [Qonversion launchWithKey:key completion:^(QNLaunchResult *result, NSError *error) {
@@ -147,6 +153,10 @@ RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPr
         NSArray *experiments = [EntitiesConverter convertExperiments:result];
         completion(@[experiments]);
     }];
+}
+
+RCT_EXPORT_METHOD(setAdvertisingID) {
+    [Qonversion setAdvertisingID];
 }
 
 @end

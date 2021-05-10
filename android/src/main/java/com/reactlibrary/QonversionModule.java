@@ -38,6 +38,9 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
+import android.content.SharedPreferences;
+import androidx.preference.PreferenceManager;
+
 public class QonversionModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
@@ -59,6 +62,14 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "RNQonversion";
+    }
+
+    @ReactMethod
+    public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getCurrentActivity().getApplication()).edit();
+        editor.putString(sdkVersionKey, sdkVersion);
+        editor.putString(sourceKey, source);
+        editor.apply();
     }
 
     @ReactMethod
