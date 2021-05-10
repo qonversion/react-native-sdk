@@ -1,35 +1,35 @@
-export const ProductType = {
-  "0": "TRIAL",
-  "1": "DIRECT_SUBSCRIPTION",
-  "2": "ONE_TIME",
-} as const;
-
+export enum ProductType {
+  TRIAL = "TRIAL",
+  DIRECT_SUBSCRIPTION = "DIRECT_SUBSCRIPTION",
+  ONE_TIME = "ONE_TIME",
+}
+// deprecated
 export type ProductTypes = typeof ProductType[keyof typeof ProductType];
 
-export const ProductDuration = {
-  0: "WEEKLY",
-  1: "MONTHLY",
-  2: "3_MONTHS",
-  3: "6_MONTHS",
-  4: "ANNUAL",
-  5: "LIFETIME",
-} as const;
-
+export enum ProductDuration {
+  WEEKLY = "WEEKLY",
+  MONTHLY = "MONTHLY",
+  THREE_MONTHS = "3_MONTHS",
+  SIX_MONTHS = "6_MONTHS",
+  ANNUAL = "ANNUAL",
+  LIFETIME = "LIFETIME",
+}
+// deprecated
 export type ProductDurations = typeof ProductDuration[keyof typeof ProductDuration];
 
-export const TrialDuration = {
-  "-1": "NOT_AVAILABLE",
-  "1": "THREE_DAYS",
-  "2": "WEEK",
-  "3": "TWO_WEEKS",
-  "4": "MONTH",
-  "5": "TWO_MONTHS",
-  "6": "THREE_MONTHS",
-  "7": "SIX_MONTHS",
-  "8": "YEAR",
-  "9": "OTHER",
-} as const;
-
+export enum TrialDuration {
+  NOT_AVAILABLE = "NOT_AVAILABLE",
+  THREE_DAYS = "THREE_DAYS",
+  WEEK = "WEEK",
+  TWO_WEEKS = "TWO_WEEKS",
+  MONTH = "MONTH",
+  TWO_MONTHS = "TWO_MONTHS",
+  THREE_MONTHS = "THREE_MONTHS",
+  SIX_MONTHS = "SIX_MONTHS",
+  YEAR = "YEAR",
+  OTHER = "OTHER",
+}
+// deprecated
 export type TrialDurations = typeof TrialDuration[keyof typeof TrialDuration];
 
 export enum RenewState {
@@ -65,32 +65,35 @@ export enum ProrationMode {
   DEFERRED = 4,
 }
 
-export const SKPeriodUnit = {
-  0: "DAY",
-  1: "WEEK",
-  2: "MONTH",
-  3: "YEAR",
-} as const;
+export enum SKPeriodUnit {
+  DAY = "DAY",
+  WEEK = "WEEK",
+  MONTH = "MONTH",
+  YEAR = "YEAR",
+}
+// deprecated
 export type SKPeriodUnits = typeof SKPeriodUnit[keyof typeof SKPeriodUnit];
 
-export const SKProductDiscountType = {
-  0: "INTRODUCTORY",
-  1: "SUBSCRIPTION",
-} as const;
-
+export enum SKProductDiscountType {
+  INTRODUCTORY = "INTRODUCTORY",
+  SUBSCRIPTION = "SUBSCRIPTION",
+}
+// deprecated
 export type SKProductDiscountTypes = typeof SKProductDiscountType[keyof typeof SKProductDiscountType];
 
-export const SKProductDiscountPaymentMode = {
-  0: "PAY_AS_YOU_GO",
-  1: "PAY_UP_FRONT",
-  2: "FREE_TRIAL",
-} as const;
+export enum SKProductDiscountPaymentMode {
+  PAY_AS_YOU_GO = "PAY_AS_YOU_GO",
+  PAY_UP_FRONT = "PAY_UP_FRONT",
+  FREE_TRIAL = "FREE_TRIAL",
+}
+// deprecated
 export type SKProductDiscountPaymentModes = typeof SKProductDiscountPaymentMode[keyof typeof SKProductDiscountPaymentMode];
 
-export const OfferingTag = {
-  0: "NONE",
-  1: "MAIN",
-} as const;
+export enum OfferingTag {
+  NONE = "NONE",
+  MAIN = "MAIN",
+}
+// deprecated
 export type OfferingTags = typeof OfferingTag[keyof typeof OfferingTag];
 
 export enum IntroEligibilityStatus {

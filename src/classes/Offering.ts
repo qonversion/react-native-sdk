@@ -1,12 +1,12 @@
-import { OfferingTags } from "../enums";
+import { OfferingTag } from "../enums";
 import Product from "./Product";
 
 class Offering {
   id: string;
-  tag: OfferingTags;
+  tag: OfferingTag;
   products: Array<Product>;
 
-  constructor(id: string, tag: OfferingTags, products: Product[]) {
+  constructor(id: string, tag: OfferingTag, products: Product[]) {
     this.id = id;
     this.tag = tag;
     this.products = products;

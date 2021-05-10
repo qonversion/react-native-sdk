@@ -1,10 +1,10 @@
-import { SKPeriodUnits } from "../../enums";
+import { SKPeriodUnit } from "../../enums";
 
 class SKSubscriptionPeriod {
   numberOfUnits: number;
-  unit: SKPeriodUnits;
+  unit: SKPeriodUnit;
 
-  constructor(numberOfUnits: number, unit: SKPeriodUnits) {
+  constructor(numberOfUnits: number, unit: SKPeriodUnit) {
     this.numberOfUnits = numberOfUnits;
     this.unit = unit;
   }

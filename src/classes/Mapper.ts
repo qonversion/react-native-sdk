@@ -3,15 +3,14 @@ import { Platform } from "react-native";
 import {
   ExperimentGroupType,
   IntroEligibilityStatus,
-  OfferingTags,
-  ProductDurations,
-  ProductTypes,
-  RenewState,
-  SKPeriodUnits,
-  SKProductDiscountPaymentModes,
-  TrialDurations,
-  SKProductDiscountTypes,
   OfferingTag,
+  ProductDuration,
+  ProductType,
+  RenewState,
+  SKPeriodUnit,
+  SKProductDiscountPaymentMode,
+  TrialDuration,
+  SKProductDiscountType,
 } from "../enums";
 import ExperimentGroup from "./ExperimentGroup";
 import ExperimentInfo from "./ExperimentInfo";
@@ -35,9 +34,9 @@ type QLaunchResult = {
 };
 
 type QProduct = {
-  type: ProductTypes;
-  duration: ProductDurations;
-  trialDuration: TrialDurations;
+  type: ProductType;
+  duration: ProductDuration;
+  trialDuration: TrialDuration;
   id: string;
   store_id: string;
   prettyPrice?: string;
@@ -86,7 +85,7 @@ type QSKProduct = {
 
 type QSubscriptionPeriod = {
   numberOfUnits: number;
-  unit: SKPeriodUnits;
+  unit: SKPeriodUnit;
 };
 
 type QProductDiscount = {
@@ -94,9 +93,9 @@ type QProductDiscount = {
   price: string;
   localeIdentifier?: string;
   numberOfPeriods: number;
-  paymentMode: SKProductDiscountPaymentModes;
+  paymentMode: SKProductDiscountPaymentMode;
   identifier?: string;
-  type: SKProductDiscountTypes;
+  type: SKProductDiscountType;
 };
 
 type QPermission = {
@@ -115,7 +114,7 @@ type QOfferings = {
 
 type QOffering = {
   id: string;
-  tag: OfferingTags;
+  tag: OfferingTag;
   products: Array<QProduct>;
 };
 
@@ -257,7 +256,7 @@ class Mapper {
       products.push(mappedProduct);
     });
 
-    const tag = offering.tag ?? OfferingTag[0];
+    const tag = offering.tag ?? OfferingTag.NONE;
 
     return new Offering(offering.id, tag, products);
   }

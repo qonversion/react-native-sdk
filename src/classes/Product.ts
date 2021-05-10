@@ -1,28 +1,28 @@
-import { ProductDurations, ProductTypes, TrialDurations } from "../enums";
+import { ProductDuration, ProductType, TrialDuration } from "../enums";
 import SKProduct from "./storeProducts/SKProduct";
 import SkuDetails from "./storeProducts/SkuDetails";
 
 class Product {
   qonversionID: string;
   storeID: string;
-  type: ProductTypes;
-  duration: ProductDurations;
+  type: ProductType;
+  duration: ProductDuration;
   skuDetails: SkuDetails | null;
   skProduct: SKProduct | null;
   prettyPrice?: string;
-  trialDuration?: TrialDurations;
+  trialDuration?: TrialDuration;
   price?: number;
   currencyCode?: string;
 
   constructor(
     qonversionID: string,
     storeID: string,
-    type: ProductTypes,
-    duration: ProductDurations,
+    type: ProductType,
+    duration: ProductDuration,
     skuDetails: SkuDetails | null,
     skProduct: SKProduct | null,
     prettyPrice: string | undefined,
-    trialDuration: TrialDurations | undefined,
+    trialDuration: TrialDuration | undefined,
     price: number | undefined,
     currencyCode: string | undefined
   ) {

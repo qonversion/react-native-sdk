@@ -1,6 +1,6 @@
 import {
-  SKProductDiscountPaymentModes,
-  SKProductDiscountTypes,
+  SKProductDiscountPaymentMode,
+  SKProductDiscountType,
 } from "../../enums";
 import SKSubscriptionPeriod from "./SKSubscriptionPeriod";
 
@@ -9,18 +9,18 @@ class SKProductDiscount {
   localeIdentifier?: string;
   numberOfPeriods: number;
   subscriptionPeriod?: SKSubscriptionPeriod;
-  paymentMode: SKProductDiscountPaymentModes;
+  paymentMode: SKProductDiscountPaymentMode;
   identifier?: string;
-  type: SKProductDiscountTypes;
+  type: SKProductDiscountType;
 
   constructor(
     price: string,
     localeIdentifier: string | undefined,
     numberOfPeriods: number,
     subscriptionPeriod: SKSubscriptionPeriod | undefined,
-    paymentMode: SKProductDiscountPaymentModes,
+    paymentMode: SKProductDiscountPaymentMode,
     identifier: string | undefined,
-    type: SKProductDiscountTypes
+    type: SKProductDiscountType
   ) {
     this.price = price;
     this.localeIdentifier = localeIdentifier;
