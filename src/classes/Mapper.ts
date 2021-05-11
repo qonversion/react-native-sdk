@@ -1,17 +1,19 @@
 import { Platform } from "react-native";
 
 import {
+  ProductDuration,
+  ProductType,
+  TrialDuration,
   ExperimentGroupType,
   IntroEligibilityStatus,
-  OfferingTags,
   ProductDurations,
   ProductTypes,
   RenewState,
-  SKPeriodUnits,
-  SKProductDiscountPaymentModes,
   TrialDurations,
-  SKProductDiscountTypes,
   OfferingTag,
+  SKPeriodUnit,
+  SKProductDiscountPaymentMode,
+  SKProductDiscountType,
 } from "../enums";
 import ExperimentGroup from "./ExperimentGroup";
 import ExperimentInfo from "./ExperimentInfo";
@@ -35,9 +37,9 @@ type QLaunchResult = {
 };
 
 type QProduct = {
-  type: ProductTypes;
-  duration: ProductDurations;
-  trialDuration: TrialDurations;
+  type: keyof typeof ProductType;
+  duration: keyof typeof ProductDuration;
+  trialDuration: keyof typeof TrialDuration;
   id: string;
   store_id: string;
   prettyPrice?: string;
@@ -86,7 +88,7 @@ type QSKProduct = {
 
 type QSubscriptionPeriod = {
   numberOfUnits: number;
-  unit: SKPeriodUnits;
+  unit: keyof typeof SKPeriodUnit;
 };
 
 type QProductDiscount = {
@@ -94,9 +96,9 @@ type QProductDiscount = {
   price: string;
   localeIdentifier?: string;
   numberOfPeriods: number;
-  paymentMode: SKProductDiscountPaymentModes;
+  paymentMode: keyof typeof SKProductDiscountPaymentMode;
   identifier?: string;
-  type: SKProductDiscountTypes;
+  type: keyof typeof SKProductDiscountType;
 };
 
 type QPermission = {
@@ -115,7 +117,7 @@ type QOfferings = {
 
 type QOffering = {
   id: string;
-  tag: OfferingTags;
+  tag: keyof typeof OfferingTag;
   products: Array<QProduct>;
 };
 
@@ -190,6 +192,10 @@ class Mapper {
   }
 
   static convertProduct(product: QProduct): Product {
+    const productType: ProductTypes = ProductType[product.type];
+    const productDuration: ProductDurations = ProductDuration[product.duration];
+    const trialDuration: TrialDurations = TrialDuration[product.trialDuration];
+
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
     let price: number | undefined;
@@ -212,12 +218,12 @@ class Mapper {
     const mappedProduct = new Product(
       product.id,
       product.store_id,
-      product.type,
-      product.duration,
+      productType,
+      productDuration,
       skuDetails,
       skProduct,
       product.prettyPrice,
-      product.trialDuration,
+      trialDuration,
       price,
       currencyCode
     );
@@ -257,7 +263,7 @@ class Mapper {
       products.push(mappedProduct);
     });
 
-    const tag = offering.tag ?? OfferingTag[0];
+    const tag = OfferingTag[offering.tag] ?? OfferingTag[0];
 
     return new Offering(offering.id, tag, products);
   }
@@ -327,7 +333,7 @@ class Mapper {
   ): SKSubscriptionPeriod {
     return new SKSubscriptionPeriod(
       subscriptionPeriod.numberOfUnits,
-      subscriptionPeriod.unit
+      SKPeriodUnit[subscriptionPeriod.unit]
     );
   }
 
@@ -343,9 +349,9 @@ class Mapper {
       discount.localeIdentifier,
       discount.numberOfPeriods,
       subscriptionPeriod,
-      discount.paymentMode,
+      SKProductDiscountPaymentMode[discount.paymentMode],
       discount.identifier,
-      discount.type
+      SKProductDiscountType[discount.type]
     );
   }
 
