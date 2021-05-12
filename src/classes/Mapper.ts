@@ -1,22 +1,12 @@
 import { Platform } from "react-native";
 
 import {
-  ProductDuration,
-  ProductType,
-  TrialDuration,
   ExperimentGroupType,
   IntroEligibilityStatus,
-  OfferingTag,
   ProductDuration,
   ProductType,
-  RenewState,
-  SKPeriodUnit,
-  SKProductDiscountPaymentMode,
   TrialDuration,
-  ProductDurations,
-  ProductTypes,
   RenewState,
-  TrialDurations,
   OfferingTag,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
@@ -197,10 +187,6 @@ class Mapper {
   }
 
   static convertProduct(product: QProduct): Product {
-    const productType: ProductTypes = ProductType[product.type];
-    const productDuration: ProductDurations = ProductDuration[product.duration];
-    const trialDuration: TrialDurations = TrialDuration[product.trialDuration];
-
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
     let price: number | undefined;
@@ -223,12 +209,12 @@ class Mapper {
     const mappedProduct = new Product(
       product.id,
       product.store_id,
-      productType,
-      productDuration,
+      product.type,
+      product.duration,
       skuDetails,
       skProduct,
       product.prettyPrice,
-      trialDuration,
+      product.trialDuration,
       price,
       currencyCode
     );
@@ -338,7 +324,7 @@ class Mapper {
   ): SKSubscriptionPeriod {
     return new SKSubscriptionPeriod(
       subscriptionPeriod.numberOfUnits,
-      SKPeriodUnit[subscriptionPeriod.unit]
+      subscriptionPeriod.unit
     );
   }
 
@@ -354,9 +340,9 @@ class Mapper {
       discount.localeIdentifier,
       discount.numberOfPeriods,
       subscriptionPeriod,
-      SKProductDiscountPaymentMode[discount.paymentMode],
+      discount.paymentMode,
       discount.identifier,
-      SKProductDiscountType[discount.type]
+      discount.type
     );
   }
 

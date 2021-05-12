@@ -1,36 +1,30 @@
 export enum ProductType {
-  TRIAL = "TRIAL",
-  DIRECT_SUBSCRIPTION = "DIRECT_SUBSCRIPTION",
-  ONE_TIME = "ONE_TIME",
+  TRIAL = "0",
+  DIRECT_SUBSCRIPTION = "1",
+  ONE_TIME = "2",
 }
-// deprecated
-export type ProductTypes = typeof ProductType[keyof typeof ProductType];
 
 export enum ProductDuration {
-  WEEKLY = "WEEKLY",
-  MONTHLY = "MONTHLY",
-  THREE_MONTHS = "3_MONTHS",
-  SIX_MONTHS = "6_MONTHS",
-  ANNUAL = "ANNUAL",
-  LIFETIME = "LIFETIME",
+  WEEKLY = 0,
+  MONTHLY = 1,
+  "3_MONTHS" = 2,
+  "6_MONTHS" = 3,
+  ANNUAL = 4,
+  LIFETIME = 5,
 }
-// deprecated
-export type ProductDurations = typeof ProductDuration[keyof typeof ProductDuration];
 
 export enum TrialDuration {
-  NOT_AVAILABLE = "NOT_AVAILABLE",
-  THREE_DAYS = "THREE_DAYS",
-  WEEK = "WEEK",
-  TWO_WEEKS = "TWO_WEEKS",
-  MONTH = "MONTH",
-  TWO_MONTHS = "TWO_MONTHS",
-  THREE_MONTHS = "THREE_MONTHS",
-  SIX_MONTHS = "SIX_MONTHS",
-  YEAR = "YEAR",
-  OTHER = "OTHER",
+  NOT_AVAILABLE = "-1",
+  THREE_DAYS = "1",
+  WEEK = "2",
+  TWO_WEEKS = "3",
+  MONTH = "4",
+  TWO_MONTHS = "5",
+  THREE_MONTHS = "6",
+  SIX_MONTHS = "7",
+  YEAR = "8",
+  OTHER = "9",
 }
-// deprecated
-export type TrialDurations = typeof TrialDuration[keyof typeof TrialDuration];
 
 export enum RenewState {
   NON_RENEWABLE = -1,
@@ -66,35 +60,27 @@ export enum ProrationMode {
 }
 
 export enum SKPeriodUnit {
-  DAY = "DAY",
-  WEEK = "WEEK",
-  MONTH = "MONTH",
-  YEAR = "YEAR",
+  DAY = 0,
+  WEEK = 1,
+  MONTH = 2,
+  YEAR = 3,
 }
-// deprecated
-export type SKPeriodUnits = typeof SKPeriodUnit[keyof typeof SKPeriodUnit];
 
 export enum SKProductDiscountType {
-  INTRODUCTORY = "INTRODUCTORY",
-  SUBSCRIPTION = "SUBSCRIPTION",
+  INTRODUCTORY = 0,
+  SUBSCRIPTION = 1,
 }
-// deprecated
-export type SKProductDiscountTypes = typeof SKProductDiscountType[keyof typeof SKProductDiscountType];
 
 export enum SKProductDiscountPaymentMode {
-  PAY_AS_YOU_GO = "PAY_AS_YOU_GO",
-  PAY_UP_FRONT = "PAY_UP_FRONT",
-  FREE_TRIAL = "FREE_TRIAL",
+  PAY_AS_YOU_GO = 0,
+  PAY_UP_FRONT = 1,
+  FREE_TRIAL = 2,
 }
-// deprecated
-export type SKProductDiscountPaymentModes = typeof SKProductDiscountPaymentMode[keyof typeof SKProductDiscountPaymentMode];
 
 export enum OfferingTag {
-  NONE = "NONE",
-  MAIN = "MAIN",
+  NONE = 0,
+  MAIN = 1,
 }
-// deprecated
-export type OfferingTags = typeof OfferingTag[keyof typeof OfferingTag];
 
 export enum IntroEligibilityStatus {
   UNKNOWN = "unknown",
