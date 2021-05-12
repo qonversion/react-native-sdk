@@ -1,6 +1,9 @@
 import { Platform } from "react-native";
 
 import {
+  ProductDuration,
+  ProductType,
+  TrialDuration,
   ExperimentGroupType,
   IntroEligibilityStatus,
   OfferingTag,
@@ -10,6 +13,13 @@ import {
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   TrialDuration,
+  ProductDurations,
+  ProductTypes,
+  RenewState,
+  TrialDurations,
+  OfferingTag,
+  SKPeriodUnit,
+  SKProductDiscountPaymentMode,
   SKProductDiscountType,
 } from "../enums";
 import ExperimentGroup from "./ExperimentGroup";
@@ -166,10 +176,8 @@ class Mapper {
         permission.associated_product,
         !!permission.active,
         renewState,
-        new Date(permission.started_timestamp),
+        permission.started_timestamp,
         permission.expiration_timestamp
-          ? new Date(permission.expiration_timestamp)
-          : undefined
       );
       mappedPermissions.set(key, mappedPermission);
     }
@@ -189,6 +197,10 @@ class Mapper {
   }
 
   static convertProduct(product: QProduct): Product {
+    const productType: ProductTypes = ProductType[product.type];
+    const productDuration: ProductDurations = ProductDuration[product.duration];
+    const trialDuration: TrialDurations = TrialDuration[product.trialDuration];
+
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
     let price: number | undefined;
@@ -211,12 +223,12 @@ class Mapper {
     const mappedProduct = new Product(
       product.id,
       product.store_id,
-      product.type,
-      product.duration,
+      productType,
+      productDuration,
       skuDetails,
       skProduct,
       product.prettyPrice,
-      product.trialDuration,
+      trialDuration,
       price,
       currencyCode
     );
@@ -326,7 +338,7 @@ class Mapper {
   ): SKSubscriptionPeriod {
     return new SKSubscriptionPeriod(
       subscriptionPeriod.numberOfUnits,
-      subscriptionPeriod.unit
+      SKPeriodUnit[subscriptionPeriod.unit]
     );
   }
 
@@ -342,9 +354,9 @@ class Mapper {
       discount.localeIdentifier,
       discount.numberOfPeriods,
       subscriptionPeriod,
-      discount.paymentMode,
+      SKProductDiscountPaymentMode[discount.paymentMode],
       discount.identifier,
-      discount.type
+      SKProductDiscountType[discount.type]
     );
   }
 
