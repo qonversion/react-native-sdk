@@ -169,10 +169,8 @@ class Mapper {
         permission.associated_product,
         !!permission.active,
         renewState,
-        new Date(permission.started_timestamp),
+        permission.started_timestamp,
         permission.expiration_timestamp
-          ? new Date(permission.expiration_timestamp)
-          : undefined
       );
       mappedPermissions.set(key, mappedPermission);
     }

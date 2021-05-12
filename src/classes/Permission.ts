@@ -5,16 +5,16 @@ class Permission {
   productID: string;
   isActive: boolean;
   renewState: RenewState;
-  startedDate: Date;
-  expirationDate?: Date;
+  startedDate: number;
+  expirationDate?: number;
 
   constructor(
     permissionID: string,
     productID: string,
     isActive: boolean,
     renewState: RenewState,
-    startedDate: Date,
-    expirationDate: Date | undefined
+    startedDate: number,
+    expirationDate: number | undefined
   ) {
     this.permissionID = permissionID;
     this.productID = productID;
