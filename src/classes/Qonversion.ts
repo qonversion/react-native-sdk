@@ -27,6 +27,14 @@ export default class Qonversion {
     return launchResult;
   }
 
+  static identify(userID: string) {
+    RNQonversion.identify(userID);
+  }
+
+  static logout() {
+    RNQonversion.logout();
+  }
+
   static setProperty(property: Property, value: string) {
     RNQonversion.setProperty(property, value);
   }
@@ -165,6 +173,10 @@ export default class Qonversion {
 
   static setDebugMode() {
     RNQonversion.setDebugMode();
+  }
+
+  static resetUser() {
+    RNQonversion.resetUser();
   }
 
   static setAdvertisingID() {

@@ -155,6 +155,21 @@ RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPr
     }];
 }
 
+RCT_EXPORT_METHOD(identify:(NSString *)userId)
+{
+    [Qonversion identify:userId];
+}
+
+RCT_EXPORT_METHOD(logout)
+{
+    [Qonversion logout];
+}
+
+RCT_EXPORT_METHOD(resetUser)
+{
+    [Qonversion resetUser];
+}
+
 RCT_EXPORT_METHOD(setAdvertisingID) {
     [Qonversion setAdvertisingID];
 }
