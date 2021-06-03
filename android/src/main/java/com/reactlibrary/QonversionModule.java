@@ -278,4 +278,19 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void setDebugMode() {
         Qonversion.setDebugMode();
     }
+
+    @ReactMethod
+    public void resetUser() {
+        Qonversion.resetUser();
+    }
+
+    @ReactMethod
+    public void identify(String userID) {
+        Qonversion.identify(userID);
+    }
+
+    @ReactMethod
+    public void logout() {
+        Qonversion.logout();
+    }
 }

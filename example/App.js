@@ -110,7 +110,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                       }).catch(error => {
                           this.setState({loading: false});
 
-                          if (error.userCanceled) {
+                          if (!error.userCanceled) {
                               Alert.alert(
                                   'Error',
                                   error.message,
