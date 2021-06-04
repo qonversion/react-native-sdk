@@ -43,14 +43,13 @@
 
 + (NSDictionary *)convertProduct:(QNProduct *)product {
     NSNumber *trialDuration = product.trialDuration ? @(product.trialDuration) : @(QNTrialDurationNotAvailable);
-    NSMutableDictionary *productsDict = [@{
-        @"id": product.qonversionID,
-        @"store_id": product.storeID,
-        @"type": @(product.type),
-        @"duration": @(product.duration),
-        @"prettyPrice": product.prettyPrice,
-        @"trialDuration": trialDuration
-    } mutableCopy];
+    NSMutableDictionary *productsDict = [NSMutableDictionary new];
+    productsDict[@"id"] = product.qonversionID;
+    productsDict[@"store_id"] = product.storeID;
+    productsDict[@"type"] = @(product.type);
+    productsDict[@"duration"] = @(product.duration);
+    productsDict[@"prettyPrice"] = product.prettyPrice;
+    productsDict[@"trialDuration"] = trialDuration;
 
     if (product.skProduct) {
         NSDictionary *skProductInfo = [EntitiesConverter convertSKProduct:product.skProduct];
@@ -64,15 +63,15 @@
     NSMutableDictionary *result = [NSMutableDictionary new];
 
     for (QNPermission *permission in permissions) {
-        NSDictionary *permissionDict = @{
-            @"id": permission.permissionID,
-            @"associated_product": permission.productID,
-            @"renew_state": @(permission.renewState),
-            @"started_timestamp": @(permission.startedDate.timeIntervalSince1970 * 1000),
-            @"expiration_timestamp": @(permission.expirationDate.timeIntervalSince1970 * 1000),
-            @"active": @(permission.isActive),
-        };
-        result[permission.permissionID] = permissionDict;
+        NSMutableDictionary *permissionDict = [NSMutableDictionary new];
+        permissionDict[@"id"] = permission.permissionID;
+        permissionDict[@"associated_product"] = permission.productID;
+        permissionDict[@"renew_state"] = @(permission.renewState);
+        permissionDict[@"started_timestamp"] = @(permission.startedDate.timeIntervalSince1970 * 1000);
+        permissionDict[@"expiration_timestamp"] = @(permission.expirationDate.timeIntervalSince1970 * 1000);
+        permissionDict[@"active"] = @(permission.isActive);
+        
+        result[permission.permissionID] = [permissionDict copy];
     }
 
     return result;

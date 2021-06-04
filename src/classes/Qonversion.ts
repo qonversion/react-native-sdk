@@ -13,7 +13,7 @@ const { RNQonversion } = NativeModules;
 const keyPrefix = "com.qonversion.keys";
 const sourceKey = keyPrefix + ".source";
 const versionKey = keyPrefix + ".sourceVersion";
-const sdkVersion = "2.5.0";
+const sdkVersion = "2.6.0";
 
 export default class Qonversion {
   static async launchWithKey(
@@ -25,6 +25,14 @@ export default class Qonversion {
     const launchResult = Mapper.convertLaunchResult(response);
 
     return launchResult;
+  }
+
+  static identify(userID: string) {
+    RNQonversion.identify(userID);
+  }
+
+  static logout() {
+    RNQonversion.logout();
   }
 
   static setProperty(property: Property, value: string) {
@@ -165,6 +173,10 @@ export default class Qonversion {
 
   static setDebugMode() {
     RNQonversion.setDebugMode();
+  }
+
+  static resetUser() {
+    RNQonversion.resetUser();
   }
 
   static setAdvertisingID() {
