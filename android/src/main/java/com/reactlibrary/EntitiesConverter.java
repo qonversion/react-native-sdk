@@ -147,7 +147,7 @@ public class EntitiesConverter {
 
             WritableMap convertedExperimentInfo = Arguments.createMap();
             WritableMap convertedExperimentGroup = Arguments.createMap();
-            convertedExperimentGroup.putInt("type", experimentInfo.getGroup().getType().getType());
+            convertedExperimentGroup.putInt("type", 0);
 
             convertedExperimentInfo.putString("id", experimentInfo.getExperimentID());
             convertedExperimentInfo.putMap("group", convertedExperimentGroup);
