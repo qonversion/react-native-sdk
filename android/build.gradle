@@ -73,7 +73,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation "io.qonversion.android.sdk:sdk:2.9.1"
+    implementation "io.qonversion.android.sdk:sdk:3.0.0"
 }
 
 def configureReactNativePom(def pom) {
