@@ -14,6 +14,7 @@ import com.qonversion.android.sdk.QUserProperties;
 import com.qonversion.android.sdk.Qonversion;
 import com.qonversion.android.sdk.QonversionEligibilityCallback;
 import com.qonversion.android.sdk.QonversionError;
+import com.qonversion.android.sdk.QonversionErrorCode;
 import com.qonversion.android.sdk.QonversionExperimentsCallback;
 import com.qonversion.android.sdk.QonversionLaunchCallback;
 import com.qonversion.android.sdk.QonversionOfferingsCallback;
@@ -38,6 +39,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
@@ -65,16 +67,31 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getCurrentActivity().getApplication()).edit();
+    public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion,final Promise promise) {
+        Activity currentActivity = getCurrentActivity();
+        if(currentActivity == null){
+            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            return;
+        }
+
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplication()).edit();
         editor.putString(sdkVersionKey, sdkVersion);
         editor.putString(sourceKey, source);
         editor.apply();
+        promise.resolve(null);
     }
 
     @ReactMethod
     public void launchWithKey(String key, Boolean observeMode, final Promise promise) {
-        Qonversion.launch(getCurrentActivity().getApplication(), key, observeMode, new QonversionLaunchCallback()
+        Activity currentActivity = getCurrentActivity();
+        if(currentActivity == null){
+            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            return;
+        }
+
+        Qonversion.launch(currentActivity.getApplication(), key, observeMode, new QonversionLaunchCallback()
         {
             @Override
             public void onSuccess(@NotNull QLaunchResult qLaunchResult) {
@@ -91,7 +108,14 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void purchase(String productId, final Promise promise) {
-        Qonversion.purchase(getCurrentActivity(), productId, new QonversionPermissionsCallback() {
+        Activity currentActivity = getCurrentActivity();
+        if(currentActivity == null){
+            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            return;
+        }
+
+        Qonversion.purchase(currentActivity, productId, new QonversionPermissionsCallback() {
             @Override
             public void onSuccess(@NotNull Map<String, QPermission> map) {
                 WritableMap result = EntitiesConverter.mapPermissions(map);
@@ -107,7 +131,14 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
-        Qonversion.updatePurchase(getCurrentActivity(), productId, oldProductId, prorationMode, new QonversionPermissionsCallback() {
+        Activity currentActivity = getCurrentActivity();
+        if(currentActivity == null){
+            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            return;
+        }
+
+        Qonversion.updatePurchase(currentActivity, productId, oldProductId, prorationMode, new QonversionPermissionsCallback() {
             @Override
             public void onSuccess(@NotNull Map<String, QPermission> map) {
                 WritableMap result = EntitiesConverter.mapPermissions(map);
