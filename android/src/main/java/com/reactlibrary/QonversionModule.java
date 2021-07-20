@@ -46,7 +46,7 @@ import androidx.preference.PreferenceManager;
 public class QonversionModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
-    private QonversionSDKInfo sdkInfo;
+    private QonversionSDKInfo sdkInfoToSave;
 
     private static final HashMap<Integer, QUserProperties> userPropertiesMap = new HashMap<Integer, QUserProperties>() {{
         put(0, QUserProperties.Email);
@@ -63,6 +63,17 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
     }
 
+    private void storeSDKInfoToPreferences(QonversionSDKInfo sdkInfo,Activity currentActivity){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplication()).edit();
+        editor.putString(sdkInfo.sdkVersionKey, sdkInfo.sdkVersion);
+        editor.putString(sdkInfo.sourceKey, sdkInfo.source);
+        editor.apply();
+    }
+
+    private QonversionError generateActivityError () {
+        return new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+    }
+
     @Override
     public String getName() {
         return "RNQonversion";
@@ -71,24 +82,27 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion) {
         Activity currentActivity = getCurrentActivity();
+        QonversionSDKInfo sdkInfo = new QonversionSDKInfo(sourceKey, source, sdkVersionKey, sdkVersion);
+
         if(currentActivity == null){
-            this.sdkInfo = new QonversionSDKInfo(sourceKey, source, sdkVersionKey, sdkVersion);
+            this.sdkInfoToSave = sdkInfo;
             return;
         }
 
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplication()).edit();
-        editor.putString(sdkVersionKey, sdkVersion);
-        editor.putString(sourceKey, source);
-        editor.apply();
+        storeSDKInfoToPreferences(sdkInfo, currentActivity);
     }
 
     @ReactMethod
     public void launchWithKey(String key, Boolean observeMode, final Promise promise) {
         Activity currentActivity = getCurrentActivity();
         if(currentActivity == null){
-            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
-            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            QonversionError qonversionError = generateActivityError();
+            promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
             return;
+        }
+
+        if(this.sdkInfoToSave != null){
+            storeSDKInfoToPreferences(this.sdkInfoToSave, currentActivity);
         }
 
         Qonversion.launch(currentActivity.getApplication(), key, observeMode, new QonversionLaunchCallback()
@@ -133,7 +147,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
         Activity currentActivity = getCurrentActivity();
         if(currentActivity == null){
-            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+            QonversionError qonversionError = generateActivityError();
             promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
             return;
         }
