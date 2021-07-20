@@ -124,7 +124,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void purchase(String productId, final Promise promise) {
         Activity currentActivity = getCurrentActivity();
         if(currentActivity == null){
-            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+            QonversionError qonversionError = generateActivityError();
             promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
             return;
         }
