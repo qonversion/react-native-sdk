@@ -46,6 +46,8 @@ import androidx.preference.PreferenceManager;
 public class QonversionModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
+    private QonversionSDKInfo sdkInfo;
+
     private static final HashMap<Integer, QUserProperties> userPropertiesMap = new HashMap<Integer, QUserProperties>() {{
         put(0, QUserProperties.Email);
         put(1, QUserProperties.Name);
@@ -67,11 +69,10 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion,final Promise promise) {
+    public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion) {
         Activity currentActivity = getCurrentActivity();
         if(currentActivity == null){
-            QonversionError qonversionError = new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
-            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            this.sdkInfo = new QonversionSDKInfo(sourceKey, source, sdkVersionKey, sdkVersion);
             return;
         }
 
@@ -79,7 +80,6 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         editor.putString(sdkVersionKey, sdkVersion);
         editor.putString(sourceKey, source);
         editor.apply();
-        promise.resolve(null);
     }
 
     @ReactMethod

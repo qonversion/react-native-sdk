@@ -20,7 +20,7 @@ export default class Qonversion {
     key: string,
     observerMode: boolean = false
   ): Promise<LaunchResult> {
-    await RNQonversion.storeSDKInfo(sourceKey, "rn", versionKey, sdkVersion);
+    RNQonversion.storeSDKInfo(sourceKey, "rn", versionKey, sdkVersion);
     const response = await RNQonversion.launchWithKey(key, observerMode);
     const launchResult = Mapper.convertLaunchResult(response);
 
