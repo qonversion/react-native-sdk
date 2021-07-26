@@ -142,6 +142,8 @@
 
     introductoryPrice[@"subscriptionPeriod"] = [introductorySubscriptionPeriod copy];
     introductoryPrice[@"paymentMode"] = @(discount.paymentMode);
+    
+    introductoryPrice[@"currencySymbol"] = discount.priceLocale.currencySymbol;
 
     if (@available(iOS 12.2, *)) {
         introductoryPrice[@"identifier"] = discount.identifier;

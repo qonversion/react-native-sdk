@@ -13,6 +13,9 @@ class Product {
   trialDuration?: TrialDurations;
   price?: number;
   currencyCode?: string;
+  storeTitle?: string;
+  storeDescription?: string;
+  introductoryPrettyPrice?: string;
 
   constructor(
     qonversionID: string,
@@ -24,7 +27,10 @@ class Product {
     prettyPrice: string | undefined,
     trialDuration: TrialDurations | undefined,
     price: number | undefined,
-    currencyCode: string | undefined
+    currencyCode: string | undefined,
+    storeTitle: string | undefined,
+    storeDescription: string | undefined,
+    introductoryPrettyPrice: string | undefined
   ) {
     this.qonversionID = qonversionID;
     this.storeID = storeID;
@@ -36,6 +42,9 @@ class Product {
     this.trialDuration = trialDuration;
     this.price = price;
     this.currencyCode = currencyCode;
+    this.storeTitle = storeTitle;
+    this.storeDescription = storeDescription;
+    this.introductoryPrettyPrice = introductoryPrettyPrice;
   }
 }
 
