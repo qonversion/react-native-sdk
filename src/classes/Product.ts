@@ -15,7 +15,7 @@ class Product {
   currencyCode?: string;
   storeTitle?: string;
   storeDescription?: string;
-  introductoryPrettyPrice?: string;
+  prettyIntroductoryPrice?: string;
 
   constructor(
     qonversionID: string,
@@ -30,7 +30,7 @@ class Product {
     currencyCode: string | undefined,
     storeTitle: string | undefined,
     storeDescription: string | undefined,
-    introductoryPrettyPrice: string | undefined
+    prettyIntroductoryPrice: string | undefined
   ) {
     this.qonversionID = qonversionID;
     this.storeID = storeID;
@@ -44,7 +44,7 @@ class Product {
     this.currencyCode = currencyCode;
     this.storeTitle = storeTitle;
     this.storeDescription = storeDescription;
-    this.introductoryPrettyPrice = introductoryPrettyPrice;
+    this.prettyIntroductoryPrice = prettyIntroductoryPrice;
   }
 }
 

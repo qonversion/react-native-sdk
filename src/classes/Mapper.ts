@@ -201,7 +201,7 @@ class Mapper {
     let currencyCode: string | undefined;
     let storeTitle: string | undefined;
     let storeDescription: string | undefined;
-    let introductoryPrettyPrice: string | undefined;
+    let prettyIntroductoryPrice: string | undefined;
 
     if (product.storeProduct != null) {
       if (Platform.OS === "ios") {
@@ -212,7 +212,7 @@ class Mapper {
         storeDescription = skProduct.localizedDescription;
 
         if (skProduct.productDiscount) {
-          introductoryPrettyPrice = skProduct.productDiscount.currencySymbol + skProduct.productDiscount.price;
+          prettyIntroductoryPrice = skProduct.productDiscount.currencySymbol + skProduct.productDiscount.price;
         }
       } else {
         skuDetails = Mapper.convertSkuDetails(
@@ -223,8 +223,8 @@ class Mapper {
         storeTitle = skuDetails.title;
         storeDescription = skuDetails.description;
 
-        if (skuDetails.introductoryPrice) {
-          introductoryPrettyPrice = skuDetails.introductoryPrice;
+        if (skuDetails.introductoryPrice.length > 0) {
+          prettyIntroductoryPrice = skuDetails.introductoryPrice;
         }
       }
     }
@@ -242,7 +242,7 @@ class Mapper {
       currencyCode,
       storeTitle,
       storeDescription,
-      introductoryPrettyPrice
+      prettyIntroductoryPrice
     );
 
     return mappedProduct;
