@@ -122,6 +122,8 @@ type QOffering = {
   products: Array<QProduct>;
 };
 
+const skuDetailsPriceRatio = 1000000;
+
 class Mapper {
   static convertLaunchResult(launchResult: QLaunchResult): LaunchResult {
     const products: Map<string, Product> = this.convertProducts(
@@ -218,7 +220,7 @@ class Mapper {
         skuDetails = Mapper.convertSkuDetails(
           product.storeProduct as QSkuDetails
         );
-        price = skuDetails.priceAmountMicros / 1000000;
+        price = skuDetails.priceAmountMicros / skuDetailsPriceRatio;
         currencyCode = skuDetails.priceCurrencyCode;
         storeTitle = skuDetails.title;
         storeDescription = skuDetails.description;
