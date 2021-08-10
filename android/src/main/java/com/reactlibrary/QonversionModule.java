@@ -115,7 +115,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -138,7 +138,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -161,7 +161,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -228,7 +228,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -244,7 +244,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -259,8 +259,8 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onError(@NotNull QonversionError error) {
-                promise.reject(error.getCode().toString(), error.getDescription());
+            public void onError(@NotNull QonversionError qonversionError) {
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -277,7 +277,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -293,7 +293,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -309,7 +309,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(@NotNull QonversionError qonversionError) {
-                promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
+                rejectWithError(qonversionError, promise);
             }
         });
     }
@@ -337,5 +337,10 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void logout() {
         Qonversion.logout();
+    }
+
+    private void rejectWithError(@NotNull QonversionError qonversionError, final Promise promise) {
+        String errorMessage =  qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
+        promise.reject(qonversionError.getCode().toString(), errorMessage);
     }
 }
