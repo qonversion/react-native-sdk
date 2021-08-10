@@ -12,6 +12,7 @@ class SKProductDiscount {
   paymentMode: SKProductDiscountPaymentModes;
   identifier?: string;
   type: SKProductDiscountTypes;
+  currencySymbol: string;
 
   constructor(
     price: string,
@@ -20,7 +21,8 @@ class SKProductDiscount {
     subscriptionPeriod: SKSubscriptionPeriod | undefined,
     paymentMode: SKProductDiscountPaymentModes,
     identifier: string | undefined,
-    type: SKProductDiscountTypes
+    type: SKProductDiscountTypes,
+    currencySymbol: string
   ) {
     this.price = price;
     this.localeIdentifier = localeIdentifier;
@@ -29,6 +31,7 @@ class SKProductDiscount {
     this.paymentMode = paymentMode;
     this.identifier = identifier;
     this.type = type;
+    this.currencySymbol = currencySymbol;
   }
 }
 
