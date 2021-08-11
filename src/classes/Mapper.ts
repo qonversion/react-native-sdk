@@ -99,6 +99,7 @@ type QProductDiscount = {
   paymentMode: keyof typeof SKProductDiscountPaymentMode;
   identifier?: string;
   type: keyof typeof SKProductDiscountType;
+  currencySymbol: string;
 };
 
 type QPermission = {
@@ -120,6 +121,8 @@ type QOffering = {
   tag: keyof typeof OfferingTag;
   products: Array<QProduct>;
 };
+
+const skuDetailsPriceRatio = 1000000;
 
 class Mapper {
   static convertLaunchResult(launchResult: QLaunchResult): LaunchResult {
@@ -198,18 +201,33 @@ class Mapper {
     let skuDetails: SkuDetails | null = null;
     let price: number | undefined;
     let currencyCode: string | undefined;
+    let storeTitle: string | undefined;
+    let storeDescription: string | undefined;
+    let prettyIntroductoryPrice: string | undefined;
 
     if (product.storeProduct != null) {
       if (Platform.OS === "ios") {
         skProduct = Mapper.convertSKProduct(product.storeProduct as QSKProduct);
         price = parseFloat(skProduct.price);
         currencyCode = skProduct.currencyCode;
+        storeTitle = skProduct.localizedTitle;
+        storeDescription = skProduct.localizedDescription;
+
+        if (skProduct.productDiscount) {
+          prettyIntroductoryPrice = skProduct.productDiscount.currencySymbol + skProduct.productDiscount.price;
+        }
       } else {
         skuDetails = Mapper.convertSkuDetails(
           product.storeProduct as QSkuDetails
         );
-        price = skuDetails.priceAmountMicros / 1000000;
+        price = skuDetails.priceAmountMicros / skuDetailsPriceRatio;
         currencyCode = skuDetails.priceCurrencyCode;
+        storeTitle = skuDetails.title;
+        storeDescription = skuDetails.description;
+
+        if (skuDetails.introductoryPrice.length > 0) {
+          prettyIntroductoryPrice = skuDetails.introductoryPrice;
+        }
       }
     }
 
@@ -223,7 +241,10 @@ class Mapper {
       product.prettyPrice,
       trialDuration,
       price,
-      currencyCode
+      currencyCode,
+      storeTitle,
+      storeDescription,
+      prettyIntroductoryPrice
     );
 
     return mappedProduct;
@@ -349,7 +370,8 @@ class Mapper {
       subscriptionPeriod,
       SKProductDiscountPaymentMode[discount.paymentMode],
       discount.identifier,
-      SKProductDiscountType[discount.type]
+      SKProductDiscountType[discount.type],
+      discount.currencySymbol
     );
   }
 
