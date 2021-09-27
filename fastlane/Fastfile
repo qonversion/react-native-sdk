@@ -1,0 +1,28 @@
+def update_js(new_version)
+  path = Dir['../src/**/Qonversion.ts'].first
+  regex = /const sdkVersion = ".*";/
+  result_value = "const sdkVersion = \"#{new_version}\";"
+
+  update_file(path, regex, result_value)
+end
+
+def update_package(new_version)
+  path = "../package.json"
+  regex = /"version": ".*",/
+  result_value = "\"version\": \"#{new_version}\","
+
+  update_file(path, regex, result_value)
+end
+
+def update_file(path, regex, result_value)
+  file = File.read(path)
+  new_content = file.gsub(regex, result_value)
+  File.open(path, 'w') { |line| line.puts new_content }
+end
+
+lane :bump do |options|
+  new_version = options[:version]
+
+  update_js(new_version)
+  update_package(new_version)
+end
