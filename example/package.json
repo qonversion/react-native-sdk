@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "clean": "rm -rf node_modules/ && cd .. && rm -rf node_modules/ && yarn install && cd example && yarn install"
   },
   "dependencies": {
     "babel-preset-react-native": "2.1.0",
