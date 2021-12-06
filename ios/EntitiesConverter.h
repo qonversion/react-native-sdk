@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)convertOfferings:(QNOfferings *)offerings;
 + (NSDictionary *)convertIntroEligibility:(NSDictionary<NSString *, QNIntroEligibility *> *)introEligibilityInfo;
 + (NSArray *)convertExperiments:(NSDictionary<NSString *, QNExperimentInfo *> *)experiments;
-+ (NSNumber *)properyForString:(NSString *)key;
++ (NSNumber *)propertyForString:(NSString *)key;
 
 @end
 
