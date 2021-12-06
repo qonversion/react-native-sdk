@@ -7,6 +7,7 @@
 //
 
 #import "EntitiesConverter.h"
+#import <Qonversion/QNLaunchResult.h>
 #import <Qonversion/QNOffering.h>
 #import <Qonversion/QNOfferings.h>
 #import <Qonversion/QNIntroEligibility.h>
@@ -225,6 +226,20 @@
     }
 
     return [result copy];
+}
+
++ (NSNumber *)properyForString:(NSString *)key {
+    NSDictionary *propertiesMap = @{
+        @"EMAIL": @(QNPropertyEmail),
+        @"NAME": @(QNPropertyName),
+        @"APPS_FLYER_USER_ID": @(QNPropertyAppsFlyerUserID),
+        @"ADJUST_USER_ID": @(QNPropertyAdjustUserID),
+        @"KOCHAVA_DEVICE_ID": @(QNPropertyKochavaDeviceID),
+        @"ADVERTISING_ID": @(QNPropertyAdvertisingID),
+        @"CUSTOM_USER_ID": @(QNPropertyUserID)
+    };
+
+    return propertiesMap[key];
 }
 
 @end
