@@ -39,7 +39,9 @@ export default class Qonversion {
   static setProperty(property: Property, value: string) {
     const key = convertPropertyToNativeKey(property)
 
-    RNQonversion.setProperty(key, value);
+    if (key) {
+      RNQonversion.setProperty(key, value);
+    }
   }
 
   static setUserProperty(property: string, value: string) {
