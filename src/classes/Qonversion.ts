@@ -7,6 +7,7 @@ import Mapper from "./Mapper";
 import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
+import {convertPropertyToNativeKey} from "../utils";
 
 const { RNQonversion } = NativeModules;
 
@@ -36,15 +37,20 @@ export default class Qonversion {
   }
 
   static setProperty(property: Property, value: string) {
-    RNQonversion.setProperty(property, value);
+    const key = convertPropertyToNativeKey(property)
+
+    RNQonversion.setProperty(key, value);
   }
 
   static setUserProperty(property: string, value: string) {
     RNQonversion.setUserProperty(property, value);
   }
 
+  /**
+   * @deprecated Will be removed in a future major release. Use {@link setProperty} with {@link Property.CUSTOM_USER_ID} instead
+   */
   static setUserId(userId: string) {
-    RNQonversion.setUserId(userId);
+    this.setProperty(Property.CUSTOM_USER_ID, userId);
   }
 
   static addAttributionData(data: Object, provider: Provider) {

@@ -26,19 +26,18 @@ RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode 
     }];
 }
 
-RCT_EXPORT_METHOD(setProperty:(NSInteger)property value:(NSString *)value)
+RCT_EXPORT_METHOD(setProperty:(NSString *)property value:(NSString *)value)
 {
-    [Qonversion setProperty:property value:value];
+    NSNumber *propertyNumber = [EntitiesConverter properyForString:property];
+
+    if (propertyNumber) {
+        [Qonversion setProperty:propertyNumber.integerValue value:value];
+    }
 }
 
 RCT_EXPORT_METHOD(setUserProperty:(NSString *)property value:(NSString *)value)
 {
     [Qonversion setUserProperty:property value:value];
-}
-
-RCT_EXPORT_METHOD(setUserId:(NSString *)userId)
-{
-    [Qonversion setUserID:userId];
 }
 
 RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data provider:(NSInteger)provider)

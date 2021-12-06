@@ -122,7 +122,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                           }
                       });
                   }}
-                  >
+              >
                   <Text style={styles.buttonTitle}>{this.state.subscriptionButtonTitle}</Text>
               </TouchableOpacity>
               <TouchableOpacity

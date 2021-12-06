@@ -48,14 +48,14 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private QonversionSDKInfo sdkInfoToSave;
 
-    private static final HashMap<Integer, QUserProperties> userPropertiesMap = new HashMap<Integer, QUserProperties>() {{
-        put(0, QUserProperties.Email);
-        put(1, QUserProperties.Name);
-        put(2, QUserProperties.AppsFlyerUserId);
-        put(3, QUserProperties.AdjustAdId);
-        put(4, QUserProperties.KochavaDeviceId);
-        put(5, QUserProperties.CustomUserId);
-        put(6, QUserProperties.FacebookAttribution);
+    private static final HashMap<String, QUserProperties> userPropertiesMap = new HashMap<String, QUserProperties>() {{
+        put("EMAIL", QUserProperties.Email);
+        put("NAME", QUserProperties.Name);
+        put("APPS_FLYER_USER_ID", QUserProperties.AppsFlyerUserId);
+        put("ADJUST_USER_ID", QUserProperties.AdjustAdId);
+        put("KOCHAVA_DEVICE_ID", QUserProperties.KochavaDeviceId);
+        put("CUSTOM_USER_ID", QUserProperties.CustomUserId);
+        put("FACEBOOK_ATTRIBUTION", QUserProperties.FacebookAttribution);
     }};
 
     public QonversionModule(ReactApplicationContext reactContext) {
@@ -172,7 +172,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setProperty(Integer key, String value) {
+    public void setProperty(String key, String value) {
         QUserProperties property = userPropertiesMap.get(key);
 
         if (property != null) {
@@ -183,11 +183,6 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setUserProperty(String key, String value) {
         Qonversion.setUserProperty(key, value);
-    }
-
-    @ReactMethod
-    public void setUserId(String value) {
-        Qonversion.setUserID(value);
     }
 
     @ReactMethod

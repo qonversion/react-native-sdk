@@ -48,6 +48,7 @@ export enum Property {
   KOCHAVA_DEVICE_ID = 4,
   CUSTOM_USER_ID = 5,
   FACEBOOK_ATTRIBUTION = 6,
+  ADVERTISING_ID = 7,
 }
 
 export enum Provider {
