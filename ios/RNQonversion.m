@@ -28,7 +28,7 @@ RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode 
 
 RCT_EXPORT_METHOD(setProperty:(NSString *)property value:(NSString *)value)
 {
-    NSNumber *propertyNumber = [EntitiesConverter properyForString:property];
+    NSNumber *propertyNumber = [EntitiesConverter propertyForString:property];
 
     if (propertyNumber) {
         [Qonversion setProperty:propertyNumber.integerValue value:value];

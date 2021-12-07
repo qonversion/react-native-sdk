@@ -228,7 +228,7 @@
     return [result copy];
 }
 
-+ (NSNumber *)properyForString:(NSString *)key {
++ (NSNumber *)propertyForString:(NSString *)key {
     NSDictionary *propertiesMap = @{
         @"EMAIL": @(QNPropertyEmail),
         @"NAME": @(QNPropertyName),
