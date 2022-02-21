@@ -192,4 +192,10 @@ export default class Qonversion {
       RNQonversion.setAdvertisingID();
     }
   }
+
+  static setAppleSearchAdsAttributionEnabled(enabled: boolean) {
+    if (Platform.OS === "ios") {
+      RNQonversion.setAppleSearchAdsAttributionEnabled(enabled);
+    }
+  }
 }
