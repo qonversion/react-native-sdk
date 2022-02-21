@@ -173,4 +173,8 @@ RCT_EXPORT_METHOD(setAdvertisingID) {
     [Qonversion setAdvertisingID];
 }
 
+RCT_EXPORT_METHOD(setAppleSearchAdsAttributionEnabled:(BOOL)enabled) {
+    [Qonversion setAppleSearchAdsAttributionEnabled:enabled];
+}
+
 @end
