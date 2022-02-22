@@ -70,8 +70,22 @@ export default class Qonversion {
   }
 
   static async purchase(productId: string): Promise<Map<string, Permission>> {
+    return this.purchaseProxy(productId);
+  }
+
+  static async purchaseProduct(product: Product): Promise<Map<string, Permission>> {
+    return this.purchaseProxy(product.qonversionID, product.offeringId);
+  }
+
+  private static async purchaseProxy(productId: string, offeringId: string | null = null): Promise<Map<string, Permission>> {
     try {
-      const permissions = await RNQonversion.purchase(productId);
+      const purchasePromise = !!offeringId ?
+          RNQonversion.purchaseProduct(productId, offeringId)
+          :
+          RNQonversion.purchase(productId);
+
+      const permissions = await purchasePromise;
+
       const mappedPermissions = Mapper.convertPermissions(permissions);
 
       return mappedPermissions;
@@ -81,14 +95,16 @@ export default class Qonversion {
       const iOSCancelErrorDomain = "com.qonversion.io";
       const androidCancelCode = "CanceledPurchase";
       e.userCanceled =
-        (isIOS &&
-          e.domain === iOSCancelErrorDomain &&
-          e.code === iOSCancelCode) ||
-        (!isIOS && e.code === androidCancelCode);
+          (isIOS &&
+              e.domain === iOSCancelErrorDomain &&
+              e.code === iOSCancelCode) ||
+          (!isIOS && e.code === androidCancelCode);
 
       throw e;
     }
   }
+
+
 
   static async updatePurchase(
     productId: string,

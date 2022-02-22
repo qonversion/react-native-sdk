@@ -51,6 +51,7 @@
     productsDict[@"duration"] = @(product.duration);
     productsDict[@"prettyPrice"] = product.prettyPrice;
     productsDict[@"trialDuration"] = trialDuration;
+    productsDict[@"offeringId"] = product.offeringID;
 
     if (product.skProduct) {
         NSDictionary *skProductInfo = [EntitiesConverter convertSKProduct:product.skProduct];
@@ -71,7 +72,7 @@
         permissionDict[@"started_timestamp"] = @(permission.startedDate.timeIntervalSince1970 * 1000);
         permissionDict[@"expiration_timestamp"] = @(permission.expirationDate.timeIntervalSince1970 * 1000);
         permissionDict[@"active"] = @(permission.isActive);
-        
+
         result[permission.permissionID] = [permissionDict copy];
     }
 
@@ -143,7 +144,7 @@
 
     introductoryPrice[@"subscriptionPeriod"] = [introductorySubscriptionPeriod copy];
     introductoryPrice[@"paymentMode"] = @(discount.paymentMode);
-    
+
     introductoryPrice[@"currencySymbol"] = discount.priceLocale.currencySymbol;
 
     if (@available(iOS 12.2, *)) {

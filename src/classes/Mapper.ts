@@ -44,6 +44,7 @@ type QProduct = {
   store_id: string;
   prettyPrice?: string;
   storeProduct: null | QSkuDetails | QSKProduct; // QSkuDetails - android, QSKProduct - iOS
+  offeringId: string | null;
 };
 
 type QSkuDetails = {
@@ -196,6 +197,7 @@ class Mapper {
     const productType: ProductTypes = ProductType[product.type];
     const productDuration: ProductDurations = ProductDuration[product.duration];
     const trialDuration: TrialDurations = TrialDuration[product.trialDuration];
+    const offeringId: string | null = product.offeringId;
 
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
@@ -244,7 +246,8 @@ class Mapper {
       currencyCode,
       storeTitle,
       storeDescription,
-      prettyIntroductoryPrice
+      prettyIntroductoryPrice,
+      offeringId
     );
 
     return mappedProduct;
