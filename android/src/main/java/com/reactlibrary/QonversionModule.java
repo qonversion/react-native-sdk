@@ -22,6 +22,7 @@ import com.qonversion.android.sdk.QonversionPermissionsCallback;
 import com.qonversion.android.sdk.QonversionProductsCallback;
 import com.qonversion.android.sdk.dto.QLaunchResult;
 import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
+import com.qonversion.android.sdk.dto.offerings.QOffering;
 import com.qonversion.android.sdk.dto.offerings.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
 import com.qonversion.android.sdk.dto.products.QProduct;
@@ -84,7 +85,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         Activity currentActivity = getCurrentActivity();
         QonversionSDKInfo sdkInfo = new QonversionSDKInfo(sourceKey, source, sdkVersionKey, sdkVersion);
 
-        if(currentActivity == null){
+        if (currentActivity == null) {
             this.sdkInfoToSave = sdkInfo;
             return;
         }
@@ -121,14 +122,64 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void purchaseProduct(String productId, String offeringId, final Promise promise) {
+        purchaseWithId(productId, offeringId, promise);
+    }
+
+    @ReactMethod
     public void purchase(String productId, final Promise promise) {
-        Activity currentActivity = getCurrentActivity();
-        if(currentActivity == null){
+        purchaseWithId(productId, null, promise);
+    }
+
+    private void purchaseWithId(final String productId, @Nullable final String offeringId, final Promise promise) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
             QonversionError qonversionError = generateActivityError();
             promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
             return;
         }
 
+        if (offeringId != null) {
+            Qonversion.offerings(new QonversionOfferingsCallback() {
+                @Override
+                public void onSuccess(@NotNull QOfferings offerings) {
+                    QOffering offering = offerings.offeringForID(offeringId);
+
+                    if (offering != null) {
+                        QProduct product = offering.productForID(productId);
+
+                        if (product != null) {
+                            Qonversion.purchase(currentActivity, product, new QonversionPermissionsCallback() {
+                                @Override
+                                public void onSuccess(@NotNull Map<String, QPermission> map) {
+                                    WritableMap result = EntitiesConverter.mapPermissions(map);
+                                    promise.resolve(result);
+                                }
+
+                                @Override
+                                public void onError(@NotNull QonversionError qonversionError) {
+                                    rejectWithError(qonversionError, promise);
+                                }
+                            });
+                        } else {
+                            proccessPurchase(currentActivity, productId, promise);
+                        }
+                    } else {
+                        proccessPurchase(currentActivity, productId, promise);
+                    }
+                }
+
+                @Override
+                public void onError(@NotNull QonversionError qonversionError) {
+                    proccessPurchase(currentActivity, productId, promise);
+                }
+            });
+        } else {
+            proccessPurchase(currentActivity, productId, promise);
+        }
+    }
+
+    private void proccessPurchase(Activity currentActivity, String productId, final Promise promise) {
         Qonversion.purchase(currentActivity, productId, new QonversionPermissionsCallback() {
             @Override
             public void onSuccess(@NotNull Map<String, QPermission> map) {
@@ -146,7 +197,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
         Activity currentActivity = getCurrentActivity();
-        if(currentActivity == null){
+        if (currentActivity == null) {
             QonversionError qonversionError = generateActivityError();
             promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
             return;

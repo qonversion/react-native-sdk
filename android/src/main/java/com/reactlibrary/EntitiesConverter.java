@@ -62,6 +62,12 @@ public class EntitiesConverter {
         map.putString("store_id", product.getStoreID());
         map.putInt("type", product.getType().getType());
 
+        String offeringId = product.getOfferingID();
+
+        if (offeringId != null) {
+            map.putString("offeringId", offeringId);
+        }
+
         QProductDuration duration = product.getDuration();
         if (duration != null) {
             map.putInt("duration", duration.getType());
