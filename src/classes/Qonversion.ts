@@ -73,6 +73,11 @@ export default class Qonversion {
     return this.purchaseProxy(productId);
   }
 
+  /**
+   * Starts a process of purchasing product with Qonversion's [product] object.
+   * @param product - Qonversion's product object
+   * @returns { Promise<Map<string, Permission>> } A map of available permissions
+   */
   static async purchaseProduct(product: Product): Promise<Map<string, Permission>> {
     return this.purchaseProxy(product.qonversionID, product.offeringId);
   }
@@ -102,8 +107,6 @@ export default class Qonversion {
       throw e;
     }
   }
-
-
 
   static async updatePurchase(
     productId: string,
