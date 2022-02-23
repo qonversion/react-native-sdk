@@ -7,7 +7,7 @@ import Mapper from "./Mapper";
 import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
-import {convertPropertyToNativeKey} from "../utils";
+import {convertPropertyToNativeKey, isIos} from "../utils";
 
 const { RNQonversion } = NativeModules;
 
@@ -90,15 +90,14 @@ export default class Qonversion {
 
       return mappedPermissions;
     } catch (e) {
-      const isIOS = Platform.OS === "ios";
       const iOSCancelCode = "1";
       const iOSCancelErrorDomain = "com.qonversion.io";
       const androidCancelCode = "CanceledPurchase";
       e.userCanceled =
-          (isIOS &&
-              e.domain === iOSCancelErrorDomain &&
-              e.code === iOSCancelCode) ||
-          (!isIOS && e.code === androidCancelCode);
+        (isIos() &&
+          e.domain === iOSCancelErrorDomain &&
+          e.code === iOSCancelCode) ||
+        (!isIos() && e.code === androidCancelCode);
 
       throw e;
     }
@@ -111,7 +110,7 @@ export default class Qonversion {
     oldProductId: string,
     prorationMode: ProrationMode | null = null
   ): Promise<Map<string, Permission> | null> {
-    if (Platform.OS === "ios") {
+    if (isIos()) {
       return null;
     }
 
@@ -188,7 +187,7 @@ export default class Qonversion {
   }
 
   static syncPurchases() {
-    if (Platform.OS === "ios") {
+    if (isIos()) {
       return;
     }
 
@@ -204,8 +203,17 @@ export default class Qonversion {
   }
 
   static setAdvertisingID() {
-    if (Platform.OS === "ios") {
+    if (isIos()) {
       RNQonversion.setAdvertisingID();
+    }
+  }
+
+  /**
+   * Enable attribution collection from Apple Search Ads. False by default.
+   */
+  static setAppleSearchAdsAttributionEnabled(enabled: boolean) {
+    if (isIos()) {
+      RNQonversion.setAppleSearchAdsAttributionEnabled(enabled);
     }
   }
 }

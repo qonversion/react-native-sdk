@@ -167,6 +167,10 @@ RCT_EXPORT_METHOD(setAdvertisingID) {
     [Qonversion setAdvertisingID];
 }
 
+RCT_EXPORT_METHOD(setAppleSearchAdsAttributionEnabled:(BOOL)enabled) {
+    [Qonversion setAppleSearchAdsAttributionEnabled:enabled];
+}
+
 #pragma mark - Private
 
 - (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
