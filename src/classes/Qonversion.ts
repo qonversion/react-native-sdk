@@ -248,13 +248,6 @@ export default class Qonversion {
     return mappedEligibility;
   }
 
-  /**
-   * This method returns all the existing A/B experiments.
-   *
-   * Qonversion A/B tests help you grow your app revenue by making it easy to run and analyze paywall and promoted
-   * in-app product experiments. It gives you the power to measure your paywalls' performance before you roll them out
-   * widely. It is an out-of-the-box solution that does not require any third-party service.
-   */
   static async experiments(): Promise<Map<string, ExperimentInfo>> {
     const experiments = await RNQonversion.experiments();
 
