@@ -18,8 +18,15 @@ const sdkVersion = "2.7.1";
 
 export default class Qonversion {
   /**
-   * Initializes Qonversion SDK with the given API key.
-   * You can get one in your account on qonversion.io.
+   * Initializes Qonversion SDK with the given API ${@link key}.
+   * You can get one in your account on  https://dash.qonversion.io.
+   *
+   * @param key your Qonversion project key.
+   * @param observerMode flag to launch the SDK in observer mode, defaults to false.
+   * @returns the promise with the launch result.
+   *
+   * @see [Observer mode](https://documentation.qonversion.io/docs/how-qonversion-works)
+   * @see [Installing the Android SDK](https://qonversion.io/docs/google)
    */
   static async launchWithKey(
     key: string,
@@ -35,7 +42,7 @@ export default class Qonversion {
   /**
    * Call this function to link a user to his unique ID in your system and share purchase data.
    *
-   * @param userID unique user ID in your system
+   * @param userID unique user ID in your system.
    */
   static identify(userID: string) {
     RNQonversion.identify(userID);
@@ -55,6 +62,9 @@ export default class Qonversion {
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
    * and analytics.
    *
+   * @param property the defined property to set.
+   * @param value the value to be set to the provided property.
+   *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
   static setProperty(property: Property, value: string) {
@@ -72,6 +82,9 @@ export default class Qonversion {
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
    * and analytics.
    *
+   * @param property the custom property to set.
+   * @param value the value to be set to the provided property.
+   *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
   static setUserProperty(property: string, value: string) {
@@ -81,6 +94,8 @@ export default class Qonversion {
   /**
    * Qonversion SDK provides an asynchronous method to set your side User ID that can be used to match users in
    * third-party integrations.
+   *
+   * @param userId your side unique user identifier.
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-identifiers)
    *
@@ -93,6 +108,9 @@ export default class Qonversion {
 
   /**
    * Sends your attribution {@link data} to the {@link provider}.
+   *
+   * @param data an object containing your attribution data.
+   * @param provider the provider to which the data will be sent.
    */
   static addAttributionData(data: Object, provider: Provider) {
     RNQonversion.addAttributionData(data, provider);
@@ -103,6 +121,8 @@ export default class Qonversion {
    * permission.
    *
    * This method will check the user receipt and will return the current permissions.
+   *
+   * @returns the promise with the permissions.
    *
    * If Apple or Google servers are not responding at the time of the request, Qonversion provides the latest
    * permissions data from its database.
@@ -122,6 +142,7 @@ export default class Qonversion {
    *
    * @throws exception in case of error in purchase flow.
    * @param productId identifier of product to purchase.
+   * @returns the promise with the user permissions including the ones obtained by the purchase.
    */
   static async purchase(productId: string): Promise<Map<string, Permission>> {
     try {
@@ -149,8 +170,15 @@ export default class Qonversion {
    *
    * Upgrading, downgrading, or changing a subscription on Google Play Store requires calling updatePurchase() function.
    *
+   * @param productId Qonversion product identifier for purchase.
+   * @param oldProductId Qonversion product identifier from which the upgrade/downgrade will be initialized.
+   * @param prorationMode proration mode.
+   * @returns the promise with the user permissions including updated ones.
+   *
    * @see [Google Play Documentation](https://developer.android.com/google/play/billing/subscriptions#upgrade-downgrade)
    * for more details.
+   * @see [Proration mode](https://developer.android.com/google/play/billing/subscriptions#proration)
+   * @see [Product Center](https://qonversion.io/docs/product-center)
    */
   static async updatePurchase(
     productId: string,
@@ -181,7 +209,9 @@ export default class Qonversion {
   }
 
   /**
-   * Returns Qonversion Products in association with Google Play Store Products.
+   * Returns Qonversion products in association with Apple and Google Play Store Products.
+   *
+   * @returns the promise with Qonversion products.
    *
    * @see [Product Center](https://qonversion.io/docs/product-center)
    */
@@ -195,12 +225,14 @@ export default class Qonversion {
   }
 
   /**
-   * Return Qonversion Offerings Object
+   * Return Qonversion Offerings Object.
    *
    * An offering is a group of products that you can offer to a user on a given paywall based on your business logic.
    * For example, you can offer one set of products on a paywall immediately after onboarding and another
    * set of products with discounts later on if a user has not converted.
    * Offerings allow changing the products offered remotely without releasing app updates.
+   *
+   * @returns the promise with Qonversion offerings.
    *
    * @see [Offerings](https://qonversion.io/docs/offerings) for more details.
    * @see [Product Center](https://qonversion.io/docs/product-center) for more details.
@@ -215,6 +247,8 @@ export default class Qonversion {
   /**
    * Restoring purchases restores users purchases in your app, to maintain access to purchased content.
    * Users sometimes need to restore purchased content, such as when they upgrade to a new phone.
+   *
+   * @returns the promise with the user permissions.
    */
   static async restore(): Promise<Map<string, Permission>> {
     const permissions = await RNQonversion.restore();
@@ -231,7 +265,8 @@ export default class Qonversion {
    * You can check if a user is eligible for an introductory offer, including a free trial.
    * You can show only a regular price for users who are not eligible for an introductory offer.
    *
-   * @param ids products identifiers that must be checked
+   * @param ids products identifiers that must be checked.
+   * @returns the promise with eligibility map.
    */
   static async checkTrialIntroEligibilityForProductIds(
     ids: string[]
