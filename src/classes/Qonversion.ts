@@ -19,7 +19,7 @@ const sdkVersion = "2.7.1";
 export default class Qonversion {
   /**
    * Initializes Qonversion SDK with the given API ${@link key}.
-   * You can get one in your account on  https://dash.qonversion.io.
+   * You can get one in your account on https://dash.qonversion.io.
    *
    * @param key project key to setup the SDK.
    * @param observerMode set true if you are using observer mode only.
