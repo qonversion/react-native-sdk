@@ -21,8 +21,8 @@ export default class Qonversion {
    * Initializes Qonversion SDK with the given API ${@link key}.
    * You can get one in your account on  https://dash.qonversion.io.
    *
-   * @param key your Qonversion project key.
-   * @param observerMode flag to launch the SDK in observer mode, defaults to false.
+   * @param key project key to setup the SDK.
+   * @param observerMode set true if you are using observer mode only.
    * @returns the promise with the launch result.
    *
    * @see [Observer mode](https://documentation.qonversion.io/docs/how-qonversion-works)
@@ -62,8 +62,8 @@ export default class Qonversion {
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
    * and analytics.
    *
-   * @param property the defined property to set.
-   * @param value the value to be set to the provided property.
+   * @param property defined enum key that will be transformed to string.
+   * @param value property value.
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
@@ -82,8 +82,8 @@ export default class Qonversion {
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
    * and analytics.
    *
-   * @param property the custom property to set.
-   * @param value the value to be set to the provided property.
+   * @param property custom user property key.
+   * @param value property value.
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
@@ -95,7 +95,7 @@ export default class Qonversion {
    * Qonversion SDK provides an asynchronous method to set your side User ID that can be used to match users in
    * third-party integrations.
    *
-   * @param userId your side unique user identifier.
+   * @param userId your database user ID.
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-identifiers)
    *
@@ -141,7 +141,7 @@ export default class Qonversion {
    * Starts a process of purchasing a product with the specified identifier.
    *
    * @throws exception in case of error in purchase flow.
-   * @param productId identifier of product to purchase.
+   * @param productId Qonversion product identifier for purchase.
    * @returns the promise with the user permissions including the ones obtained by the purchase.
    */
   static async purchase(productId: string): Promise<Map<string, Permission>> {
