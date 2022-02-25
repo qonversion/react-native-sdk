@@ -149,8 +149,9 @@ export default class Qonversion {
   }
 
   /**
-   * Starts a process of purchasing product with Qonversion's [product] object.
-   * @param product - Qonversion's product object
+   * Starts a process of purchasing product with Qonversion's {@link Product} object.
+   *
+   * @param product - Qonversion's {@link Product} object
    * @returns { Promise<Map<string, Permission>> } A map of available permissions
    */
   static async purchaseProduct(product: Product): Promise<Map<string, Permission>> {
