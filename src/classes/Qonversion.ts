@@ -145,8 +145,28 @@ export default class Qonversion {
    * @returns the promise with the user permissions including the ones obtained by the purchase.
    */
   static async purchase(productId: string): Promise<Map<string, Permission>> {
+    return this.purchaseProxy(productId);
+  }
+
+  /**
+   * Starts a process of purchasing product with Qonversion's {@link Product} object.
+   *
+   * @param product - Qonversion's {@link Product} object
+   * @returns { Promise<Map<string, Permission>> } A map of available permissions
+   */
+  static async purchaseProduct(product: Product): Promise<Map<string, Permission>> {
+    return this.purchaseProxy(product.qonversionID, product.offeringId);
+  }
+
+  private static async purchaseProxy(productId: string, offeringId: string | null = null): Promise<Map<string, Permission>> {
     try {
-      const permissions = await RNQonversion.purchase(productId);
+      const purchasePromise = !!offeringId ?
+          RNQonversion.purchaseProduct(productId, offeringId)
+          :
+          RNQonversion.purchase(productId);
+
+      const permissions = await purchasePromise;
+
       const mappedPermissions = Mapper.convertPermissions(permissions);
 
       return mappedPermissions;

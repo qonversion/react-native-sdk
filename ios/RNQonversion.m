@@ -9,7 +9,6 @@ RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)sourceKey source:(NSString *)source v
     [[NSUserDefaults standardUserDefaults] setValue:version forKey:versionKey];
     [[NSUserDefaults standardUserDefaults] setValue:source forKey:sourceKey];
 }
-                  
 
 RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -17,7 +16,7 @@ RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode 
         if (error) {
             NSString *errorCode = [@(error.code) stringValue];
             reject(errorCode, error.localizedDescription, error);
-            
+
             return;
         }
 
@@ -51,28 +50,23 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)completion rejecter:(
         if (error) {
             NSString *errorCode = [@(error.code) stringValue];
             reject(errorCode, error.localizedDescription, error);
-            
+
             return;
         }
-        
+
         NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
         completion(@[permissions]);
     }];
 }
 
+RCT_EXPORT_METHOD(purchaseProduct:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self purchaseWithId:productId offeringId:offeringId completion:completion rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion purchase:productId completion:^(NSDictionary *result, NSError *error, BOOL cancelled) {
-        if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
-            
-            return;
-        }
-        
-        NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
-        completion(@[permissions]);
-    }];
+    [self purchaseWithId:productId offeringId:nil completion:completion rejecter: reject];
 }
 
 RCT_EXPORT_METHOD(products:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
@@ -81,10 +75,10 @@ RCT_EXPORT_METHOD(products:(RCTResponseSenderBlock)completion rejecter:(RCTPromi
         if (error) {
             NSString *errorCode = [@(error.code) stringValue];
             reject(errorCode, error.localizedDescription, error);
-            
+
             return;
         }
-        
+
         NSDictionary *products = [EntitiesConverter convertProducts:result.allValues];
         completion(@[products]);
     }];
@@ -96,10 +90,10 @@ RCT_EXPORT_METHOD(restore:(RCTResponseSenderBlock)completion rejecter:(RCTPromis
         if (error) {
             NSString *errorCode = [@(error.code) stringValue];
             reject(errorCode, error.localizedDescription, error);
-            
+
             return;
         }
-        
+
         NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
         completion(@[permissions]);
     }];
@@ -115,10 +109,10 @@ RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTProm
         if (error) {
             NSString *errorCode = [@(error.code) stringValue];
             reject(errorCode, error.localizedDescription, error);
-            
+
             return;
         }
-        
+
         NSDictionary *convertedOfferings = [EntitiesConverter convertOfferings:offerings];
         completion(@[convertedOfferings]);
     }];
@@ -130,10 +124,10 @@ RCT_EXPORT_METHOD(checkTrialIntroEligibilityForProductIds:(NSArray *)data comple
         if (error) {
             NSString *errorCode = [@(error.code) stringValue];
             reject(errorCode, error.localizedDescription, error);
-            
+
             return;
         }
-        
+
         NSDictionary *convertedIntroEligibility = [EntitiesConverter convertIntroEligibility:result];
         completion(@[convertedIntroEligibility]);
     }];
@@ -175,6 +169,49 @@ RCT_EXPORT_METHOD(setAdvertisingID) {
 
 RCT_EXPORT_METHOD(setAppleSearchAdsAttributionEnabled:(BOOL)enabled) {
     [Qonversion setAppleSearchAdsAttributionEnabled:enabled];
+}
+
+#pragma mark - Private
+
+- (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
+    if (offeringId.length > 0) {
+        [Qonversion offerings:^(QNOfferings * _Nullable offerings, NSError * _Nullable error) {
+            QNOffering *offering = [offerings offeringForIdentifier:offeringId];
+            QNProduct *product = [offering productForIdentifier:productId];
+
+            if (product) {
+                [Qonversion purchaseProduct:product completion:^(NSDictionary<NSString *,QNPermission *> * _Nonnull result, NSError * _Nullable error, BOOL cancelled) {
+                    [self handlePurchasesResult:result error:error cancelled:cancelled completion:completion rejecter:reject];
+                }];
+            } else {
+                [self processPurchase:productId completion:completion rejecter:reject];
+            }
+        }];
+    } else {
+        [self processPurchase:productId completion:completion rejecter:reject];
+    }
+}
+
+- (void)processPurchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
+    [Qonversion purchase:productId completion:^(NSDictionary *result, NSError *error, BOOL cancelled) {
+        [self handlePurchasesResult:result error:error cancelled:cancelled completion:completion rejecter:reject];
+    }];
+}
+
+- (void)handlePurchasesResult:(NSDictionary *)result
+                        error:(NSError *)error
+                    cancelled:(BOOL)cancelled
+                   completion:(RCTResponseSenderBlock)completion
+                     rejecter:(RCTPromiseRejectBlock)reject {
+    if (error) {
+        NSString *errorCode = [@(error.code) stringValue];
+        reject(errorCode, error.localizedDescription, error);
+
+        return;
+    }
+
+    NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
+    completion(@[permissions]);
 }
 
 @end
