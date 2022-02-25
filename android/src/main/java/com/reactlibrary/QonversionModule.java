@@ -139,44 +139,48 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        if (offeringId != null) {
-            Qonversion.offerings(new QonversionOfferingsCallback() {
-                @Override
-                public void onSuccess(@NotNull QOfferings offerings) {
-                    QOffering offering = offerings.offeringForID(offeringId);
-
-                    if (offering != null) {
-                        QProduct product = offering.productForID(productId);
-
-                        if (product != null) {
-                            Qonversion.purchase(currentActivity, product, new QonversionPermissionsCallback() {
-                                @Override
-                                public void onSuccess(@NotNull Map<String, QPermission> map) {
-                                    WritableMap result = EntitiesConverter.mapPermissions(map);
-                                    promise.resolve(result);
-                                }
-
-                                @Override
-                                public void onError(@NotNull QonversionError qonversionError) {
-                                    rejectWithError(qonversionError, promise);
-                                }
-                            });
-                        } else {
-                            proccessPurchase(currentActivity, productId, promise);
-                        }
-                    } else {
-                        proccessPurchase(currentActivity, productId, promise);
-                    }
-                }
-
-                @Override
-                public void onError(@NotNull QonversionError qonversionError) {
-                    proccessPurchase(currentActivity, productId, promise);
-                }
-            });
-        } else {
+        if (offeringId == null) {
             proccessPurchase(currentActivity, productId, promise);
+            return;
         }
+
+        Qonversion.offerings(new QonversionOfferingsCallback() {
+            @Override
+            public void onSuccess(@NotNull QOfferings offerings) {
+                final QOffering offering = offerings.offeringForID(offeringId);
+
+                if (offering == null) {
+                    proccessPurchase(currentActivity, productId, promise);
+                    return;
+                }
+
+                final QProduct product = offering.productForID(productId);
+                if (product == null) {
+                    proccessPurchase(currentActivity, productId, promise);
+                    return;
+                }
+
+                final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
+                    @Override
+                    public void onSuccess(@NotNull Map<String, QPermission> map) {
+                        WritableMap result = EntitiesConverter.mapPermissions(map);
+                        promise.resolve(result);
+                    }
+
+                    @Override
+                    public void onError(@NotNull QonversionError qonversionError) {
+                        rejectWithError(qonversionError, promise);
+                    }
+                };
+
+                Qonversion.purchase(currentActivity, product, callback);
+            }
+
+            @Override
+            public void onError(@NotNull QonversionError qonversionError) {
+                proccessPurchase(currentActivity, productId, promise);
+            }
+        });
     }
 
     private void proccessPurchase(Activity currentActivity, String productId, final Promise promise) {
