@@ -165,11 +165,22 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         });
     }
 
-    private void updateProductWithId(
+    @ReactMethod
+    public void updateProductWithId(
             final String productId,
             @Nullable final String offeringId,
             final String oldProductId,
-            final Integer prorationMode,
+            final Promise promise
+    ) {
+        updateProductWithIdAndProrationMode(productId, offeringId, oldProductId, null, promise);
+    }
+
+    @ReactMethod
+    public void updateProductWithIdAndProrationMode(
+            final String productId,
+            @Nullable final String offeringId,
+            final String oldProductId,
+            @Nullable final Integer prorationMode,
             final Promise promise
     ) {
         final Activity currentActivity = getCurrentActivity();
@@ -200,7 +211,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onLoadingFailed() {
-
+                updatePurchase(productId, oldProductId, promise);
             }
         });
     }

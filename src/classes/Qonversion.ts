@@ -246,21 +246,20 @@ export default class Qonversion {
     product: Product,
     oldProductId: String,
     prorationMode: ProrationMode | null = null
-  ) {
-    // todo fix - method copy-pasted from updatePurchase
+  ): Promise<Map<string, Permission> | null> {
     if (!isAndroid()) {
       return null;
     }
 
     let permissions;
     if (prorationMode == null) {
-      permissions = await RNQonversion.updatePurchase(productId, oldProductId);
+      permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
     } else {
-      permissions = await RNQonversion.updatePurchaseWithProrationMode(
-        productId,
-        oldProductId,
-        prorationMode
-      );
+      permissions = await RNQonversion.updateProductWithIdAndProrationMode(
+          product.qonversionID,
+          product.offeringId,
+          oldProductId,
+          prorationMode);
     }
 
     const mappedPermissions: Map<
