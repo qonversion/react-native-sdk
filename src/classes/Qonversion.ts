@@ -230,7 +230,7 @@ export default class Qonversion {
   /**
    * Android only. Returns `null` if called on iOS.
    *
-   * Upgrading, downgrading or changing a subscription on Google Play Store requires calling updatePurchase() function.
+   * Upgrading, downgrading, or changing a subscription on Google Play Store requires calling updatePurchase() function.
    *
    * @param product Qonversion product for purchase.
    * @param oldProductId Qonversion product identifier from which the upgrade/downgrade will be initialized.
