@@ -246,6 +246,7 @@ public class EntitiesConverter {
         if (map == null) {
             return null;
         }
+
         final WritableMap result = Arguments.createMap();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             result.putString(entry.getKey(), entry.getValue());
