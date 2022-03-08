@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.qonversion.sample"
+        applicationId "com.example"
         multiDexEnabled true
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
