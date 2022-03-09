@@ -367,4 +367,12 @@ export default class Qonversion {
       RNQonversion.setAppleSearchAdsAttributionEnabled(enabled);
     }
   }
+
+  /**
+   * Set push token to Qonversion to enable Qonversion push notifications
+   * @param token Firebase device token on Android. APNs device token on iOS.
+   */
+  static setNotificationsToken(token: string) {
+    RNQonversion.setNotificationsToken(token);
+  }
 }
