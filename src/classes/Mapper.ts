@@ -135,6 +135,7 @@ type QActionResult = {
 };
 
 type QError = {
+  code: string;
   description: string;
   additionalMessage: string;
 };
@@ -476,6 +477,7 @@ class Mapper {
     error: QError | undefined
   ): QonversionError | undefined {
     return error ? new QonversionError(
+      error.code,
       error.description,
       error.additionalMessage,
     ) : undefined;

@@ -237,6 +237,7 @@ public class EntitiesConverter {
         }
 
         final WritableMap result = Arguments.createMap();
+        result.putString("code", error.getCode().toString());
         result.putString("description", error.getDescription());
         result.putString("additionalMessage", error.getAdditionalMessage());
         return result;
