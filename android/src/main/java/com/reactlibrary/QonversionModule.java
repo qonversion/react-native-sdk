@@ -389,6 +389,11 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         Qonversion.logout();
     }
 
+    @ReactMethod
+    public void setNotificationsToken(String token) {
+        Qonversion.setNotificationsToken(token);
+    }
+
     private void rejectWithError(@NotNull QonversionError qonversionError, final Promise promise) {
         String errorMessage =  qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
         promise.reject(qonversionError.getCode().toString(), errorMessage);
