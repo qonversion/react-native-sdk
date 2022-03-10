@@ -74,7 +74,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     implementation "io.qonversion.android.sdk:sdk:3.2.4"
-    implementation "com.google.firebase:firebase-messaging:21.0.1"
+    implementation "com.google.firebase:firebase-messaging:21.0.1" // Used for Qonversion.handleNotification compilation
 }
 
 def configureReactNativePom(def pom) {
