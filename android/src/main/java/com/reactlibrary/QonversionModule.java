@@ -395,7 +395,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     private void rejectWithError(@NotNull QonversionError qonversionError, final Promise promise) {
-        String errorMessage =  qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
+        String errorMessage = qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
         promise.reject(qonversionError.getCode().toString(), errorMessage);
     }
 }

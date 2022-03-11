@@ -7,6 +7,9 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.qonversion.android.sdk.QonversionError;
+import com.qonversion.android.sdk.automations.AutomationsEvent;
+import com.qonversion.android.sdk.automations.QActionResult;
 import com.qonversion.android.sdk.dto.QLaunchResult;
 import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
 import com.qonversion.android.sdk.dto.offerings.QOffering;
@@ -28,6 +31,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class EntitiesConverter {
     static WritableMap mapLaunchResult(QLaunchResult launchResult) {
@@ -208,6 +213,45 @@ public class EntitiesConverter {
             result.putMap(entry.getKey(), map);
         }
 
+        return result;
+    }
+
+    static WritableMap mapActionResult(QActionResult actionResult) {
+        final WritableMap result = Arguments.createMap();
+        result.putString("type", actionResult.getType().getType());
+        result.putMap("error", EntitiesConverter.mapQonversionError(actionResult.getError()));
+        result.putMap("value", mapStringsMap(actionResult.getValue()));
+        return result;
+    }
+
+    static WritableMap mapAutomationsEvent(AutomationsEvent automationsEvent) {
+        final WritableMap result = Arguments.createMap();
+        result.putString("type", automationsEvent.getType().getType());
+        result.putDouble("timestamp", (double)automationsEvent.getDate().getTime());
+        return result;
+    }
+
+    static WritableMap mapQonversionError(@Nullable QonversionError error) {
+        if (error == null) {
+            return null;
+        }
+
+        final WritableMap result = Arguments.createMap();
+        result.putString("code", error.getCode().toString());
+        result.putString("description", error.getDescription());
+        result.putString("additionalMessage", error.getAdditionalMessage());
+        return result;
+    }
+
+    static WritableMap mapStringsMap(@Nullable Map<String, String> map) {
+        if (map == null) {
+            return null;
+        }
+
+        final WritableMap result = Arguments.createMap();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            result.putString(entry.getKey(), entry.getValue());
+        }
         return result;
     }
 
