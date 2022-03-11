@@ -255,7 +255,7 @@
 
     NSString *errorCode = [@(error.code) stringValue];
     result[@"code"] = errorCode;
-    result[@"description"] = error.localizedDescription;
+    result[@"description"] = [NSString stringWithFormat:@"%@. Domain: %@", error.localizedDescription, error.domain];
     result[@"additionalMessage"] = error.userInfo[NSDebugDescriptionErrorKey];
     
     return [result copy];
