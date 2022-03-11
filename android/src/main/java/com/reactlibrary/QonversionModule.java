@@ -396,10 +396,8 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void handleNotification(final ReadableMap data, final Promise promise) {
         final ReadableMap notificationData = data.getMap("notificationData");
-        final String rejectCode = "4";
-        final String rejectMessage = "Could not find data. Please make sure you pass a valid value";
         if (notificationData == null) {
-            promise.reject(rejectCode, rejectMessage);
+            promise.resolve(false);
             return;
         }
 
@@ -407,12 +405,12 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         try {
             dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
         } catch (JSONException e) {
-            promise.reject(rejectCode, rejectMessage);
+            promise.resolve(false);
             return;
         }
 
         if (dataMap.isEmpty()) {
-            promise.reject(rejectCode, rejectMessage);
+            promise.resolve(false);
             return;
         }
 
