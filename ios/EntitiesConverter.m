@@ -231,7 +231,7 @@
 
 + (NSDictionary *)convertActionResult:(QONActionResult *)actionResult {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     NSDictionary *types = @{
         @(QONActionResultTypeURL): @"url",
         @(QONActionResultTypeDeeplink): @"deeplink",
@@ -240,13 +240,13 @@
         @(QONActionResultTypeRestore): @"restore",
         @(QONActionResultTypeClose): @"close"
     };
-    
+
     result[@"type"] = types[@(actionResult.type)] ? : @"unknown";
     result[@"value"] = actionResult.parameters;
     if (actionResult.error) {
         result[@"error"] = [EntitiesConverter convertError:actionResult.error];
     }
-    
+
     return [result copy];
 }
 
@@ -255,15 +255,15 @@
 
     NSString *errorCode = [@(error.code) stringValue];
     result[@"code"] = errorCode;
-    result[@"description"] = error.localizedDescription;
+    result[@"description"] = [NSString stringWithFormat:@"%@. Domain: %@", error.localizedDescription, error.domain];
     result[@"additionalMessage"] = error.userInfo[NSDebugDescriptionErrorKey];
-    
+
     return [result copy];
 }
 
 + (NSDictionary *)convertAutomationsEvent:(QONAutomationsEvent *)event {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     NSDictionary *types = @{
         @(QONAutomationsEventTypeTrialStarted): @"trial_started",
         @(QONAutomationsEventTypeTrialConverted): @"trial_converted",
@@ -282,10 +282,10 @@
         @(QONAutomationsEventTypeSubscriptionDowngraded): @"subscription_downgraded",
         @(QONAutomationsEventTypeSubscriptionProductChanged): @"subscription_product_changed"
     };
-    
+
     result[@"type"] = types[@(event.type)] ? : @"unknown";
     result[@"timestamp"] = @(event.date.timeIntervalSince1970 * 1000);
-    
+
     return [result copy];
 }
 

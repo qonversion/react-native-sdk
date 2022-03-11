@@ -377,7 +377,7 @@ export default class Qonversion {
   }
 
   /**
-   * Try to handle push notification in order this is Qonversion Automation push.
+   * Call to handle push notifications sent by Qonversion Automation.
    * @param notificationData notification payload data
    * @return true when a push notification was received from Qonversion. Otherwise returns false, so you need to handle a notification yourself
    * @see [Firebase RemoteMessage data](https://pub.dev/documentation/firebase_messaging_platform_interface/latest/firebase_messaging_platform_interface/RemoteMessage/data.html)

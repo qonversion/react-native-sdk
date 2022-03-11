@@ -177,20 +177,14 @@ RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
     [Qonversion setNotificationsToken:tokenData];
 }
 
-RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)data completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    
+RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)data completion:(RCTResponseSenderBlock)completion) {
+
     NSDictionary *notificationData = data[@"notificationData"];
-    if (notificationData == nil || [notificationData count] == 0) {
-        NSError *error = [NSError errorWithDomain:@"no_valid_data"
-                                             code:4
-                                         userInfo:@{
-                                                     NSLocalizedDescriptionKey:@"Could not find data. Please make sure you pass a valid value"
-                                         }];
-        NSString *errorCode = [@(error.code) stringValue];
-        reject(errorCode, error.localizedDescription, error);
+    if (![notificationData isKindOfClass:[NSDictionary class]]) {
+        completion(@[false]);
         return;
     }
-    
+
     BOOL isQonversionNotification = [Qonversion handleNotification:notificationData];
     completion(@[@(isQonversionNotification)]);
 }
