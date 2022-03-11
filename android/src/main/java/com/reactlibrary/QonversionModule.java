@@ -27,7 +27,6 @@ import com.qonversion.android.sdk.dto.offerings.QOfferings;
 import com.qonversion.android.sdk.dto.QPermission;
 import com.qonversion.android.sdk.dto.products.QProduct;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.util.Arrays;
@@ -37,12 +36,12 @@ import java.util.Map;
 import com.qonversion.android.sdk.dto.eligibility.QEligibility;
 
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.NotNull;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import androidx.preference.PreferenceManager;
+import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class QonversionModule extends ReactContextBaseJavaModule {
 
@@ -109,13 +108,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         Qonversion.launch(currentActivity.getApplication(), key, observeMode, new QonversionLaunchCallback()
         {
             @Override
-            public void onSuccess(@NotNull QLaunchResult qLaunchResult) {
+            public void onSuccess(@NonNull QLaunchResult qLaunchResult) {
                 WritableMap result = EntitiesConverter.mapLaunchResult(qLaunchResult);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -146,7 +145,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
         Qonversion.offerings(new QonversionOfferingsCallback() {
             @Override
-            public void onSuccess(@NotNull QOfferings offerings) {
+            public void onSuccess(@NonNull QOfferings offerings) {
                 final QOffering offering = offerings.offeringForID(offeringId);
 
                 if (offering == null) {
@@ -162,13 +161,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
                 final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
                     @Override
-                    public void onSuccess(@NotNull Map<String, QPermission> map) {
+                    public void onSuccess(@NonNull Map<String, QPermission> map) {
                         WritableMap result = EntitiesConverter.mapPermissions(map);
                         promise.resolve(result);
                     }
 
                     @Override
-                    public void onError(@NotNull QonversionError qonversionError) {
+                    public void onError(@NonNull QonversionError qonversionError) {
                         rejectWithError(qonversionError, promise);
                     }
                 };
@@ -177,7 +176,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 proccessPurchase(currentActivity, productId, promise);
             }
         });
@@ -186,13 +185,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     private void proccessPurchase(Activity currentActivity, String productId, final Promise promise) {
         Qonversion.purchase(currentActivity, productId, new QonversionPermissionsCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QPermission> map) {
+            public void onSuccess(@NonNull Map<String, QPermission> map) {
                 WritableMap result = EntitiesConverter.mapPermissions(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -209,13 +208,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
         Qonversion.updatePurchase(currentActivity, productId, oldProductId, prorationMode, new QonversionPermissionsCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QPermission> map) {
+            public void onSuccess(@NonNull Map<String, QPermission> map) {
                 WritableMap result = EntitiesConverter.mapPermissions(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -271,13 +270,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void checkPermissions(final Promise promise) {
         Qonversion.checkPermissions(new QonversionPermissionsCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QPermission> map) {
+            public void onSuccess(@NonNull Map<String, QPermission> map) {
                 WritableMap result = EntitiesConverter.mapPermissions(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -287,13 +286,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void products(final Promise promise) {
         Qonversion.products(new QonversionProductsCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QProduct> map) {
+            public void onSuccess(@NonNull Map<String, QProduct> map) {
                 WritableMap result = EntitiesConverter.mapProducts(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -303,13 +302,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void offerings(final Promise promise) {
         Qonversion.offerings(new QonversionOfferingsCallback() {
             @Override
-            public void onSuccess(@NotNull QOfferings offerings) {
+            public void onSuccess(@NonNull QOfferings offerings) {
                 WritableMap result = EntitiesConverter.mapOfferings(offerings);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -320,13 +319,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         List<String> result = Arrays.asList(ids.toArrayList().toArray(new String[ids.size()]));
         Qonversion.checkTrialIntroEligibilityForProductIds(result, new QonversionEligibilityCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QEligibility> map) {
+            public void onSuccess(@NonNull Map<String, QEligibility> map) {
                 WritableArray result = EntitiesConverter.mapEligibility(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -336,13 +335,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void experiments(final Promise promise) {
         Qonversion.experiments(new QonversionExperimentsCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QExperimentInfo> map) {
+            public void onSuccess(@NonNull Map<String, QExperimentInfo> map) {
                 WritableArray result = EntitiesConverter.mapExperiments(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -352,13 +351,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     public void restore(final Promise promise) {
         Qonversion.restore(new QonversionPermissionsCallback() {
             @Override
-            public void onSuccess(@NotNull Map<String, QPermission> map) {
+            public void onSuccess(@NonNull Map<String, QPermission> map) {
                 WritableMap result = EntitiesConverter.mapPermissions(map);
                 promise.resolve(result);
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 rejectWithError(qonversionError, promise);
             }
         });
@@ -394,8 +393,41 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         Qonversion.setNotificationsToken(token);
     }
 
-    private void rejectWithError(@NotNull QonversionError qonversionError, final Promise promise) {
-        String errorMessage = qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
+    @ReactMethod
+    public void handleNotification(final ReadableMap data, final Promise promise) {
+        final ReadableMap notificationData = data.getMap("notificationData");
+        if (notificationData == null) {
+            promise.resolve(false);
+            return;
+        }
+
+        final Map<String, Object> dataMap;
+        try {
+            dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
+        } catch (JSONException e) {
+            promise.resolve(false);
+            return;
+        }
+
+        if (dataMap.isEmpty()) {
+            promise.resolve(false);
+            return;
+        }
+
+        final Map<String, String> stringsMap = new HashMap<>();
+        for (String key : dataMap.keySet()) {
+            Object value = dataMap.get(key);
+            if (value != null) {
+                stringsMap.put(key, value.toString());
+            }
+        }
+
+        boolean isQonversionNotification = Qonversion.handleNotification(stringsMap);
+        promise.resolve(isQonversionNotification);
+    }
+
+    private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {
+        String errorMessage =  qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
         promise.reject(qonversionError.getCode().toString(), errorMessage);
     }
 }

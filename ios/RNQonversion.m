@@ -177,6 +177,18 @@ RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
     [Qonversion setNotificationsToken:tokenData];
 }
 
+RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)data completion:(RCTResponseSenderBlock)completion) {
+    
+    NSDictionary *notificationData = data[@"notificationData"];
+    if (![notificationData isKindOfClass:[NSDictionary class]]) {
+        completion(@[false]);
+        return;
+    }
+    
+    BOOL isQonversionNotification = [Qonversion handleNotification:notificationData];
+    completion(@[@(isQonversionNotification)]);
+}
+
 #pragma mark - Private
 
 - (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
