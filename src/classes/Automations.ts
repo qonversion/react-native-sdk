@@ -16,7 +16,7 @@ export default class Automations {
    * Make sure the method is called before Qonversion.handleNotification.
    * @param delegate the delegate to be notified about Automations events.
    */
-  static setAutomationsDelegate(delegate: AutomationsDelegate) {
+  static setDelegate(delegate: AutomationsDelegate) {
     Automations.subscribe(delegate);
   }
 
