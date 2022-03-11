@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.qonversion.android.sdk.AttributionSource;
 import com.qonversion.android.sdk.QUserProperties;
 import com.qonversion.android.sdk.Qonversion;
@@ -47,6 +48,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private QonversionSDKInfo sdkInfoToSave;
+    private AutomationsPlugin automationsPlugin = null;
 
     private static final HashMap<String, QUserProperties> userPropertiesMap = new HashMap<String, QUserProperties>() {{
         put("EMAIL", QUserProperties.Email);
@@ -426,6 +428,15 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
         boolean isQonversionNotification = Qonversion.handleNotification(stringsMap);
         promise.resolve(isQonversionNotification);
+    }
+
+    @ReactMethod
+    public void subscribeOnAutomationsEvents() {
+        if (automationsPlugin == null) {
+            automationsPlugin = new AutomationsPlugin();
+        }
+
+        automationsPlugin.register(reactContext);
     }
 
     private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {

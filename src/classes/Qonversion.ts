@@ -1,4 +1,4 @@
-import {NativeModules, Platform} from "react-native";
+import {NativeModules} from "react-native";
 import {Property, ProrationMode, Provider} from "../enums";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
@@ -8,6 +8,8 @@ import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
 import {convertPropertyToNativeKey, isIos} from "../utils";
+import {AutomationsDelegate} from "./AutomationsDelegate";
+import Automations from "./Automations";
 
 const {RNQonversion} = NativeModules;
 
@@ -374,6 +376,15 @@ export default class Qonversion {
    */
   static setNotificationsToken(token: string) {
     RNQonversion.setNotificationsToken(token);
+  }
+
+  /**
+   * The Automations delegate is responsible for handling in-app screens and actions when push notification is received.
+   * Make sure the method is called before Qonversion.handleNotification.
+   * @param delegate the delegate to be notified about Automations events.
+   */
+  static setAutomationsDelegate(delegate: AutomationsDelegate) {
+    Automations.subscribe(delegate);
   }
 
   /**
