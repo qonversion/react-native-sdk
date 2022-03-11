@@ -1,7 +1,7 @@
 import {AutomationsDelegate} from "./AutomationsDelegate";
 import {NativeEventEmitter, NativeModules} from "react-native";
 import Mapper from "./Mapper";
-const {RNQonversion} = NativeModules;
+const {RNAutomations} = NativeModules;
 
 const EVENT_SCREEN_SHOWN = "automations_screen_shown";
 const EVENT_ACTION_STARTED = "automations_action_started";
@@ -11,8 +11,17 @@ const EVENT_AUTOMATIONS_FINISHED = "automations_finished";
 
 export default class Automations {
 
-  static subscribe(automationsDelegate: AutomationsDelegate) {
-    const eventEmitter = new NativeEventEmitter(RNQonversion);
+  /**
+   * The Automations delegate is responsible for handling in-app screens and actions when push notification is received.
+   * Make sure the method is called before Qonversion.handleNotification.
+   * @param delegate the delegate to be notified about Automations events.
+   */
+  static setAutomationsDelegate(delegate: AutomationsDelegate) {
+    Automations.subscribe(delegate);
+  }
+
+  private static subscribe(automationsDelegate: AutomationsDelegate) {
+    const eventEmitter = new NativeEventEmitter(RNAutomations);
 
     eventEmitter.removeAllListeners(EVENT_SCREEN_SHOWN);
     eventEmitter.addListener(EVENT_SCREEN_SHOWN, screenId => {
@@ -42,6 +51,6 @@ export default class Automations {
       automationsDelegate.automationsFinished();
     });
 
-    RNQonversion.subscribeOnAutomationsEvents();
+    RNAutomations.subscribe();
   }
 }
