@@ -2,7 +2,7 @@
 //  RNAutomations.m
 //  Qonversion
 //
-//  Created by Камо Сперцян on 11.03.2022.
+//  Created by Kamo Spertsyan on 11.03.2022.
 //  Copyright © 2022 Facebook. All rights reserved.
 //
 
