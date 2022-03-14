@@ -45,7 +45,6 @@ import androidx.annotation.Nullable;
 
 public class QonversionModule extends ReactContextBaseJavaModule {
 
-    private final ReactApplicationContext reactContext;
     private QonversionSDKInfo sdkInfoToSave;
 
     private static final HashMap<String, QUserProperties> userPropertiesMap = new HashMap<String, QUserProperties>() {{
@@ -60,7 +59,6 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
     public QonversionModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext = reactContext;
     }
 
     private void storeSDKInfoToPreferences(QonversionSDKInfo sdkInfo,Activity currentActivity){
@@ -427,7 +425,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {
-        String errorMessage =  qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
+        String errorMessage = qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
         promise.reject(qonversionError.getCode().toString(), errorMessage);
     }
 }

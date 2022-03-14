@@ -1,4 +1,4 @@
-import {NativeModules, Platform} from "react-native";
+import {NativeModules} from "react-native";
 import {Property, ProrationMode, Provider} from "../enums";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
