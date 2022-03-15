@@ -181,7 +181,7 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)data completion:(RCTRespons
 
     NSDictionary *notificationData = data[@"notificationData"];
     if (![notificationData isKindOfClass:[NSDictionary class]]) {
-        completion(@[false]);
+        completion(@[@(false)]);
         return;
     }
 
