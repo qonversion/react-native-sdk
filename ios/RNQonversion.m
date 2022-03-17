@@ -177,11 +177,11 @@ RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
     [Qonversion setNotificationsToken:tokenData];
 }
 
-RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)data completion:(RCTResponseSenderBlock)completion) {
-
-    NSDictionary *notificationData = data[@"notificationData"];
+RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
+                  completion:(RCTResponseSenderBlock)completion
+                  rejecter:(RCTPromiseRejectBlock)reject) {
     if (![notificationData isKindOfClass:[NSDictionary class]]) {
-        completion(@[@(false)]);
+        completion(@[@(NO)]);
         return;
     }
 

@@ -1,6 +1,7 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
 import Qonversion from 'react-native-qonversion';
+import {Platform} from 'react-native';
 
 const NotificationsManager = {
   init: () => {
@@ -14,9 +15,12 @@ const NotificationsManager = {
         console.log('Notification:', notification);
 
         if (notification.userInteraction) {
-          const notificationData = JSON.parse(
-            notification.data.notificationData,
-          );
+          let notificationData = '';
+          if (Platform.OS === 'ios') {
+            notificationData = notification.data.aps;
+          } else if (Platform.OS === 'android') {
+            notificationData = JSON.parse(notification.data.notificationData);
+          }
           const isQonversionNotification = await Qonversion.handleNotification(
             notificationData,
           );
