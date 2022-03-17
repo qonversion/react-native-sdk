@@ -6,20 +6,22 @@ const NotificationsManager = {
   init: () => {
     PushNotification.configure({
       onRegister: function(token) {
-        console.log('TOKEN:', token);
+        console.log('Device token:', token);
         Qonversion.setNotificationsToken(token.token);
       },
 
       onNotification: async function(notification) {
-        console.log('NOTIFICATION:', notification);
+        console.log('Notification:', notification);
 
         if (notification.userInteraction) {
+          const notificationData = JSON.parse(
+            notification.data.notificationData,
+          );
           const isQonversionNotification = await Qonversion.handleNotification(
-            // todo check content
-            notification,
+            notificationData,
           );
           console.log(
-            'NOTIFICATION HANDLED BY QONVERSION:',
+            'Is notification handled by Qonversion: ',
             isQonversionNotification,
           );
           if (!isQonversionNotification) {

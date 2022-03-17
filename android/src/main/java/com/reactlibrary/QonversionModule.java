@@ -392,8 +392,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void handleNotification(final ReadableMap data, final Promise promise) {
-        final ReadableMap notificationData = data.getMap("notificationData");
+    public void handleNotification(final ReadableMap notificationData, final Promise promise) {
         if (notificationData == null) {
             promise.resolve(false);
             return;
