@@ -136,27 +136,9 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        if (offeringId == null) {
-            proccessPurchase(currentActivity, productId, promise);
-            return;
-        }
-
-        Qonversion.offerings(new QonversionOfferingsCallback() {
+        loadProduct(productId, offeringId, new ProductCallback() {
             @Override
-            public void onSuccess(@NonNull QOfferings offerings) {
-                final QOffering offering = offerings.offeringForID(offeringId);
-
-                if (offering == null) {
-                    proccessPurchase(currentActivity, productId, promise);
-                    return;
-                }
-
-                final QProduct product = offering.productForID(productId);
-                if (product == null) {
-                    proccessPurchase(currentActivity, productId, promise);
-                    return;
-                }
-
+            public void onProductLoaded(QProduct product) {
                 final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
                     @Override
                     public void onSuccess(@NonNull Map<String, QPermission> map) {
@@ -174,8 +156,59 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onError(@NonNull QonversionError qonversionError) {
+            public void onLoadingFailed() {
                 proccessPurchase(currentActivity, productId, promise);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void updateProductWithId(
+            final String productId,
+            @Nullable final String offeringId,
+            final String oldProductId,
+            final Promise promise
+    ) {
+        updateProductWithIdAndProrationMode(productId, offeringId, oldProductId, null, promise);
+    }
+
+    @ReactMethod
+    public void updateProductWithIdAndProrationMode(
+            final String productId,
+            @Nullable final String offeringId,
+            final String oldProductId,
+            @Nullable final Integer prorationMode,
+            final Promise promise
+    ) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            QonversionError qonversionError = generateActivityError();
+            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
+            return;
+        }
+
+        loadProduct(productId, offeringId, new ProductCallback() {
+            @Override
+            public void onProductLoaded(QProduct product) {
+                final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
+                    @Override
+                    public void onSuccess(@NotNull Map<String, QPermission> map) {
+                        WritableMap result = EntitiesConverter.mapPermissions(map);
+                        promise.resolve(result);
+                    }
+
+                    @Override
+                    public void onError(@NotNull QonversionError qonversionError) {
+                        rejectWithError(qonversionError, promise);
+                    }
+                };
+
+                Qonversion.updatePurchase(currentActivity, product, oldProductId, prorationMode, callback);
+            }
+
+            @Override
+            public void onLoadingFailed() {
+                updatePurchase(productId, oldProductId, promise);
             }
         });
     }
@@ -426,5 +459,43 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {
         String errorMessage = qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
         promise.reject(qonversionError.getCode().toString(), errorMessage);
+    }
+
+    private interface ProductCallback {
+
+        void onProductLoaded(QProduct product);
+
+        void onLoadingFailed();
+    }
+
+    private void loadProduct(final String productId, @Nullable final String offeringId, final ProductCallback callback) {
+        if (offeringId == null) {
+            callback.onLoadingFailed();
+            return;
+        }
+
+        Qonversion.offerings(new QonversionOfferingsCallback() {
+            @Override
+            public void onSuccess(@NotNull QOfferings offerings) {
+                final QOffering offering = offerings.offeringForID(offeringId);
+
+                if (offering == null) {
+                    callback.onLoadingFailed();
+                    return;
+                }
+
+                final QProduct product = offering.productForID(productId);
+                if (product == null) {
+                    callback.onLoadingFailed();
+                } else {
+                    callback.onProductLoaded(product);
+                }
+            }
+
+            @Override
+            public void onError(@NotNull QonversionError qonversionError) {
+                callback.onLoadingFailed();
+            }
+        });
     }
 }

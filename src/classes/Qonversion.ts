@@ -7,7 +7,7 @@ import Mapper from "./Mapper";
 import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
-import {convertPropertyToNativeKey, isIos} from "../utils";
+import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
 
 const {RNQonversion} = NativeModules;
 
@@ -178,7 +178,7 @@ export default class Qonversion {
         (isIos() &&
           e.domain === iOSCancelErrorDomain &&
           e.code === iOSCancelCode) ||
-        (!isIos() && e.code === androidCancelCode);
+        (isAndroid() && e.code === androidCancelCode);
 
       throw e;
     }
@@ -204,7 +204,7 @@ export default class Qonversion {
     oldProductId: string,
     prorationMode: ProrationMode | null = null
   ): Promise<Map<string, Permission> | null> {
-    if (isIos()) {
+    if (!isAndroid()) {
       return null;
     }
 
@@ -223,6 +223,49 @@ export default class Qonversion {
       string,
       Permission
     > = Mapper.convertPermissions(permissions);
+
+    return mappedPermissions;
+  }
+
+  /**
+   * Android only. Returns `null` if called on iOS.
+   *
+   * Upgrading, downgrading, or changing a subscription on Google Play Store requires calling updatePurchase() function.
+   *
+   * @param product Qonversion product for purchase.
+   * @param oldProductId Qonversion product identifier from which the upgrade/downgrade will be initialized.
+   * @param prorationMode proration mode.
+   * @returns the promise with the user permissions including updated ones.
+   *
+   * @see [Google Play Documentation](https://developer.android.com/google/play/billing/subscriptions#upgrade-downgrade)
+   * for more details.
+   * @see [Proration mode](https://developer.android.com/google/play/billing/subscriptions#proration)
+   * @see [Product Center](https://qonversion.io/docs/product-center)
+   */
+  static async updatePurchaseWithProduct(
+    product: Product,
+    oldProductId: String,
+    prorationMode: ProrationMode | null = null
+  ): Promise<Map<string, Permission> | null> {
+    if (!isAndroid()) {
+      return null;
+    }
+
+    let permissions;
+    if (prorationMode == null) {
+      permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
+    } else {
+      permissions = await RNQonversion.updateProductWithIdAndProrationMode(
+          product.qonversionID,
+          product.offeringId,
+          oldProductId,
+          prorationMode);
+    }
+
+    const mappedPermissions: Map<
+      string,
+      Permission
+      > = Mapper.convertPermissions(permissions);
 
     return mappedPermissions;
   }
@@ -325,7 +368,7 @@ export default class Qonversion {
    * @see [Observer mode for Android SDK](https://documentation.qonversion.io/docs/observer-mode#android-sdk)
    */
   static syncPurchases() {
-    if (isIos()) {
+    if (!isAndroid()) {
       return;
     }
 
