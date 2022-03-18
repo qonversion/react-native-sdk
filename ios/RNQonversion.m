@@ -171,6 +171,24 @@ RCT_EXPORT_METHOD(setAppleSearchAdsAttributionEnabled:(BOOL)enabled) {
     [Qonversion setAppleSearchAdsAttributionEnabled:enabled];
 }
 
+RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
+    NSData *tokenData = [self convertHexToData:token];
+
+    [Qonversion setNotificationsToken:tokenData];
+}
+
+RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
+                  completion:(RCTResponseSenderBlock)completion
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    if (![notificationData isKindOfClass:[NSDictionary class]]) {
+        completion(@[@(NO)]);
+        return;
+    }
+
+    BOOL isQonversionNotification = [Qonversion handleNotification:notificationData];
+    completion(@[@(isQonversionNotification)]);
+}
+
 #pragma mark - Private
 
 - (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
@@ -212,6 +230,22 @@ RCT_EXPORT_METHOD(setAppleSearchAdsAttributionEnabled:(BOOL)enabled) {
 
     NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
     completion(@[permissions]);
+}
+
+- (NSData *)convertHexToData:(NSString *)hex {
+    NSString *token = [hex stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSMutableData *data = [[NSMutableData alloc] init];
+    unsigned char whole_byte;
+    char byte_chars[3] = {'\0','\0','\0'};
+    int i;
+    for (i=0; i < [token length] / 2; i++) {
+        byte_chars[0] = [token characterAtIndex:i * 2];
+        byte_chars[1] = [token characterAtIndex:i * 2 + 1];
+        whole_byte = strtol(byte_chars, NULL, 16);
+        [data appendBytes:&whole_byte length:1];
+    }
+
+    return [data copy];
 }
 
 @end

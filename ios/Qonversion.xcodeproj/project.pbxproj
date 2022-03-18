@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A26A7A427DB778300281166 /* RNAutomations.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A26A7A327DB778300281166 /* RNAutomations.m */; };
 		894E03472571247000B5BC54 /* EntitiesConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 894E03462571247000B5BC54 /* EntitiesConverter.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNQonversion.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNQonversion.m */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libQonversion.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libQonversion.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A26A7A227DB778300281166 /* RNAutomations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNAutomations.h; sourceTree = "<group>"; };
+		6A26A7A327DB778300281166 /* RNAutomations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNAutomations.m; sourceTree = "<group>"; };
 		894E03452571247000B5BC54 /* EntitiesConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EntitiesConverter.h; sourceTree = "<group>"; };
 		894E03462571247000B5BC54 /* EntitiesConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EntitiesConverter.m; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNQonversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNQonversion.h; sourceTree = "<group>"; };
@@ -53,6 +56,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				6A26A7A227DB778300281166 /* RNAutomations.h */,
+				6A26A7A327DB778300281166 /* RNAutomations.m */,
 				B3E7B5881CC2AC0600A0062D /* RNQonversion.h */,
 				B3E7B5891CC2AC0600A0062D /* RNQonversion.m */,
 				894E03452571247000B5BC54 /* EntitiesConverter.h */,
@@ -119,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNQonversion.m in Sources */,
+				6A26A7A427DB778300281166 /* RNAutomations.m in Sources */,
 				894E03472571247000B5BC54 /* EntitiesConverter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

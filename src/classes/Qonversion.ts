@@ -1,4 +1,4 @@
-import {NativeModules, Platform} from "react-native";
+import {NativeModules} from "react-native";
 import {Property, ProrationMode, Provider} from "../enums";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
@@ -408,6 +408,29 @@ export default class Qonversion {
   static setAppleSearchAdsAttributionEnabled(enabled: boolean) {
     if (isIos()) {
       RNQonversion.setAppleSearchAdsAttributionEnabled(enabled);
+    }
+  }
+
+  /**
+   * Set push token to Qonversion to enable Qonversion push notifications
+   * @param token Firebase device token on Android. APNs device token on iOS.
+   */
+  static setNotificationsToken(token: string) {
+    RNQonversion.setNotificationsToken(token);
+  }
+
+  /**
+   * Call to handle push notifications sent by Qonversion Automation.
+   * @param notificationData notification payload data
+   * @return true when a push notification was received from Qonversion. Otherwise returns false, so you need to handle a notification yourself
+   * @see [Firebase RemoteMessage data](https://pub.dev/documentation/firebase_messaging_platform_interface/latest/firebase_messaging_platform_interface/RemoteMessage/data.html)
+   * @see [APNs notification data](https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649869-userinfo)
+   */
+  static async handleNotification(notificationData: Map<String, Object>): Promise<boolean> {
+    try {
+      return await RNQonversion.handleNotification(notificationData);
+    } catch (e) {
+      return false;
     }
   }
 }
