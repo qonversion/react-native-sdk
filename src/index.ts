@@ -1,4 +1,5 @@
 export { default } from "./classes/Qonversion";
+export { default as Automations } from "./classes/Automations";
 
 export { default as LaunchResult } from "./classes/LaunchResult";
 export { default as Product } from "./classes/Product";

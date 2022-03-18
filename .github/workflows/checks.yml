@@ -1,0 +1,17 @@
+name: Checks
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout
+        
+      - uses: borales/actions-yarn@v2.3.0
+        name: Validation
+        with:
+          cmd: install

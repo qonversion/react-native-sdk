@@ -16,6 +16,7 @@ class Product {
   storeTitle?: string;
   storeDescription?: string;
   prettyIntroductoryPrice?: string;
+  offeringId?: string | null;
 
   constructor(
     qonversionID: string,
@@ -30,7 +31,8 @@ class Product {
     currencyCode: string | undefined,
     storeTitle: string | undefined,
     storeDescription: string | undefined,
-    prettyIntroductoryPrice: string | undefined
+    prettyIntroductoryPrice: string | undefined,
+    offeringId: string | null,
   ) {
     this.qonversionID = qonversionID;
     this.storeID = storeID;
@@ -45,6 +47,7 @@ class Product {
     this.storeTitle = storeTitle;
     this.storeDescription = storeDescription;
     this.prettyIntroductoryPrice = prettyIntroductoryPrice;
+    this.offeringId = offeringId;
   }
 }
 

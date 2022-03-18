@@ -48,6 +48,7 @@ export enum Property {
   KOCHAVA_DEVICE_ID = 4,
   CUSTOM_USER_ID = 5,
   FACEBOOK_ATTRIBUTION = 6,
+  ADVERTISING_ID = 7,
 }
 
 export enum Provider {
@@ -103,4 +104,34 @@ export enum IntroEligibilityStatus {
 export enum ExperimentGroupType {
   GROUP_TYPE_A = 0,
   GROUP_TYPE_B = 1,
+}
+
+export enum ActionResultType {
+  UNKNOWN = "unknown",
+  URL = "url",
+  DEEPLINK = "deeplink",
+  NAVIGATION = "navigate",
+  PURCHASE = "purchase",
+  RESTORE = "restore",
+  CLOSE = "close",
+}
+
+export enum AutomationsEventType {
+  UNKNOWN = "unknown",
+  TRIAL_STARTED = "trial_started",
+  TRIAL_CONVERTED = "trial_converted",
+  TRIAL_CANCELED = "trial_canceled",
+  TRIAL_BILLING_RETRY = "trial_billing_retry_entered",
+  SUBSCRIPTION_STARTED = "subscription_started",
+  SUBSCRIPTION_RENEWED = "subscription_renewed",
+  SUBSCRIPTION_REFUNDED = "subscription_refunded",
+  SUBSCRIPTION_CANCELED = "subscription_canceled",
+  SUBSCRIPTION_BILLING_RETRY = "subscription_billing_retry_entered",
+  IN_APP_PURCHASE = "in_app_purchase",
+  SUBSCRIPTION_UPGRADED = "subscription_upgraded",
+  TRIAL_STILL_ACTIVE = "trial_still_active",
+  TRIAL_EXPIRED = "trial_expired",
+  SUBSCRIPTION_EXPIRED = "subscription_expired",
+  SUBSCRIPTION_DOWNGRADED = "subscription_downgraded",
+  SUBSCRIPTION_PRODUCT_CHANGED = "subscription_product_changed",
 }

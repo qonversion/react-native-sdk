@@ -1,19 +1,21 @@
-import { Platform } from "react-native";
+import {Platform} from "react-native";
 
 import {
-  ProductDuration,
-  ProductType,
-  TrialDuration,
+  ActionResultType,
+  AutomationsEventType,
   ExperimentGroupType,
   IntroEligibilityStatus,
+  OfferingTag,
+  ProductDuration,
   ProductDurations,
+  ProductType,
   ProductTypes,
   RenewState,
-  TrialDurations,
-  OfferingTag,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
+  TrialDuration,
+  TrialDurations,
 } from "../enums";
 import ExperimentGroup from "./ExperimentGroup";
 import ExperimentInfo from "./ExperimentInfo";
@@ -27,6 +29,9 @@ import SKProduct from "./storeProducts/SKProduct";
 import SKProductDiscount from "./storeProducts/SKProductDiscount";
 import SKSubscriptionPeriod from "./storeProducts/SKSubscriptionPeriod";
 import SkuDetails from "./storeProducts/SkuDetails";
+import ActionResult from "./ActionResult";
+import QonversionError from "./QonversionError";
+import AutomationsEvent from "./AutomationsEvent";
 
 type QLaunchResult = {
   products: Array<QProduct>;
@@ -44,6 +49,7 @@ type QProduct = {
   store_id: string;
   prettyPrice?: string;
   storeProduct: null | QSkuDetails | QSKProduct; // QSkuDetails - android, QSKProduct - iOS
+  offeringId: string | null;
 };
 
 type QSkuDetails = {
@@ -122,6 +128,23 @@ type QOffering = {
   products: Array<QProduct>;
 };
 
+type QActionResult = {
+  type: ActionResultType;
+  value: Map<string, string | undefined> | undefined;
+  error: QError | undefined;
+};
+
+type QError = {
+  code: string;
+  description: string;
+  additionalMessage: string;
+};
+
+type QAutomationsEvent = {
+  type: AutomationsEventType;
+  timestamp: number;
+};
+
 const skuDetailsPriceRatio = 1000000;
 
 class Mapper {
@@ -196,6 +219,7 @@ class Mapper {
     const productType: ProductTypes = ProductType[product.type];
     const productDuration: ProductDurations = ProductDuration[product.duration];
     const trialDuration: TrialDurations = TrialDuration[product.trialDuration];
+    const offeringId: string | null = product.offeringId;
 
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
@@ -244,7 +268,8 @@ class Mapper {
       currencyCode,
       storeTitle,
       storeDescription,
-      prettyIntroductoryPrice
+      prettyIntroductoryPrice,
+      offeringId
     );
 
     return mappedProduct;
@@ -436,6 +461,35 @@ class Mapper {
     }
 
     return mappedExperimentInfo;
+  }
+
+  static convertActionResult(
+    actionResult: QActionResult
+  ): ActionResult {
+    return new ActionResult(
+      actionResult.type,
+      actionResult.value,
+      this.convertQonversionError(actionResult.error)
+    )
+  }
+
+  static convertQonversionError(
+    error: QError | undefined
+  ): QonversionError | undefined {
+    return error ? new QonversionError(
+      error.code,
+      error.description,
+      error.additionalMessage,
+    ) : undefined;
+  }
+
+  static convertAutomationsEvent(
+    automationsEvent: QAutomationsEvent
+  ): AutomationsEvent {
+    return new AutomationsEvent(
+      automationsEvent.type,
+      automationsEvent.timestamp
+    )
   }
 }
 

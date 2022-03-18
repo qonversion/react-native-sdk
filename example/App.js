@@ -10,6 +10,9 @@
 import React, { Component } from 'react';
 import { Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
 import Qonversion, {Product, Permission} from 'react-native-qonversion';
+import NotificationsManager from './notificationsManager';
+
+NotificationsManager.init();
 
 type StateType = {
     inAppButtonTitle: string;
@@ -122,7 +125,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                           }
                       });
                   }}
-                  >
+              >
                   <Text style={styles.buttonTitle}>{this.state.subscriptionButtonTitle}</Text>
               </TouchableOpacity>
               <TouchableOpacity
