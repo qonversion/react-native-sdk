@@ -14,7 +14,7 @@ const {RNQonversion} = NativeModules;
 const keyPrefix = "com.qonversion.keys";
 const sourceKey = keyPrefix + ".source";
 const versionKey = keyPrefix + ".sourceVersion";
-const sdkVersion = "3.1.1";
+const sdkVersion = "3.2.0";
 
 export default class Qonversion {
   /**
