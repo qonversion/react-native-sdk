@@ -1,4 +1,4 @@
-import {NativeModules} from "react-native";
+import {NativeEventEmitter, NativeModules} from "react-native";
 import {Property, ProrationMode, Provider} from "../enums";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
@@ -8,6 +8,7 @@ import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
 import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
+import {UpdatedPurchasesListener} from './UpdatedPurchasesListener';
 
 const {RNQonversion} = NativeModules;
 
@@ -15,6 +16,8 @@ const keyPrefix = "com.qonversion.keys";
 const sourceKey = keyPrefix + ".source";
 const versionKey = keyPrefix + ".sourceVersion";
 const sdkVersion = "3.2.1";
+
+const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
 
 export default class Qonversion {
   /**
@@ -432,5 +435,21 @@ export default class Qonversion {
     } catch (e) {
       return false;
     }
+  }
+
+  /**
+   * Set the delegate to handle pending purchases.
+   * The delegate is called when the deferred transaction status updates.
+   * For example, to handle purchases using slow credit card or SCA flow purchases.
+   * @param listener listener to be called when event happens.
+   */
+  static setUpdatedPurchasesListener(listener: UpdatedPurchasesListener) {
+    const eventEmitter = new NativeEventEmitter(RNQonversion);
+    eventEmitter.removeAllListeners(EVENT_PERMISSIONS_UPDATED);
+    eventEmitter.addListener(EVENT_PERMISSIONS_UPDATED, payload => {
+      const permissions = Mapper.convertPermissions(payload);
+      listener.onPermissionsUpdated(permissions);
+    });
+    RNQonversion.subscribeOnUpdatedPurchases();
   }
 }
