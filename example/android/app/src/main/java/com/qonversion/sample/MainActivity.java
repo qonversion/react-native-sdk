@@ -1,4 +1,4 @@
-package com.example;
+package com.qonversion.sample;
 
 import com.facebook.react.ReactActivity;
 

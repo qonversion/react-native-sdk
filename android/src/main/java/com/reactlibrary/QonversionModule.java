@@ -192,13 +192,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             public void onProductLoaded(QProduct product) {
                 final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
                     @Override
-                    public void onSuccess(@NotNull Map<String, QPermission> map) {
+                    public void onSuccess(@NonNull Map<String, QPermission> map) {
                         WritableMap result = EntitiesConverter.mapPermissions(map);
                         promise.resolve(result);
                     }
 
                     @Override
-                    public void onError(@NotNull QonversionError qonversionError) {
+                    public void onError(@NonNull QonversionError qonversionError) {
                         rejectWithError(qonversionError, promise);
                     }
                 };
@@ -476,7 +476,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
         Qonversion.offerings(new QonversionOfferingsCallback() {
             @Override
-            public void onSuccess(@NotNull QOfferings offerings) {
+            public void onSuccess(@NonNull QOfferings offerings) {
                 final QOffering offering = offerings.offeringForID(offeringId);
 
                 if (offering == null) {
@@ -493,7 +493,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 callback.onLoadingFailed();
             }
         });
