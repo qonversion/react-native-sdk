@@ -8,7 +8,7 @@ import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
 import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
-import {UpdatedPurchasesListener} from './UpdatedPurchasesListener';
+import {UpdatedPurchasesDelegate} from './UpdatedPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
@@ -441,14 +441,14 @@ export default class Qonversion {
    * Set the delegate to handle pending purchases.
    * The delegate is called when the deferred transaction status updates.
    * For example, to handle purchases using slow credit card or SCA flow purchases.
-   * @param listener listener to be called when event happens.
+   * @param delegate delegate to be called when event happens.
    */
-  static setUpdatedPurchasesListener(listener: UpdatedPurchasesListener) {
+  static setUpdatedPurchasesDelegate(delegate: UpdatedPurchasesDelegate) {
     const eventEmitter = new NativeEventEmitter(RNQonversion);
     eventEmitter.removeAllListeners(EVENT_PERMISSIONS_UPDATED);
     eventEmitter.addListener(EVENT_PERMISSIONS_UPDATED, payload => {
       const permissions = Mapper.convertPermissions(payload);
-      listener.onPermissionsUpdated(permissions);
+      delegate.onPermissionsUpdated(permissions);
     });
     RNQonversion.subscribeOnUpdatedPurchases();
   }

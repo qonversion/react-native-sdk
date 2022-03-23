@@ -1,6 +1,6 @@
 import Permission from './Permission';
 
-export interface UpdatedPurchasesListener {
+export interface UpdatedPurchasesDelegate {
 
   /**
    * Called when the deferred transaction status updates.
