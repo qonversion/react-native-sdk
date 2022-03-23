@@ -207,7 +207,7 @@ RCT_EXPORT_METHOD(subscribeOnPromoPurchases) {
 }
 
 RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    QNPromoPurchaseCompletionHandler executionBlock = [_promoPurchasesExecutionBlocks objectForKey:storeProductId];
+    QNPromoPurchaseCompletionHandler executionBlock = _promoPurchasesExecutionBlocks[storeProductId];
     if (executionBlock) {
         [_promoPurchasesExecutionBlocks removeObjectForKey:storeProductId];
         QNPurchaseCompletionHandler completionWrapper = ^(NSDictionary<NSString *, QNPermission*> *result, NSError  *_Nullable error, BOOL cancelled) {
