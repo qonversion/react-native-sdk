@@ -7,8 +7,8 @@
  * @flow strict-local
  */
 
-import React, { Component } from 'react';
-import { Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
+import React, {Component} from 'react';
+import {Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert} from 'react-native';
 import Qonversion, {Product, Permission} from 'react-native-qonversion';
 import NotificationsManager from './notificationsManager';
 
@@ -45,56 +45,62 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         Qonversion.setUpdatedPurchasesDelegate({
             onPermissionsUpdated(permissions) {
                 console.log('Permissions updated!', permissions);
+                this.handlePermissions(permissions);
             },
         });
         Qonversion.setPromoPurchasesDelegate({
-           onPromoPurchaseReceived: async (productId, purchaseDelegate) => {
-               try {
-                   const permissions = await purchaseDelegate(productId);
-                   console.log('Promo purchase completed. Permissions: ', permissions);
-               } catch (e) {
-                   console.log('Promo purchase failed.');
-               }
-           },
+            onPromoPurchaseReceived: async (productId, promoPurchaseExecutor) => {
+                try {
+                    const permissions = await promoPurchaseExecutor(productId);
+                    console.log('Promo purchase completed. Permissions: ', permissions);
+                    this.handlePermissions(permissions);
+                } catch (e) {
+                    console.log('Promo purchase failed.');
+                }
+            },
         });
         Qonversion.checkPermissions().then(permissions => {
-            let checkActivePermissionsButtonHidden = this.state.checkPermissionsHidden;
-            if (permissions.size > 0) {
-                const permissionsValues = Array.from(permissions.values());
-                checkActivePermissionsButtonHidden = !permissionsValues.some(item => item.isActive === true);
+            this.handlePermissions(permissions);
+        });
+    }
+
+    handlePermissions(permissions) {
+        let checkActivePermissionsButtonHidden = this.state.checkPermissionsHidden;
+        if (permissions.size > 0) {
+            const permissionsValues = Array.from(permissions.values());
+            checkActivePermissionsButtonHidden = !permissionsValues.some(item => item.isActive === true);
+        }
+        Qonversion.products().then(products => {
+            let inAppTitle = this.state.inAppButtonTitle;
+            let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
+
+            const inApp: Product = products.get('in_app');
+            if (inApp) {
+                inAppTitle = 'Buy for ' + inApp.prettyPrice;
+                const permission = permissions.get('Test Permission');
+                if (permission) {
+                    inAppTitle = permission.isActive ? 'Purchased' : inAppTitle;
+                }
             }
-            Qonversion.products().then(products => {
-                let inAppTitle = this.state.inAppButtonTitle;
-                let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
 
-                const inApp: Product = products.get('in_app');
-                if (inApp) {
-                    inAppTitle = 'Buy for ' + inApp.prettyPrice;
-                    const permission = permissions.get('Test Permission');
-                    if (permission) {
-                        inAppTitle = permission.isActive ? 'Purchased' : inAppTitle;
-                    }
+            const main: Product = products.get('main');
+            if (main) {
+                subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + prettyDuration[main.duration];
+                const permission = permissions.get('plus');
+                if (permission) {
+                    subscriptionButtonTitle = permission.isActive ? 'Purchased' : subscriptionButtonTitle;
                 }
+            }
 
-                const main: Product = products.get('main');
-                if (main) {
-                    subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + prettyDuration[main.duration];
-                    const permission = permissions.get('plus');
-                    if (permission) {
-                        subscriptionButtonTitle = permission.isActive ? 'Purchased' : subscriptionButtonTitle;
-                    }
-                }
-
-                this.setState({
-                    loading: false,
-                    inAppButtonTitle: inAppTitle,
-                    subscriptionButtonTitle: subscriptionButtonTitle,
-                    checkPermissionsHidden: checkActivePermissionsButtonHidden,
-                });
+            this.setState({
+                loading: false,
+                inAppButtonTitle: inAppTitle,
+                subscriptionButtonTitle: subscriptionButtonTitle,
+                checkPermissionsHidden: checkActivePermissionsButtonHidden,
             });
         });
-
     }
+
   render() {
     return (
       <View style={{flex: 1, alignItems: 'stretch', alignContent: 'stretch'}}>

@@ -8,7 +8,7 @@ import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
 import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
-import {UpdatedPurchasesDelegate} from './UpdatedPurchasesListener';
+import {UpdatedPurchasesDelegate} from './UpdatedPurchasesDelegate';
 import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
@@ -469,12 +469,12 @@ export default class Qonversion {
     const eventEmitter = new NativeEventEmitter(RNQonversion);
     eventEmitter.removeAllListeners(EVENT_PROMO_PURCHASE_RECEIVED);
     eventEmitter.addListener(EVENT_PROMO_PURCHASE_RECEIVED, productId => {
-      const promoPurchaseDelegate = async () => {
+      const promoPurchaseExecutor = async () => {
         const permissions = await RNQonversion.promoPurchase(productId);
         const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
         return mappedPermissions;
       };
-      delegate.onPromoPurchaseReceived(productId, promoPurchaseDelegate);
+      delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
     });
     RNQonversion.subscribeOnPromoPurchases();
   }
