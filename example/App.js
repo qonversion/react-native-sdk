@@ -47,6 +47,16 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                 console.log('Permissions updated!', permissions);
             },
         });
+        Qonversion.setPromoPurchasesDelegate({
+           onPromoPurchaseReceived: async (productId, purchaseDelegate) => {
+               try {
+                   const permissions = await purchaseDelegate(productId);
+                   console.log('Promo purchase completed. Permissions: ', permissions);
+               } catch (e) {
+                   console.log('Promo purchase failed.');
+               }
+           },
+        });
         Qonversion.checkPermissions().then(permissions => {
             let checkActivePermissionsButtonHidden = this.state.checkPermissionsHidden;
             if (permissions.size > 0) {

@@ -9,6 +9,7 @@ import Permission from "./Permission";
 import Product from "./Product";
 import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
 import {UpdatedPurchasesListener} from './UpdatedPurchasesListener';
+import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
@@ -18,6 +19,7 @@ const versionKey = keyPrefix + ".sourceVersion";
 const sdkVersion = "3.2.1";
 
 const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
+const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
 
 export default class Qonversion {
   /**
@@ -451,5 +453,29 @@ export default class Qonversion {
       listener.onPermissionsUpdated(permissions);
     });
     RNQonversion.subscribeOnUpdatedPurchases();
+  }
+
+  /**
+   * iOS only. Does nothing if called on Android.
+   * Set the delegate to handle promo purchases.
+   * The delegate is called when a promo purchase from the App Store happens.
+   * @param delegate delegate to be called when event happens.
+   */
+  static setPromoPurchasesDelegate(delegate: PromoPurchasesDelegate) {
+    if (!isIos()) {
+      return;
+    }
+
+    const eventEmitter = new NativeEventEmitter(RNQonversion);
+    eventEmitter.removeAllListeners(EVENT_PROMO_PURCHASE_RECEIVED);
+    eventEmitter.addListener(EVENT_PROMO_PURCHASE_RECEIVED, productId => {
+      const promoPurchaseDelegate = async () => {
+        const permissions = await RNQonversion.promoPurchase(productId);
+        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+        return mappedPermissions;
+      };
+      delegate.onPromoPurchaseReceived(productId, promoPurchaseDelegate);
+    });
+    RNQonversion.subscribeOnPromoPurchases();
   }
 }
