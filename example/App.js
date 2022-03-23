@@ -42,7 +42,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         };
 
         Qonversion.launchWithKey('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2');
-        Qonversion.setUpdatedPurchasesListener({
+        Qonversion.setUpdatedPurchasesDelegate({
             onPermissionsUpdated(permissions) {
                 console.log('Permissions updated!', permissions);
             },
