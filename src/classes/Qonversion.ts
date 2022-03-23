@@ -440,7 +440,7 @@ export default class Qonversion {
   /**
    * Set the delegate to handle pending purchases.
    * The delegate is called when the deferred transaction status updates.
-   * For example, to handle purchases using slow credit card or SCA flow purchases.
+   * For example, to handle purchases made using slow credit card or SCA flow purchases.
    * @param delegate delegate to be called when event happens.
    */
   static setUpdatedPurchasesDelegate(delegate: UpdatedPurchasesDelegate) {
