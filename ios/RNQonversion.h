@@ -1,7 +1,8 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
 #import "Qonversion.h"
 
-@interface RNQonversion : NSObject <RCTBridgeModule>
+@interface RNQonversion : RCTEventEmitter <RCTBridgeModule>
 
 @end

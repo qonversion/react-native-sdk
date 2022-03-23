@@ -1,6 +1,12 @@
 #import "RNQonversion.h"
 #import "EntitiesConverter.h"
 
+static NSString *const kEventPermissionsUpdated = @"permissions_updated";
+
+@interface RNQonversion () <QNPurchasesDelegate>
+
+@end
+
 @implementation RNQonversion
 
 RCT_EXPORT_MODULE();
@@ -189,6 +195,10 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
     completion(@[@(isQonversionNotification)]);
 }
 
+RCT_EXPORT_METHOD(subscribeOnUpdatedPurchases) {
+    [Qonversion setPurchasesDelegate:self];
+}
+
 #pragma mark - Private
 
 - (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
@@ -246,6 +256,17 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
     }
 
     return [data copy];
+}
+
+- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, QNPermission *>  * _Nonnull)permissions {
+    NSDictionary *payload = [EntitiesConverter convertPermissions:permissions.allValues];
+    [self sendEventWithName:kEventPermissionsUpdated body:payload];
+}
+
+#pragma mark - Emitter
+
+- (NSArray<NSString *> *)supportedEvents {
+    return @[kEventPermissionsUpdated];
 }
 
 @end
