@@ -294,9 +294,9 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
 
 - (void)shouldPurchasePromoProductWithIdentifier:(NSString *)productID executionBlock:(QNPromoPurchaseCompletionHandler)executionBlock {
     if (!_promoPurchasesExecutionBlocks) {
-        _promoPurchasesExecutionBlocks = [[NSMutableDictionary alloc] init];
+        _promoPurchasesExecutionBlocks = [NSMutableDictionary new];
     }
-    [_promoPurchasesExecutionBlocks setObject:executionBlock forKey:productID];
+    _promoPurchasesExecutionBlocks[productID] = executionBlock;
 
     [self sendEventWithName:kEventPromoPurchaseReceived body:productID];
 }
