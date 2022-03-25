@@ -17,7 +17,7 @@ const NotificationsManager = {
         if (notification.userInteraction) {
           let notificationData = '';
           if (Platform.OS === 'ios') {
-            notificationData = notification.data.aps;
+            notificationData = notification.data;
           } else if (Platform.OS === 'android') {
             notificationData = JSON.parse(notification.data.notificationData);
           }
