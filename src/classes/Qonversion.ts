@@ -1,4 +1,4 @@
-import {NativeModules} from "react-native";
+import {NativeEventEmitter, NativeModules} from "react-native";
 import {Property, ProrationMode, Provider} from "../enums";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
@@ -8,13 +8,18 @@ import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
 import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
+import {UpdatedPurchasesDelegate} from './UpdatedPurchasesDelegate';
+import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
 const keyPrefix = "com.qonversion.keys";
 const sourceKey = keyPrefix + ".source";
 const versionKey = keyPrefix + ".sourceVersion";
-const sdkVersion = "3.2.1";
+const sdkVersion = "3.3.0";
+
+const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
+const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
 
 export default class Qonversion {
   /**
@@ -432,5 +437,45 @@ export default class Qonversion {
     } catch (e) {
       return false;
     }
+  }
+
+  /**
+   * Set the delegate to handle pending purchases.
+   * The delegate is called when the deferred transaction status updates.
+   * For example, to handle purchases made using slow credit card or SCA flow purchases.
+   * @param delegate delegate to be called when event happens.
+   */
+  static setUpdatedPurchasesDelegate(delegate: UpdatedPurchasesDelegate) {
+    const eventEmitter = new NativeEventEmitter(RNQonversion);
+    eventEmitter.removeAllListeners(EVENT_PERMISSIONS_UPDATED);
+    eventEmitter.addListener(EVENT_PERMISSIONS_UPDATED, payload => {
+      const permissions = Mapper.convertPermissions(payload);
+      delegate.onPermissionsUpdated(permissions);
+    });
+    RNQonversion.subscribeOnUpdatedPurchases();
+  }
+
+  /**
+   * iOS only. Does nothing if called on Android.
+   * Set the delegate to handle promo purchases.
+   * The delegate is called when a promo purchase from the App Store happens.
+   * @param delegate delegate to be called when event happens.
+   */
+  static setPromoPurchasesDelegate(delegate: PromoPurchasesDelegate) {
+    if (!isIos()) {
+      return;
+    }
+
+    const eventEmitter = new NativeEventEmitter(RNQonversion);
+    eventEmitter.removeAllListeners(EVENT_PROMO_PURCHASE_RECEIVED);
+    eventEmitter.addListener(EVENT_PROMO_PURCHASE_RECEIVED, productId => {
+      const promoPurchaseExecutor = async () => {
+        const permissions = await RNQonversion.promoPurchase(productId);
+        const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+        return mappedPermissions;
+      };
+      delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
+    });
+    RNQonversion.subscribeOnPromoPurchases();
   }
 }

@@ -1,6 +1,15 @@
 #import "RNQonversion.h"
 #import "EntitiesConverter.h"
 
+static NSString *const kEventPermissionsUpdated = @"permissions_updated";
+static NSString *const kEventPromoPurchaseReceived = @"promo_purchase_received";
+
+@interface RNQonversion () <QNPurchasesDelegate, QNPromoPurchasesDelegate>
+
+@property (nonatomic, strong) NSMutableDictionary *promoPurchasesExecutionBlocks;
+
+@end
+
 @implementation RNQonversion
 
 RCT_EXPORT_MODULE();
@@ -189,6 +198,36 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
     completion(@[@(isQonversionNotification)]);
 }
 
+RCT_EXPORT_METHOD(subscribeOnUpdatedPurchases) {
+    [Qonversion setPurchasesDelegate:self];
+}
+
+RCT_EXPORT_METHOD(subscribeOnPromoPurchases) {
+    [Qonversion setPromoPurchasesDelegate:self];
+}
+
+RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+    QNPromoPurchaseCompletionHandler executionBlock = _promoPurchasesExecutionBlocks[storeProductId];
+    if (executionBlock) {
+        _promoPurchasesExecutionBlocks[storeProductId] = nil;
+        QNPurchaseCompletionHandler completionWrapper = ^(NSDictionary<NSString *, QNPermission*> *result, NSError  *_Nullable error, BOOL cancelled) {
+            if (error) {
+                NSString *errorCode = [@(error.code) stringValue];
+                reject(errorCode, error.localizedDescription, error);
+            } else {
+                NSDictionary *convertedPermissions = [EntitiesConverter convertPermissions:result.allValues];
+                completion(@[convertedPermissions]);
+            }
+        };
+
+        executionBlock(completionWrapper);
+    } else {
+        NSError *error = [NSError errorWithDomain:keyQNErrorDomain code:QNErrorProductNotFound userInfo:nil];
+        NSString *errorCode = [@(error.code) stringValue];
+        reject(errorCode, error.localizedDescription, error);
+    }
+}
+
 #pragma mark - Private
 
 - (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
@@ -246,6 +285,26 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
     }
 
     return [data copy];
+}
+
+- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, QNPermission *>  * _Nonnull)permissions {
+    NSDictionary *payload = [EntitiesConverter convertPermissions:permissions.allValues];
+    [self sendEventWithName:kEventPermissionsUpdated body:payload];
+}
+
+- (void)shouldPurchasePromoProductWithIdentifier:(NSString *)productID executionBlock:(QNPromoPurchaseCompletionHandler)executionBlock {
+    if (!_promoPurchasesExecutionBlocks) {
+        _promoPurchasesExecutionBlocks = [NSMutableDictionary new];
+    }
+    _promoPurchasesExecutionBlocks[productID] = executionBlock;
+
+    [self sendEventWithName:kEventPromoPurchaseReceived body:productID];
+}
+
+#pragma mark - Emitter
+
+- (NSArray<NSString *> *)supportedEvents {
+    return @[kEventPermissionsUpdated, kEventPromoPurchaseReceived];
 }
 
 @end

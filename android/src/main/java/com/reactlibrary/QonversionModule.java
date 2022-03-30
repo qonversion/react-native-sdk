@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.qonversion.android.sdk.AttributionSource;
 import com.qonversion.android.sdk.QUserProperties;
 import com.qonversion.android.sdk.Qonversion;
@@ -20,6 +21,7 @@ import com.qonversion.android.sdk.QonversionLaunchCallback;
 import com.qonversion.android.sdk.QonversionOfferingsCallback;
 import com.qonversion.android.sdk.QonversionPermissionsCallback;
 import com.qonversion.android.sdk.QonversionProductsCallback;
+import com.qonversion.android.sdk.UpdatedPurchasesListener;
 import com.qonversion.android.sdk.dto.QLaunchResult;
 import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
 import com.qonversion.android.sdk.dto.offerings.QOffering;
@@ -47,6 +49,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
     private QonversionSDKInfo sdkInfoToSave;
 
+    private static final String EVENT_PERMISSIONS_UPDATED = "permissions_updated";
     private static final HashMap<String, QUserProperties> userPropertiesMap = new HashMap<String, QUserProperties>() {{
         put("EMAIL", QUserProperties.Email);
         put("NAME", QUserProperties.Name);
@@ -56,6 +59,8 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         put("CUSTOM_USER_ID", QUserProperties.CustomUserId);
         put("FACEBOOK_ATTRIBUTION", QUserProperties.FacebookAttribution);
     }};
+
+    private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
 
     public QonversionModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -192,13 +197,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             public void onProductLoaded(QProduct product) {
                 final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
                     @Override
-                    public void onSuccess(@NotNull Map<String, QPermission> map) {
+                    public void onSuccess(@NonNull Map<String, QPermission> map) {
                         WritableMap result = EntitiesConverter.mapPermissions(map);
                         promise.resolve(result);
                     }
 
                     @Override
-                    public void onError(@NotNull QonversionError qonversionError) {
+                    public void onError(@NonNull QonversionError qonversionError) {
                         rejectWithError(qonversionError, promise);
                     }
                 };
@@ -456,6 +461,22 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         promise.resolve(isQonversionNotification);
     }
 
+    @ReactMethod
+    public void subscribeOnUpdatedPurchases() {
+        if (eventEmitter == null) {
+            eventEmitter = getReactApplicationContext()
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+        }
+
+        Qonversion.setUpdatedPurchasesListener(new UpdatedPurchasesListener() {
+            @Override
+            public void onPermissionsUpdate(@NonNull Map<String, QPermission> map) {
+                final WritableMap result = EntitiesConverter.mapPermissions(map);
+                eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, result);
+            }
+        });
+    }
+
     private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {
         String errorMessage = qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
         promise.reject(qonversionError.getCode().toString(), errorMessage);
@@ -476,7 +497,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
         Qonversion.offerings(new QonversionOfferingsCallback() {
             @Override
-            public void onSuccess(@NotNull QOfferings offerings) {
+            public void onSuccess(@NonNull QOfferings offerings) {
                 final QOffering offering = offerings.offeringForID(offeringId);
 
                 if (offering == null) {
@@ -493,7 +514,7 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onError(@NotNull QonversionError qonversionError) {
+            public void onError(@NonNull QonversionError qonversionError) {
                 callback.onLoadingFailed();
             }
         });
