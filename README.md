@@ -1,8 +1,4 @@
-<h1>
-  <p align="center">
-    Qonversion
-  </p>
-</h1>
+# <p align="center">Qonversion</p>
 
 Qonversion is the data platform to power in-app subscription revenue growth. 
 
