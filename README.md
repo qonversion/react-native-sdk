@@ -1,9 +1,14 @@
-<p align="center">
- <a href="https://qonversion.io/#gh-light-mode-only" target="_blank"><img width="480" height="60" src="https://qcdn3.sfo3.digitaloceanspaces.com/github/qonversion_logo.png"></a>
- <a href="https://qonversion.io/#gh-dark-mode-only" target="_blank"><img width="480" height="60" src="https://user-images.githubusercontent.com/13959241/161104647-0bb44314-0fa3-4a43-ac30-4705b47b2ada.png"></a>
-</p>
-
-<br>
+<h1>
+  <p align="center">
+    <a style="
+        color: inherit;
+        text-decoration: none;
+        font-size: 70px;
+        font-family: 'Heiti SC',sans-serif; 
+        letter-spacing: 5px;
+    " href="https://qonversion.io/" target="_blank">Qonversion</a>
+  </p>
+</h1>
 
 Qonversion is the data platform to power in-app subscription revenue growth. 
 
