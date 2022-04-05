@@ -1,12 +1,6 @@
 <h1>
   <p align="center">
-    <a style="
-        color: inherit;
-        text-decoration: none;
-        font-size: 70px;
-        font-family: 'Heiti SC',sans-serif; 
-        letter-spacing: 5px;
-    " href="https://qonversion.io/" target="_blank">Qonversion</a>
+    Qonversion
   </p>
 </h1>
 
