@@ -4,77 +4,48 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.qonversion.android.sdk.AttributionSource;
-import com.qonversion.android.sdk.QUserProperties;
-import com.qonversion.android.sdk.Qonversion;
-import com.qonversion.android.sdk.QonversionEligibilityCallback;
-import com.qonversion.android.sdk.QonversionError;
-import com.qonversion.android.sdk.QonversionErrorCode;
-import com.qonversion.android.sdk.QonversionExperimentsCallback;
-import com.qonversion.android.sdk.QonversionLaunchCallback;
-import com.qonversion.android.sdk.QonversionOfferingsCallback;
-import com.qonversion.android.sdk.QonversionPermissionsCallback;
-import com.qonversion.android.sdk.QonversionProductsCallback;
-import com.qonversion.android.sdk.UpdatedPurchasesListener;
-import com.qonversion.android.sdk.dto.QLaunchResult;
-import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
-import com.qonversion.android.sdk.dto.offerings.QOffering;
-import com.qonversion.android.sdk.dto.offerings.QOfferings;
-import com.qonversion.android.sdk.dto.QPermission;
-import com.qonversion.android.sdk.dto.products.QProduct;
-
 import org.json.JSONException;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.qonversion.android.sdk.dto.eligibility.QEligibility;
-
 import java.util.List;
-
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import io.qonversion.sandwich.ActivityProvider;
+import io.qonversion.sandwich.QonversionEventsListener;
+import io.qonversion.sandwich.QonversionSandwich;
+import io.qonversion.sandwich.ResultListener;
+import io.qonversion.sandwich.SandwichError;
 
-public class QonversionModule extends ReactContextBaseJavaModule {
+public class QonversionModule extends ReactContextBaseJavaModule implements QonversionEventsListener {
 
-    private QonversionSDKInfo sdkInfoToSave;
+    private final QonversionSandwich qonversionSandwich;
 
     private static final String EVENT_PERMISSIONS_UPDATED = "permissions_updated";
-    private static final HashMap<String, QUserProperties> userPropertiesMap = new HashMap<String, QUserProperties>() {{
-        put("EMAIL", QUserProperties.Email);
-        put("NAME", QUserProperties.Name);
-        put("APPS_FLYER_USER_ID", QUserProperties.AppsFlyerUserId);
-        put("ADJUST_USER_ID", QUserProperties.AdjustAdId);
-        put("KOCHAVA_DEVICE_ID", QUserProperties.KochavaDeviceId);
-        put("CUSTOM_USER_ID", QUserProperties.CustomUserId);
-        put("FACEBOOK_ATTRIBUTION", QUserProperties.FacebookAttribution);
-    }};
 
-    private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
+    private final DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter;
 
     public QonversionModule(ReactApplicationContext reactContext) {
         super(reactContext);
-    }
 
-    private void storeSDKInfoToPreferences(QonversionSDKInfo sdkInfo,Activity currentActivity){
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(currentActivity.getApplication()).edit();
-        editor.putString(sdkInfo.sdkVersionKey, sdkInfo.sdkVersion);
-        editor.putString(sdkInfo.sourceKey, sdkInfo.source);
-        editor.apply();
-    }
+        eventEmitter = reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
 
-    private QonversionError generateActivityError () {
-        return new QonversionError(QonversionErrorCode.UnknownError, "Android current activity is null, cannot perform the process.");
+        qonversionSandwich = new QonversionSandwich(
+                (Application) reactContext.getApplicationContext(),
+                new ActivityProvider() {
+                    @Nullable
+                    @Override
+                    public Activity getCurrentActivity() {
+                        return QonversionModule.this.getCurrentActivity();
+                    }
+                },
+                this
+        );
     }
 
     @Override
@@ -83,88 +54,23 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void storeSDKInfo(String sourceKey, String source, String sdkVersionKey, String sdkVersion) {
-        Activity currentActivity = getCurrentActivity();
-        QonversionSDKInfo sdkInfo = new QonversionSDKInfo(sourceKey, source, sdkVersionKey, sdkVersion);
-
-        if (currentActivity == null) {
-            this.sdkInfoToSave = sdkInfo;
-            return;
-        }
-
-        storeSDKInfoToPreferences(sdkInfo, currentActivity);
+    public void storeSDKInfo(String source, String sdkVersion) {
+        qonversionSandwich.storeSdkInfo(source, sdkVersion);
     }
 
     @ReactMethod
-    public void launchWithKey(String key, Boolean observeMode, final Promise promise) {
-        Activity currentActivity = getCurrentActivity();
-        if(currentActivity == null){
-            QonversionError qonversionError = generateActivityError();
-            promise.reject(qonversionError.getCode().toString(), qonversionError.getDescription());
-            return;
-        }
-
-        if(this.sdkInfoToSave != null){
-            storeSDKInfoToPreferences(this.sdkInfoToSave, currentActivity);
-        }
-
-        Qonversion.launch(currentActivity.getApplication(), key, observeMode, new QonversionLaunchCallback()
-        {
-            @Override
-            public void onSuccess(@NonNull QLaunchResult qLaunchResult) {
-                WritableMap result = EntitiesConverter.mapLaunchResult(qLaunchResult);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+    public void launch(String key, Boolean observeMode, final Promise promise) {
+        qonversionSandwich.launch(key, observeMode, getResultListener(promise));
     }
 
     @ReactMethod
     public void purchaseProduct(String productId, String offeringId, final Promise promise) {
-        purchaseWithId(productId, offeringId, promise);
+        qonversionSandwich.purchaseProduct(productId, offeringId, getResultListener(promise));
     }
 
     @ReactMethod
     public void purchase(String productId, final Promise promise) {
-        purchaseWithId(productId, null, promise);
-    }
-
-    private void purchaseWithId(final String productId, @Nullable final String offeringId, final Promise promise) {
-        final Activity currentActivity = getCurrentActivity();
-        if (currentActivity == null) {
-            QonversionError qonversionError = generateActivityError();
-            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
-            return;
-        }
-
-        loadProduct(productId, offeringId, new ProductCallback() {
-            @Override
-            public void onProductLoaded(QProduct product) {
-                final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
-                    @Override
-                    public void onSuccess(@NonNull Map<String, QPermission> map) {
-                        WritableMap result = EntitiesConverter.mapPermissions(map);
-                        promise.resolve(result);
-                    }
-
-                    @Override
-                    public void onError(@NonNull QonversionError qonversionError) {
-                        rejectWithError(qonversionError, promise);
-                    }
-                };
-
-                Qonversion.purchase(currentActivity, product, callback);
-            }
-
-            @Override
-            public void onLoadingFailed() {
-                proccessPurchase(currentActivity, productId, promise);
-            }
-        });
+        qonversionSandwich.purchase(productId, getResultListener(promise));
     }
 
     @ReactMethod
@@ -185,75 +91,13 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             @Nullable final Integer prorationMode,
             final Promise promise
     ) {
-        final Activity currentActivity = getCurrentActivity();
-        if (currentActivity == null) {
-            QonversionError qonversionError = generateActivityError();
-            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
-            return;
-        }
-
-        loadProduct(productId, offeringId, new ProductCallback() {
-            @Override
-            public void onProductLoaded(QProduct product) {
-                final QonversionPermissionsCallback callback = new QonversionPermissionsCallback() {
-                    @Override
-                    public void onSuccess(@NonNull Map<String, QPermission> map) {
-                        WritableMap result = EntitiesConverter.mapPermissions(map);
-                        promise.resolve(result);
-                    }
-
-                    @Override
-                    public void onError(@NonNull QonversionError qonversionError) {
-                        rejectWithError(qonversionError, promise);
-                    }
-                };
-
-                Qonversion.updatePurchase(currentActivity, product, oldProductId, prorationMode, callback);
-            }
-
-            @Override
-            public void onLoadingFailed() {
-                updatePurchase(productId, oldProductId, promise);
-            }
-        });
-    }
-
-    private void proccessPurchase(Activity currentActivity, String productId, final Promise promise) {
-        Qonversion.purchase(currentActivity, productId, new QonversionPermissionsCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QPermission> map) {
-                WritableMap result = EntitiesConverter.mapPermissions(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
-    }
-
-    @ReactMethod
-    public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
-        Activity currentActivity = getCurrentActivity();
-        if (currentActivity == null) {
-            QonversionError qonversionError = generateActivityError();
-            promise.reject(qonversionError.getCode().toString(),qonversionError.getDescription());
-            return;
-        }
-
-        Qonversion.updatePurchase(currentActivity, productId, oldProductId, prorationMode, new QonversionPermissionsCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QPermission> map) {
-                WritableMap result = EntitiesConverter.mapPermissions(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        qonversionSandwich.updatePurchaseWithProduct(
+                productId,
+                offeringId,
+                oldProductId,
+                prorationMode,
+                getResultListener(promise)
+        );
     }
 
     @ReactMethod
@@ -262,41 +106,25 @@ public class QonversionModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setProperty(String key, String value) {
-        QUserProperties property = userPropertiesMap.get(key);
+    public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
+        qonversionSandwich.updatePurchase(productId, oldProductId, prorationMode, getResultListener(promise));
+    }
 
-        if (property != null) {
-            Qonversion.setProperty(property, value);
-        }
+    @ReactMethod
+    public void setProperty(String key, String value) {
+        qonversionSandwich.setDefinedProperty(key, value);
     }
 
     @ReactMethod
     public void setUserProperty(String key, String value) {
-        Qonversion.setUserProperty(key, value);
+        qonversionSandwich.setCustomProperty(key, value);
     }
 
     @ReactMethod
-    public void addAttributionData(ReadableMap map, Integer provider) {
-        AttributionSource source = null;
-        switch (provider) {
-            case 0:
-                source = AttributionSource.AppsFlyer;
-                break;
-            case 1:
-                source = AttributionSource.Branch;
-                break;
-            case 2:
-                source = AttributionSource.Adjust;
-                break;
-        }
-
-        if (source == null) {
-            return;
-        }
-
+    public void addAttributionData(ReadableMap map, String provider) {
         try {
-            HashMap attributesHashMap = EntitiesConverter.convertReadableMapToHashMap(map);
-            Qonversion.attribution(attributesHashMap, source);
+            HashMap<String, Object> attributesHashMap = EntitiesConverter.convertReadableMapToHashMap(map);
+            qonversionSandwich.addAttributionData(provider, attributesHashMap);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -304,129 +132,58 @@ public class QonversionModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void checkPermissions(final Promise promise) {
-        Qonversion.checkPermissions(new QonversionPermissionsCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QPermission> map) {
-                WritableMap result = EntitiesConverter.mapPermissions(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        qonversionSandwich.checkPermissions(getResultListener(promise));
     }
 
     @ReactMethod
     public void products(final Promise promise) {
-        Qonversion.products(new QonversionProductsCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QProduct> map) {
-                WritableMap result = EntitiesConverter.mapProducts(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        qonversionSandwich.products(getResultListener(promise));
     }
 
     @ReactMethod
     public void offerings(final Promise promise) {
-        Qonversion.offerings(new QonversionOfferingsCallback() {
-            @Override
-            public void onSuccess(@NonNull QOfferings offerings) {
-                WritableMap result = EntitiesConverter.mapOfferings(offerings);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        qonversionSandwich.offerings(getResultListener(promise));
     }
 
     @ReactMethod
     public void checkTrialIntroEligibilityForProductIds(ReadableArray ids, final Promise promise) {
-        List<String> result = Arrays.asList(ids.toArrayList().toArray(new String[ids.size()]));
-        Qonversion.checkTrialIntroEligibilityForProductIds(result, new QonversionEligibilityCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QEligibility> map) {
-                WritableArray result = EntitiesConverter.mapEligibility(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        final List<String> idList = EntitiesConverter.convertArrayToStringList(ids);
+        qonversionSandwich.checkTrialIntroEligibility(idList, getResultListener(promise));
     }
 
     @ReactMethod
     public void experiments(final Promise promise) {
-        Qonversion.experiments(new QonversionExperimentsCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QExperimentInfo> map) {
-                WritableArray result = EntitiesConverter.mapExperiments(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        qonversionSandwich.experiments(getResultListener(promise));
     }
 
     @ReactMethod
     public void restore(final Promise promise) {
-        Qonversion.restore(new QonversionPermissionsCallback() {
-            @Override
-            public void onSuccess(@NonNull Map<String, QPermission> map) {
-                WritableMap result = EntitiesConverter.mapPermissions(map);
-                promise.resolve(result);
-            }
-
-            @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                rejectWithError(qonversionError, promise);
-            }
-        });
+        qonversionSandwich.restore(getResultListener(promise));
     }
 
     @ReactMethod
     public void syncPurchases() {
-        Qonversion.syncPurchases();
+        qonversionSandwich.syncPurchases();
     }
 
     @ReactMethod
     public void setDebugMode() {
-        Qonversion.setDebugMode();
-    }
-
-    @ReactMethod
-    public void resetUser() {
-        Qonversion.resetUser();
+        qonversionSandwich.setDebugMode();
     }
 
     @ReactMethod
     public void identify(String userID) {
-        Qonversion.identify(userID);
+        qonversionSandwich.identify(userID);
     }
 
     @ReactMethod
     public void logout() {
-        Qonversion.logout();
+        qonversionSandwich.logout();
     }
 
     @ReactMethod
     public void setNotificationsToken(String token) {
-        Qonversion.setNotificationsToken(token);
+        qonversionSandwich.setNotificationToken(token);
     }
 
     @ReactMethod
@@ -444,79 +201,33 @@ public class QonversionModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        if (dataMap.isEmpty()) {
-            promise.resolve(false);
-            return;
-        }
-
-        final Map<String, String> stringsMap = new HashMap<>();
-        for (String key : dataMap.keySet()) {
-            Object value = dataMap.get(key);
-            if (value != null) {
-                stringsMap.put(key, value.toString());
-            }
-        }
-
-        boolean isQonversionNotification = Qonversion.handleNotification(stringsMap);
+        boolean isQonversionNotification = qonversionSandwich.handleNotification(dataMap);
         promise.resolve(isQonversionNotification);
     }
 
-    @ReactMethod
-    public void subscribeOnUpdatedPurchases() {
-        if (eventEmitter == null) {
-            eventEmitter = getReactApplicationContext()
-                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
-        }
+    @Override
+    public void onPermissionsUpdateAfterAsyncPurchase(@NonNull Map<String, ?> map) {
+        final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
+        eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, payload);
+    }
 
-        Qonversion.setUpdatedPurchasesListener(new UpdatedPurchasesListener() {
+    private ResultListener getResultListener(final Promise promise) {
+        return new ResultListener() {
             @Override
-            public void onPermissionsUpdate(@NonNull Map<String, QPermission> map) {
-                final WritableMap result = EntitiesConverter.mapPermissions(map);
-                eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, result);
-            }
-        });
-    }
-
-    private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {
-        String errorMessage = qonversionError.getDescription() + "\n" +  qonversionError.getAdditionalMessage();
-        promise.reject(qonversionError.getCode().toString(), errorMessage);
-    }
-
-    private interface ProductCallback {
-
-        void onProductLoaded(QProduct product);
-
-        void onLoadingFailed();
-    }
-
-    private void loadProduct(final String productId, @Nullable final String offeringId, final ProductCallback callback) {
-        if (offeringId == null) {
-            callback.onLoadingFailed();
-            return;
-        }
-
-        Qonversion.offerings(new QonversionOfferingsCallback() {
-            @Override
-            public void onSuccess(@NonNull QOfferings offerings) {
-                final QOffering offering = offerings.offeringForID(offeringId);
-
-                if (offering == null) {
-                    callback.onLoadingFailed();
-                    return;
-                }
-
-                final QProduct product = offering.productForID(productId);
-                if (product == null) {
-                    callback.onLoadingFailed();
-                } else {
-                    callback.onProductLoaded(product);
-                }
+            public void onSuccess(@NonNull Map<String, ?> map) {
+                final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
+                promise.resolve(payload);
             }
 
             @Override
-            public void onError(@NonNull QonversionError qonversionError) {
-                callback.onLoadingFailed();
+            public void onError(@NonNull SandwichError error) {
+                rejectWithError(error, promise);
             }
-        });
+        };
+    }
+
+    private void rejectWithError(@NonNull SandwichError sandwichError, final Promise promise) {
+        String errorMessage = sandwichError.getDescription() + "\n" + sandwichError.getAdditionalMessage();
+        promise.reject(sandwichError.getCode(), errorMessage);
     }
 }
