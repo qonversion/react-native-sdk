@@ -478,9 +478,9 @@ class Mapper {
   ): QonversionError | undefined {
     return error ? new QonversionError(
       error.code,
-      error.domain,
       error.description,
       error.additionalMessage,
+      error.domain,
     ) : undefined;
   }
 

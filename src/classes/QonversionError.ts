@@ -6,9 +6,9 @@ class QonversionError {
 
   constructor(
     code: string,
-    domain?: string,
     description: string,
     additionalMessage: string,
+    domain?: string,
   ) {
     this.code = code;
     this.domain = domain;
