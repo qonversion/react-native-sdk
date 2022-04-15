@@ -138,8 +138,12 @@ public class EntitiesConverter {
                 array.pushString((String) value);
             } else if (value instanceof Integer) {
                 array.pushInt((Integer) value);
+            } else if (value instanceof Long) {
+                array.pushDouble(((Long) value).doubleValue());
             } else if (value instanceof Double) {
                 array.pushDouble((Double) value);
+            } else if (value instanceof Float) {
+                array.pushDouble((Float) value);
             } else if (value instanceof Boolean) {
                 array.pushBoolean((Boolean) value);
             } else if (value instanceof List) {
@@ -161,8 +165,12 @@ public class EntitiesConverter {
                 writableMap.putString(keyStr, (String) value);
             } else if (value instanceof Integer) {
                 writableMap.putInt(keyStr, (Integer) value);
+            } else if (value instanceof Long) {
+                writableMap.putDouble(keyStr, ((Long) value).doubleValue());
             } else if (value instanceof Double) {
                 writableMap.putDouble(keyStr, (Double) value);
+            } else if (value instanceof Float) {
+                writableMap.putDouble(keyStr, (Float) value);
             } else if (value instanceof Boolean) {
                 writableMap.putBoolean(keyStr, (Boolean) value);
             } else if (value instanceof List) {

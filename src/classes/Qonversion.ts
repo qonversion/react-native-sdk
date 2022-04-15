@@ -35,7 +35,7 @@ export default class Qonversion {
     observerMode: boolean = false
   ): Promise<LaunchResult> {
     RNQonversion.storeSDKInfo("rn", sdkVersion);
-    const response = await RNQonversion.launchWithKey(key, observerMode);
+    const response = await RNQonversion.launch(key, observerMode);
     const launchResult = Mapper.convertLaunchResult(response);
 
     return launchResult;
@@ -451,7 +451,6 @@ export default class Qonversion {
       const permissions = Mapper.convertPermissions(payload);
       delegate.onPermissionsUpdated(permissions);
     });
-    RNQonversion.subscribeOnUpdatedPurchases();
   }
 
   /**

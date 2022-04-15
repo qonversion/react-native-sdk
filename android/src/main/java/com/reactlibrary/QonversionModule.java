@@ -28,12 +28,10 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     private static final String EVENT_PERMISSIONS_UPDATED = "permissions_updated";
 
-    private final DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter;
+    private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
 
     public QonversionModule(ReactApplicationContext reactContext) {
         super(reactContext);
-
-        eventEmitter = reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
 
         qonversionSandwich = new QonversionSandwich(
                 (Application) reactContext.getApplicationContext(),
@@ -46,6 +44,13 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
                 },
                 this
         );
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+
+        eventEmitter = getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
     }
 
     @Override
@@ -208,7 +213,9 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     @Override
     public void onPermissionsUpdateAfterAsyncPurchase(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
-        eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, payload);
+        if (eventEmitter != null) {
+            eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, payload);
+        }
     }
 
     private ResultListener getResultListener(final Promise promise) {

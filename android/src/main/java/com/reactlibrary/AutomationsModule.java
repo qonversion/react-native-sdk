@@ -18,14 +18,19 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
 
     private final AutomationsSandwich automationsSandwich;
 
-    private final DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter;
+    private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
 
     public AutomationsModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
-        eventEmitter = reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
-
         automationsSandwich = new AutomationsSandwich();
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+
+        eventEmitter = getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
     }
 
     @Override
@@ -44,6 +49,8 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
         if (payload != null) {
             payloadMap = EntitiesConverter.convertMapToWritableMap(payload);
         }
-        eventEmitter.emit(event.getKey(), payloadMap);
+        if (eventEmitter != null) {
+            eventEmitter.emit(event.getKey(), payloadMap);
+        }
     }
 }
