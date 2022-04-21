@@ -4,13 +4,23 @@
 static NSString *const kEventPermissionsUpdated = @"permissions_updated";
 static NSString *const kEventPromoPurchaseReceived = @"promo_purchase_received";
 
-@interface RNQonversion () <QNPurchasesDelegate, QNPromoPurchasesDelegate>
+@interface RNQonversion () <QonversionEventListener>
 
 @property (nonatomic, strong) NSMutableDictionary *promoPurchasesExecutionBlocks;
+@property (nonatomic, strong) QonversionSandwich *qonversionSandwich;
 
 @end
 
 @implementation RNQonversion
+
+- (instancetype)init
+{
+  self = [super init];
+  if (self) {
+    _qonversionSandwich = [[QonversionSandwich alloc] initWithQonversionEventListener:self];
+  }
+  return self;
+}
 
 RCT_EXPORT_MODULE();
 
@@ -19,7 +29,7 @@ RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)sourceKey source:(NSString *)source v
     [[NSUserDefaults standardUserDefaults] setValue:source forKey:sourceKey];
 }
 
-RCT_EXPORT_METHOD(launchWithKey:(NSString *)key observerMode:(BOOL)observerMode completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(launch:(NSString *)key observerMode:(BOOL)observerMode completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
     [Qonversion launchWithKey:key completion:^(QNLaunchResult *result, NSError *error) {
         if (error) {
@@ -287,9 +297,8 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
     return [data copy];
 }
 
-- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, QNPermission *>  * _Nonnull)permissions {
-    NSDictionary *payload = [EntitiesConverter convertPermissions:permissions.allValues];
-    [self sendEventWithName:kEventPermissionsUpdated body:payload];
+- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, QNPermission *> * _Nonnull)permissions {
+    [self sendEventWithName:kEventPermissionsUpdated body:permissions];
 }
 
 - (void)shouldPurchasePromoProductWithIdentifier:(NSString *)productID executionBlock:(QNPromoPurchaseCompletionHandler)executionBlock {
@@ -305,6 +314,11 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[kEventPermissionsUpdated, kEventPromoPurchaseReceived];
+}
+
+- (BridgeCompletion)getResultListener:(RCTResponseSenderBlock)completion
+                             rejecter:(RCTPromiseRejectBlock)reject) {
+  return ;
 }
 
 @end

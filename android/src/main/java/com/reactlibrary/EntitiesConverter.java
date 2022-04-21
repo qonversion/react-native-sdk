@@ -1,6 +1,5 @@
 package com.reactlibrary;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
@@ -8,14 +7,6 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
-import com.qonversion.android.sdk.QonversionError;
-import com.qonversion.android.sdk.automations.AutomationsEvent;
-import com.qonversion.android.sdk.automations.QActionResult;
-import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
-import com.qonversion.android.sdk.dto.offerings.QOffering;
-import com.qonversion.android.sdk.dto.offerings.QOfferings;
-import com.qonversion.android.sdk.dto.products.QProduct;
-import com.qonversion.android.sdk.dto.eligibility.QEligibility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,8 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 public class EntitiesConverter {
 

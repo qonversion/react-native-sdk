@@ -1,6 +1,7 @@
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 
+use_modular_headers!
 platform :ios, '10.0'
 
 target 'example' do
