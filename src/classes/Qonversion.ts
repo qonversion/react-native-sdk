@@ -7,15 +7,12 @@ import Mapper from "./Mapper";
 import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
-import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
+import {convertPropertyToNativeKey, convertProviderToNativeKey, isAndroid, isIos} from "../utils";
 import {UpdatedPurchasesDelegate} from './UpdatedPurchasesDelegate';
 import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
-const keyPrefix = "com.qonversion.keys";
-const sourceKey = keyPrefix + ".source";
-const versionKey = keyPrefix + ".sourceVersion";
 const sdkVersion = "3.3.0";
 
 const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
@@ -37,8 +34,8 @@ export default class Qonversion {
     key: string,
     observerMode: boolean = false
   ): Promise<LaunchResult> {
-    RNQonversion.storeSDKInfo(sourceKey, "rn", versionKey, sdkVersion);
-    const response = await RNQonversion.launchWithKey(key, observerMode);
+    RNQonversion.storeSDKInfo("rn", sdkVersion);
+    const response = await RNQonversion.launch(key, observerMode);
     const launchResult = Mapper.convertLaunchResult(response);
 
     return launchResult;
@@ -118,7 +115,11 @@ export default class Qonversion {
    * @param provider the provider to which the data will be sent.
    */
   static addAttributionData(data: Object, provider: Provider) {
-    RNQonversion.addAttributionData(data, provider);
+    const key = convertProviderToNativeKey(provider);
+
+    if (key) {
+      RNQonversion.addAttributionData(data, key);
+    }
   }
 
   /**
@@ -338,9 +339,7 @@ export default class Qonversion {
   static async checkTrialIntroEligibilityForProductIds(
     ids: string[]
   ): Promise<Map<string, IntroEligibility>> {
-    const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(
-      ids
-    );
+    const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
 
     const mappedEligibility: Map<
       string,
@@ -452,7 +451,6 @@ export default class Qonversion {
       const permissions = Mapper.convertPermissions(payload);
       delegate.onPermissionsUpdated(permissions);
     });
-    RNQonversion.subscribeOnUpdatedPurchases();
   }
 
   /**

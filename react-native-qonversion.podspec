@@ -23,4 +23,5 @@ Pod::Spec.new do |s|
 
   s.dependency "React"
   s.dependency "Qonversion", "2.18.3"
+  s.dependency "QonversionSandwich", "0.0.2"
 end

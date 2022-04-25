@@ -34,21 +34,22 @@ import QonversionError from "./QonversionError";
 import AutomationsEvent from "./AutomationsEvent";
 
 type QLaunchResult = {
-  products: Array<QProduct>;
-  user_products: Array<QProduct>;
-  permissions: Array<QPermission>;
+  products: Record<string, QProduct>;
+  userProducts: Record<string, QProduct>;
+  permissions: Record<string, QPermission>;
   uid: string;
   timestamp: number;
 };
 
 type QProduct = {
+  id: string;
+  storeId: string;
   type: keyof typeof ProductType;
   duration: keyof typeof ProductDuration;
-  trialDuration: keyof typeof TrialDuration;
-  id: string;
-  store_id: string;
+  skuDetails?: QSkuDetails | null; // android
+  skProduct?: QSKProduct | null // iOS
   prettyPrice?: string;
-  storeProduct: null | QSkuDetails | QSKProduct; // QSkuDetails - android, QSKProduct - iOS
+  trialDuration: keyof typeof TrialDuration | null;
   offeringId: string | null;
 };
 
@@ -81,15 +82,14 @@ type QSKProduct = {
   localizedDescription: string | undefined;
   localizedTitle: string | undefined;
   price: string;
-  localeIdentifier: string | undefined;
+  priceLocale: QLocale;
   productIdentifier: string | undefined;
-  isDownloadable: boolean;
+  isDownloadable: boolean | undefined;
   downloadContentVersion: string | undefined;
   downloadContentLengths: number[] | undefined;
   productDiscount: SKProductDiscount | undefined;
   subscriptionGroupIdentifier: string | undefined;
   isFamilyShareable: boolean | undefined;
-  currencyCode: string;
 };
 
 type QSubscriptionPeriod = {
@@ -100,21 +100,26 @@ type QSubscriptionPeriod = {
 type QProductDiscount = {
   subscriptionPeriod: null | QSubscriptionPeriod;
   price: string;
-  localeIdentifier?: string;
   numberOfPeriods: number;
   paymentMode: keyof typeof SKProductDiscountPaymentMode;
   identifier?: string;
   type: keyof typeof SKProductDiscountType;
-  currencySymbol: string;
+  priceLocale: QLocale;
+};
+
+type QLocale = {
+  currencySymbol: string | null;
+  currencyCode: string | null;
+  localeIdentifier: string;
 };
 
 type QPermission = {
   id: string;
-  associated_product: string;
+  associatedProduct: string;
   active: boolean;
-  renew_state: number;
-  started_timestamp: number;
-  expiration_timestamp: number;
+  renewState: number;
+  startedTimestamp: number;
+  expirationTimestamp: number;
 };
 
 type QOfferings = {
@@ -136,6 +141,7 @@ type QActionResult = {
 
 type QError = {
   code: string;
+  domain?: string; // ios only
   description: string;
   additionalMessage: string;
 };
@@ -156,7 +162,7 @@ class Mapper {
       launchResult.permissions
     );
     const userProducts: Map<string, Product> = this.convertProducts(
-      launchResult.user_products
+      launchResult.userProducts
     );
     return new LaunchResult(
       launchResult.uid,
@@ -168,14 +174,14 @@ class Mapper {
   }
 
   static convertPermissions(
-    permissions: Array<QPermission>
+    permissions: Record<string, QPermission>
   ): Map<string, Permission> {
     let mappedPermissions = new Map();
 
     for (const [key, permission] of Object.entries(permissions)) {
       let renewState: RenewState = RenewState.UNKNOWN;
 
-      switch (permission.renew_state) {
+      switch (permission.renewState) {
         case -1:
           renewState = RenewState.NON_RENEWABLE;
           break;
@@ -192,11 +198,11 @@ class Mapper {
 
       const mappedPermission = new Permission(
         permission.id,
-        permission.associated_product,
-        !!permission.active,
+        permission.associatedProduct,
+        permission.active,
         renewState,
-        permission.started_timestamp,
-        permission.expiration_timestamp
+        permission.startedTimestamp,
+        permission.expirationTimestamp
       );
       mappedPermissions.set(key, mappedPermission);
     }
@@ -204,7 +210,7 @@ class Mapper {
     return mappedPermissions;
   }
 
-  static convertProducts(products: Array<QProduct>): Map<string, Product> {
+  static convertProducts(products: Record<string, QProduct>): Map<string, Product> {
     let mappedProducts = new Map();
 
     for (const [key, product] of Object.entries(products)) {
@@ -218,7 +224,7 @@ class Mapper {
   static convertProduct(product: QProduct): Product {
     const productType: ProductTypes = ProductType[product.type];
     const productDuration: ProductDurations = ProductDuration[product.duration];
-    const trialDuration: TrialDurations = TrialDuration[product.trialDuration];
+    const trialDuration: TrialDurations | undefined = product.trialDuration == null ? undefined : TrialDuration[product.trialDuration];
     const offeringId: string | null = product.offeringId;
 
     let skProduct: SKProduct | null = null;
@@ -229,35 +235,31 @@ class Mapper {
     let storeDescription: string | undefined;
     let prettyIntroductoryPrice: string | undefined;
 
-    if (product.storeProduct != null) {
-      if (Platform.OS === "ios") {
-        skProduct = Mapper.convertSKProduct(product.storeProduct as QSKProduct);
-        price = parseFloat(skProduct.price);
-        currencyCode = skProduct.currencyCode;
-        storeTitle = skProduct.localizedTitle;
-        storeDescription = skProduct.localizedDescription;
+    if (!!product.skProduct) {
+      skProduct = Mapper.convertSKProduct(product.skProduct as QSKProduct);
+      price = parseFloat(skProduct.price);
+      currencyCode = skProduct.currencyCode;
+      storeTitle = skProduct.localizedTitle;
+      storeDescription = skProduct.localizedDescription;
 
-        if (skProduct.productDiscount) {
-          prettyIntroductoryPrice = skProduct.productDiscount.currencySymbol + skProduct.productDiscount.price;
-        }
-      } else {
-        skuDetails = Mapper.convertSkuDetails(
-          product.storeProduct as QSkuDetails
-        );
-        price = skuDetails.priceAmountMicros / skuDetailsPriceRatio;
-        currencyCode = skuDetails.priceCurrencyCode;
-        storeTitle = skuDetails.title;
-        storeDescription = skuDetails.description;
+      if (skProduct.productDiscount) {
+        prettyIntroductoryPrice = skProduct.productDiscount.currencySymbol + skProduct.productDiscount.price;
+      }
+    } else if (!!product.skuDetails) {
+      skuDetails = Mapper.convertSkuDetails(product.skuDetails as QSkuDetails);
+      price = skuDetails.priceAmountMicros / skuDetailsPriceRatio;
+      currencyCode = skuDetails.priceCurrencyCode;
+      storeTitle = skuDetails.title;
+      storeDescription = skuDetails.description;
 
-        if (skuDetails.introductoryPrice.length > 0) {
-          prettyIntroductoryPrice = skuDetails.introductoryPrice;
-        }
+      if (skuDetails.introductoryPrice.length > 0) {
+        prettyIntroductoryPrice = skuDetails.introductoryPrice;
       }
     }
 
     const mappedProduct = new Product(
       product.id,
-      product.store_id,
+      product.storeId,
       productType,
       productDuration,
       skuDetails,
@@ -358,7 +360,7 @@ class Mapper {
       skProduct.localizedDescription,
       skProduct.localizedTitle,
       skProduct.price,
-      skProduct.localeIdentifier,
+      skProduct.priceLocale.localeIdentifier,
       skProduct.productIdentifier,
       !!skProduct.isDownloadable,
       skProduct.downloadContentVersion,
@@ -368,7 +370,7 @@ class Mapper {
       discounts,
       skProduct.subscriptionGroupIdentifier,
       skProduct.isFamilyShareable,
-      skProduct.currencyCode
+      skProduct.priceLocale.currencyCode ?? ""
     );
   }
 
@@ -390,13 +392,13 @@ class Mapper {
     }
     return new SKProductDiscount(
       discount.price,
-      discount.localeIdentifier,
+      discount.priceLocale.localeIdentifier,
       discount.numberOfPeriods,
       subscriptionPeriod,
       SKProductDiscountPaymentMode[discount.paymentMode],
       discount.identifier,
       SKProductDiscountType[discount.type],
-      discount.currencySymbol
+      discount.priceLocale.currencySymbol ?? ""
     );
   }
 
@@ -410,8 +412,7 @@ class Mapper {
   }
 
   static convertEligibility(
-    eligibilityInfo: Array<{
-      productId: string;
+    eligibilityMap: Record<string, {
       status:
         | "non_intro_or_trial_product"
         | "intro_or_trial_eligible"
@@ -420,12 +421,11 @@ class Mapper {
   ): Map<string, IntroEligibility> {
     let mappedEligibility = new Map<string, IntroEligibility>();
 
-    for (const info of eligibilityInfo) {
-      const productId = info.productId;
-      const status = Mapper.convertEligibilityStatus(info.status);
+    for (const [key, value] of Object.entries(eligibilityMap)) {
+      const status = Mapper.convertEligibilityStatus(value.status);
 
       const eligibilityInfo = new IntroEligibility(status);
-      mappedEligibility.set(productId, eligibilityInfo);
+      mappedEligibility.set(key, eligibilityInfo);
     }
 
     return mappedEligibility;
@@ -445,19 +445,19 @@ class Mapper {
   }
 
   static convertExperimentInfo(
-    experimentInfo: Array<{ id: string; group: { type: number } }>
+    experimentInfo: Record<string, { id: string; group: { type: number } }>
   ): Map<string, ExperimentInfo> {
     const mappedExperimentInfo = new Map<string, ExperimentInfo>();
 
-    for (const info of experimentInfo) {
+    for (const [key, value] of Object.entries(experimentInfo)) {
       const groupType =
-        info.group.type === 1
+        value.group.type === 1
           ? ExperimentGroupType.GROUP_TYPE_B
           : ExperimentGroupType.GROUP_TYPE_A;
       const group = new ExperimentGroup(groupType);
 
-      const experiment = new ExperimentInfo(info.id, group);
-      mappedExperimentInfo.set(experiment.identifier, experiment);
+      const experiment = new ExperimentInfo(value.id, group);
+      mappedExperimentInfo.set(key, experiment);
     }
 
     return mappedExperimentInfo;
@@ -480,6 +480,7 @@ class Mapper {
       error.code,
       error.description,
       error.additionalMessage,
+      error.domain,
     ) : undefined;
   }
 

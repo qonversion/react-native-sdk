@@ -1,5 +1,6 @@
 class QonversionError {
   code: string;
+  domain?: string;
   description: string;
   additionalMessage: string;
 
@@ -7,8 +8,10 @@ class QonversionError {
     code: string,
     description: string,
     additionalMessage: string,
+    domain?: string,
   ) {
     this.code = code;
+    this.domain = domain;
     this.description = description;
     this.additionalMessage = additionalMessage;
   }
