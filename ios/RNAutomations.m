@@ -8,6 +8,7 @@
 
 #import "RNAutomations.h"
 #import "EntitiesConverter.h"
+@import QonversionSadnwich;
 
 static NSString *const kEventScreenShown = @"automations_screen_shown";
 static NSString *const kEventActionStarted = @"automations_action_started";
@@ -17,9 +18,22 @@ static NSString *const kEventAutomationsFinished = @"automations_finished";
 
 @interface RNAutomations () <QONAutomationsDelegate>
 
+@property (nonatomic, strong) AutomationsSandwich *sandwich;
+
 @end
 
 @implementation RNAutomations
+
+- (instancetype)init {
+  self = [super init];
+    
+  if (self) {
+      _sandwich = [AutomationsSandwich new];
+      [_sandwich subscribe:self];
+  }
+    
+  return self;
+}
 
 RCT_EXPORT_MODULE();
 

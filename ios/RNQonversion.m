@@ -1,5 +1,8 @@
 #import "RNQonversion.h"
 #import "EntitiesConverter.h"
+@import QonversionSandwich;
+
+typedef void (^DefaultResultCompletion)(void);
 
 static NSString *const kEventPermissionsUpdated = @"permissions_updated";
 static NSString *const kEventPromoPurchaseReceived = @"promo_purchase_received";
@@ -13,187 +16,178 @@ static NSString *const kEventPromoPurchaseReceived = @"promo_purchase_received";
 
 @implementation RNQonversion
 
-- (instancetype)init
-{
+- (instancetype)init {
   self = [super init];
+    
   if (self) {
     _qonversionSandwich = [[QonversionSandwich alloc] initWithQonversionEventListener:self];
   }
+    
   return self;
 }
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)sourceKey source:(NSString *)source versionKey:(NSString *)versionKey version:(NSString *)version) {
-    [[NSUserDefaults standardUserDefaults] setValue:version forKey:versionKey];
-    [[NSUserDefaults standardUserDefaults] setValue:source forKey:sourceKey];
+RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)source version:(NSString *)version) {
+    [self.qonversionSandwich storeSdkInfoWithSource:source version:version];
 }
 
 RCT_EXPORT_METHOD(launch:(NSString *)key observerMode:(BOOL)observerMode completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion launchWithKey:key completion:^(QNLaunchResult *result, NSError *error) {
+    [self.qonversionSandwich launchWithProjectKey:key completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSDictionary *launchResult = [EntitiesConverter convertLaunchResult:result];
-        completion(@[launchResult]);
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(setProperty:(NSString *)property value:(NSString *)value)
 {
-    NSNumber *propertyNumber = [EntitiesConverter propertyForString:property];
-
-    if (propertyNumber) {
-        [Qonversion setProperty:propertyNumber.integerValue value:value];
-    }
+    [self.qonversionSandwich setDefinedProperty:property value:value];
 }
 
 RCT_EXPORT_METHOD(setUserProperty:(NSString *)property value:(NSString *)value)
 {
-    [Qonversion setUserProperty:property value:value];
+    [self.qonversionSandwich setCustomProperty:property value:value];
 }
 
-RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data provider:(NSInteger)provider)
+RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data provider:(NSString *)provider)
 {
-    [Qonversion addAttributionData:data fromProvider:provider];
+    [self.qonversionSandwich addAttributionDataWithSourceKey:provider value:data];
 }
 
 RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion checkPermissions:^(NSDictionary<NSString *,QNPermission *> *result, NSError *error) {
+    [self.qonversionSandwich checkPermissions:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
-        completion(@[permissions]);
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(purchaseProduct:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [self purchaseWithId:productId offeringId:offeringId completion:completion rejecter:reject];
-}
-
-RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
-{
-    [self purchaseWithId:productId offeringId:nil completion:completion rejecter: reject];
-}
-
-RCT_EXPORT_METHOD(products:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
-{
-    [Qonversion products:^(NSDictionary *result, NSError *error) {
+    [self.qonversionSandwich purchaseProduct:productId offeringId:offeringId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSDictionary *products = [EntitiesConverter convertProducts:result.allValues];
-        completion(@[products]);
+        completion(@[result]);
+    }];
+}
+
+RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.qonversionSandwich purchase:productId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        if (error) {
+            reject(error.code, error.details, error.originError);
+
+            return;
+        }
+
+        completion(@[result]);
+    }];
+}
+
+RCT_EXPORT_METHOD(products:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.qonversionSandwich products:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        if (error) {
+            reject(error.code, error.details, error.originError);
+
+            return;
+        }
+
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(restore:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion restoreWithCompletion:^(NSDictionary *result, NSError *error) {
+    [self.qonversionSandwich restore:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
-        completion(@[permissions]);
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(setDebugMode) {
-    [Qonversion setDebugMode];
+    [self.qonversionSandwich setDebugMode];
 }
 
 RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion offerings:^(QNOfferings * _Nullable offerings, NSError * _Nullable error) {
+    [self.qonversionSandwich offerings:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSDictionary *convertedOfferings = [EntitiesConverter convertOfferings:offerings];
-        completion(@[convertedOfferings]);
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(checkTrialIntroEligibilityForProductIds:(NSArray *)data completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion checkTrialIntroEligibilityForProductIds:data completion:^(NSDictionary<NSString *,QNIntroEligibility *> * _Nonnull result, NSError * _Nullable error) {
+    [self.qonversionSandwich checkTrialIntroEligibility:data completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSDictionary *convertedIntroEligibility = [EntitiesConverter convertIntroEligibility:result];
-        completion(@[convertedIntroEligibility]);
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Qonversion experiments:^(NSDictionary<NSString *,QNExperimentInfo *> * _Nonnull result, NSError * _Nullable error) {
+    [self.qonversionSandwich experiments:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         if (error) {
-            NSString *errorCode = [@(error.code) stringValue];
-            reject(errorCode, error.localizedDescription, error);
+            reject(error.code, error.details, error.originError);
 
             return;
         }
 
-        NSArray *experiments = [EntitiesConverter convertExperiments:result];
-        completion(@[experiments]);
+        completion(@[result]);
     }];
 }
 
 RCT_EXPORT_METHOD(identify:(NSString *)userId)
 {
-    [Qonversion identify:userId];
+    [self.qonversionSandwich identify:userId];
 }
 
 RCT_EXPORT_METHOD(logout)
 {
-    [Qonversion logout];
-}
-
-RCT_EXPORT_METHOD(resetUser)
-{
-    [Qonversion resetUser];
+    [self.qonversionSandwich logout];
 }
 
 RCT_EXPORT_METHOD(setAdvertisingID) {
-    [Qonversion setAdvertisingID];
+    [self.qonversionSandwich setAdvertisingId];
 }
 
 RCT_EXPORT_METHOD(setAppleSearchAdsAttributionEnabled:(BOOL)enabled) {
-    [Qonversion setAppleSearchAdsAttributionEnabled:enabled];
+    [self.qonversionSandwich setAppleSearchAdsAttributionEnabled:enabled];
 }
 
 RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
-    NSData *tokenData = [self convertHexToData:token];
-
-    [Qonversion setNotificationsToken:tokenData];
+    [self.qonversionSandwich setNotificationToken:token];
 }
 
 RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
@@ -204,110 +198,43 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
         return;
     }
 
-    BOOL isQonversionNotification = [Qonversion handleNotification:notificationData];
+    BOOL isQonversionNotification = [self.qonversionSandwich handleNotification:notificationData];
     completion(@[@(isQonversionNotification)]);
 }
 
-RCT_EXPORT_METHOD(subscribeOnUpdatedPurchases) {
-    [Qonversion setPurchasesDelegate:self];
-}
-
-RCT_EXPORT_METHOD(subscribeOnPromoPurchases) {
-    [Qonversion setPromoPurchasesDelegate:self];
-}
-
 RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    QNPromoPurchaseCompletionHandler executionBlock = _promoPurchasesExecutionBlocks[storeProductId];
-    if (executionBlock) {
-        _promoPurchasesExecutionBlocks[storeProductId] = nil;
-        QNPurchaseCompletionHandler completionWrapper = ^(NSDictionary<NSString *, QNPermission*> *result, NSError  *_Nullable error, BOOL cancelled) {
-            if (error) {
-                NSString *errorCode = [@(error.code) stringValue];
-                reject(errorCode, error.localizedDescription, error);
-            } else {
-                NSDictionary *convertedPermissions = [EntitiesConverter convertPermissions:result.allValues];
-                completion(@[convertedPermissions]);
-            }
-        };
-
-        executionBlock(completionWrapper);
-    } else {
-        NSError *error = [NSError errorWithDomain:keyQNErrorDomain code:QNErrorProductNotFound userInfo:nil];
-        NSString *errorCode = [@(error.code) stringValue];
-        reject(errorCode, error.localizedDescription, error);
-    }
+    [self.qonversionSandwich promoPurchase:storeProductId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        if (error) {
+            reject(error.code, error.details, error.originError);
+        } else {
+            completion(@[result]);
+        }
+    }];
 }
 
 #pragma mark - Private
 
-- (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
-    if (offeringId.length > 0) {
-        [Qonversion offerings:^(QNOfferings * _Nullable offerings, NSError * _Nullable error) {
-            QNOffering *offering = [offerings offeringForIdentifier:offeringId];
-            QNProduct *product = [offering productForIdentifier:productId];
-
-            if (product) {
-                [Qonversion purchaseProduct:product completion:^(NSDictionary<NSString *,QNPermission *> * _Nonnull result, NSError * _Nullable error, BOOL cancelled) {
-                    [self handlePurchasesResult:result error:error cancelled:cancelled completion:completion rejecter:reject];
-                }];
-            } else {
-                [self processPurchase:productId completion:completion rejecter:reject];
-            }
-        }];
-    } else {
-        [self processPurchase:productId completion:completion rejecter:reject];
-    }
-}
-
-- (void)processPurchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {
-    [Qonversion purchase:productId completion:^(NSDictionary *result, NSError *error, BOOL cancelled) {
-        [self handlePurchasesResult:result error:error cancelled:cancelled completion:completion rejecter:reject];
-    }];
-}
-
-- (void)handlePurchasesResult:(NSDictionary *)result
-                        error:(NSError *)error
-                    cancelled:(BOOL)cancelled
+- (void)handleResult:(NSDictionary *)result
+               error:(SandwichError *)error
                    completion:(RCTResponseSenderBlock)completion
                      rejecter:(RCTPromiseRejectBlock)reject {
     if (error) {
-        NSString *errorCode = [@(error.code) stringValue];
-        reject(errorCode, error.localizedDescription, error);
+        reject(error.code, error.details, error.originError);
 
         return;
     }
 
-    NSDictionary *permissions = [EntitiesConverter convertPermissions:result.allValues];
-    completion(@[permissions]);
+    completion(@[result]);
 }
+     
+#pragma mark - QonversionEventListener
 
-- (NSData *)convertHexToData:(NSString *)hex {
-    NSString *token = [hex stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSMutableData *data = [[NSMutableData alloc] init];
-    unsigned char whole_byte;
-    char byte_chars[3] = {'\0','\0','\0'};
-    int i;
-    for (i=0; i < [token length] / 2; i++) {
-        byte_chars[0] = [token characterAtIndex:i * 2];
-        byte_chars[1] = [token characterAtIndex:i * 2 + 1];
-        whole_byte = strtol(byte_chars, NULL, 16);
-        [data appendBytes:&whole_byte length:1];
-    }
-
-    return [data copy];
-}
-
-- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, QNPermission *> * _Nonnull)permissions {
+- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, id> * _Nonnull)permissions {
     [self sendEventWithName:kEventPermissionsUpdated body:permissions];
 }
 
-- (void)shouldPurchasePromoProductWithIdentifier:(NSString *)productID executionBlock:(QNPromoPurchaseCompletionHandler)executionBlock {
-    if (!_promoPurchasesExecutionBlocks) {
-        _promoPurchasesExecutionBlocks = [NSMutableDictionary new];
-    }
-    _promoPurchasesExecutionBlocks[productID] = executionBlock;
-
-    [self sendEventWithName:kEventPromoPurchaseReceived body:productID];
+- (void)shouldPurchasePromoProductWith:(NSString * _Nonnull)productId {
+    [self sendEventWithName:kEventPromoPurchaseReceived body:productId];
 }
 
 #pragma mark - Emitter
@@ -316,9 +243,21 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
     return @[kEventPermissionsUpdated, kEventPromoPurchaseReceived];
 }
 
-- (BridgeCompletion)getResultListener:(RCTResponseSenderBlock)completion
-                             rejecter:(RCTPromiseRejectBlock)reject) {
-  return ;
+- (DefaultResultCompletion)configureResultCompletion:(RCTResponseSenderBlock)responseBlock
+                                            rejecter:(RCTPromiseRejectBlock)reject
+                                            response:(NSDictionary<NSString *, id> *)response
+                                               error:(SandwichError *)error {
+    DefaultResultCompletion completion = ^{
+        if (error) {
+            reject(error.code, error.details, error.originError);
+
+            return;
+        }
+
+        responseBlock(@[response]);
+    };
+
+  return completion;
 }
 
 @end
