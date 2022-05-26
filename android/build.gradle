@@ -69,7 +69,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation "io.qonversion.android.sdk:sdk:3.2.4"
+    implementation "io.qonversion.android.sdk:sdk:3.2.7"
     implementation "com.google.firebase:firebase-messaging:21.0.1" // Used for Qonversion.handleNotification compilation
 }
 
