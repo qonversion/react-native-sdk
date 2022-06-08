@@ -11,7 +11,6 @@
 //   - https://github.com/facebook/react-native/blob/0.58-stable/local-cli/templates/HelloWorld/android/app/build.gradle
 
 def DEFAULT_COMPILE_SDK_VERSION = 28
-def DEFAULT_BUILD_TOOLS_VERSION = '28.0.3'
 def DEFAULT_MIN_SDK_VERSION = 16
 def DEFAULT_TARGET_SDK_VERSION = 28
 
@@ -39,7 +38,6 @@ buildscript {
 
 android {
     compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
-    buildToolsVersion safeExtGet('buildToolsVersion', DEFAULT_BUILD_TOOLS_VERSION)
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', DEFAULT_MIN_SDK_VERSION)
         targetSdkVersion safeExtGet('targetSdkVersion', DEFAULT_TARGET_SDK_VERSION)
@@ -69,7 +67,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation "io.qonversion.android.sdk:sdk:3.2.4"
+    implementation "io.qonversion.android.sdk:sdk:3.2.7"
     implementation "com.google.firebase:firebase-messaging:21.0.1" // Used for Qonversion.handleNotification compilation
 }
 
@@ -78,8 +76,11 @@ afterEvaluate { project ->
     // https://www.oreilly.com/library/view/gradle-beyond-the/9781449373801/ch03.html
     task androidJavadoc(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
+        configurations.implementation.setCanBeResolved(true)
+        configurations.api.setCanBeResolved(true)
         classpath += files(android.bootClasspath)
-        classpath += files(project.getConfigurations().getByName('compile').asList())
+        classpath += files(project.getConfigurations().getByName('implementation').asList())
+        classpath += files(project.getConfigurations().getByName('api').asList())
         include '**/*.java'
     }
 
