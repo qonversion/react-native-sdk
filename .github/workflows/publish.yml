@@ -1,8 +1,9 @@
 name: Publish
 
 on:
-  release:
-    types: [released]
+  push:
+    branches:
+      - "tech/publish_automatization"
 
 jobs:
   publish:
