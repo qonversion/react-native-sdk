@@ -72,29 +72,6 @@ dependencies {
 }
 
 afterEvaluate { project ->
-    // some Gradle build hooks ref:
-    // https://www.oreilly.com/library/view/gradle-beyond-the/9781449373801/ch03.html
-    task androidJavadoc(type: Javadoc) {
-        source = android.sourceSets.main.java.srcDirs
-        configurations.implementation.setCanBeResolved(true)
-        configurations.api.setCanBeResolved(true)
-        classpath += files(android.bootClasspath)
-        classpath += files(project.getConfigurations().getByName('implementation').asList())
-        classpath += files(project.getConfigurations().getByName('api').asList())
-        include '**/*.java'
-    }
-
-    task androidJavadocJar(type: Jar, dependsOn: androidJavadoc) {
-        classifier = 'javadoc'
-        from androidJavadoc.destinationDir
-    }
-
-    task androidSourcesJar(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-        include '**/*.java'
-    }
-
     android.libraryVariants.all { variant ->
         def name = variant.name.capitalize()
         def javaCompileTask = variant.javaCompileProvider.get()
@@ -102,10 +79,5 @@ afterEvaluate { project ->
         task "jar${name}"(type: Jar, dependsOn: javaCompileTask) {
             from javaCompileTask.destinationDir
         }
-    }
-
-    artifacts {
-        archives androidSourcesJar
-        archives androidJavadocJar
     }
 }
