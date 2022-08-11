@@ -13,7 +13,7 @@ import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "3.3.0";
+const sdkVersion = "3.3.3";
 
 const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
