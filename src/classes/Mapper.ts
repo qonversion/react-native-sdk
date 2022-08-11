@@ -84,7 +84,7 @@ type QSKProduct = {
   price: string;
   priceLocale: QLocale;
   productIdentifier: string | undefined;
-  isDownloadable: boolean;
+  isDownloadable: boolean | undefined;
   downloadContentVersion: string | undefined;
   downloadContentLengths: number[] | undefined;
   productDiscount: SKProductDiscount | undefined;

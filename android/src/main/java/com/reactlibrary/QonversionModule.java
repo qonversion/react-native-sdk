@@ -211,7 +211,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @Override
-    public void onPermissionsUpdateAfterAsyncPurchase(@NonNull Map<String, ?> map) {
+    public void onPermissionsUpdate(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
         if (eventEmitter != null) {
             eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, payload);

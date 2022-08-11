@@ -18,11 +18,11 @@ static NSString *const kEventPromoPurchaseReceived = @"promo_purchase_received";
 
 - (instancetype)init {
   self = [super init];
-    
+
   if (self) {
     _qonversionSandwich = [[QonversionSandwich alloc] initWithQonversionEventListener:self];
   }
-    
+
   return self;
 }
 
@@ -226,7 +226,7 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
 
     completion(@[result]);
 }
-     
+
 #pragma mark - QonversionEventListener
 
 - (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, id> * _Nonnull)permissions {
