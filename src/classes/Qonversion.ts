@@ -1,5 +1,5 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {Property, ProrationMode, Provider} from "../enums";
+import {PermissionsCacheLifetime, Property, ProrationMode, Provider} from "../enums";
 import ExperimentInfo from "./ExperimentInfo";
 import IntroEligibility from "./IntroEligibility";
 import LaunchResult from "./LaunchResult";
@@ -16,7 +16,7 @@ const {RNQonversion} = NativeModules;
 const keyPrefix = "com.qonversion.keys";
 const sourceKey = keyPrefix + ".source";
 const versionKey = keyPrefix + ".sourceVersion";
-const sdkVersion = "3.3.3";
+const sdkVersion = "3.4.0";
 
 const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -477,5 +477,17 @@ export default class Qonversion {
       delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
     });
     RNQonversion.subscribeOnPromoPurchases();
+  }
+
+  /**
+   * Permissions cache is used when there are problems with the Qonversion API
+   * or internet connection. If so, Qonversion will return the last successfully loaded
+   * permissions. The current method allows you to configure how long that cache may be used.
+   * The default value is {@link PermissionsCacheLifetime.MONTH}.
+   *
+   * @param lifetime desired permissions cache lifetime duration
+   */
+  static setPermissionsCacheLifetime(lifetime: PermissionsCacheLifetime) {
+    RNQonversion.setPermissionsCacheLifetime(lifetime);
   }
 }

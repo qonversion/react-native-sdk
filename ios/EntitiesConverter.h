@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)convertError:(NSError *)error;
 + (NSDictionary *)convertAutomationsEvent:(QONAutomationsEvent *)event;
 + (NSNumber *)propertyForString:(NSString *)key;
++ (NSNumber *)permissionsCacheLifetimeForString:(NSString *)key;
 
 @end
 
