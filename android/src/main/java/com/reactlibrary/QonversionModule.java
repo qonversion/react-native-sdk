@@ -23,6 +23,7 @@ import com.qonversion.android.sdk.QonversionPermissionsCallback;
 import com.qonversion.android.sdk.QonversionProductsCallback;
 import com.qonversion.android.sdk.UpdatedPurchasesListener;
 import com.qonversion.android.sdk.dto.QLaunchResult;
+import com.qonversion.android.sdk.dto.QPermissionsCacheLifetime;
 import com.qonversion.android.sdk.dto.experiments.QExperimentInfo;
 import com.qonversion.android.sdk.dto.offerings.QOffering;
 import com.qonversion.android.sdk.dto.offerings.QOfferings;
@@ -58,6 +59,18 @@ public class QonversionModule extends ReactContextBaseJavaModule {
         put("KOCHAVA_DEVICE_ID", QUserProperties.KochavaDeviceId);
         put("CUSTOM_USER_ID", QUserProperties.CustomUserId);
         put("FACEBOOK_ATTRIBUTION", QUserProperties.FacebookAttribution);
+        put("FIREBASE_APP_INSTANCE_ID", QUserProperties.FirebaseAppInstanceId);
+    }};
+
+    private static final HashMap<String, QPermissionsCacheLifetime> cacheLifetimeMap = new HashMap<String, QPermissionsCacheLifetime>() {{
+        put("WEEK", QPermissionsCacheLifetime.WEEK);
+        put("TWO_WEEKS", QPermissionsCacheLifetime.TWO_WEEKS);
+        put("MONTH", QPermissionsCacheLifetime.MONTH);
+        put("TWO_MONTHS", QPermissionsCacheLifetime.TWO_MONTHS);
+        put("THREE_MONTHS", QPermissionsCacheLifetime.THREE_MONTHS);
+        put("SIX_MONTHS", QPermissionsCacheLifetime.SIX_MONTHS);
+        put("YEAR", QPermissionsCacheLifetime.YEAR);
+        put("UNLIMITED", QPermissionsCacheLifetime.UNLIMITED);
     }};
 
     private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
@@ -475,6 +488,15 @@ public class QonversionModule extends ReactContextBaseJavaModule {
                 eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, result);
             }
         });
+    }
+
+    @ReactMethod
+    public void setPermissionsCacheLifetime(final String lifetime) {
+        QPermissionsCacheLifetime cacheLifetime = cacheLifetimeMap.get(lifetime);
+
+        if (cacheLifetime != null) {
+            Qonversion.setPermissionsCacheLifetime(cacheLifetime);
+        }
     }
 
     private void rejectWithError(@NonNull QonversionError qonversionError, final Promise promise) {
