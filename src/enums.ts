@@ -49,6 +49,7 @@ export enum Property {
   CUSTOM_USER_ID = 5,
   FACEBOOK_ATTRIBUTION = 6,
   ADVERTISING_ID = 7,
+  FIREBASE_APP_INSTANCE_ID = 8
 }
 
 export enum Provider {
@@ -64,6 +65,17 @@ export enum ProrationMode {
   IMMEDIATE_AND_CHARGE_PRORATED_PRICE = 2,
   IMMEDIATE_WITHOUT_PRORATION = 3,
   DEFERRED = 4,
+}
+
+export enum PermissionsCacheLifetime {
+  WEEK = "WEEK",
+  TWO_WEEKS = "TWO_WEEKS",
+  MONTH = "MONTH",
+  TWO_MONTHS = "TWO_MONTHS",
+  THREE_MONTHS = "THREE_MONTHS",
+  SIX_MONTHS = "SIX_MONTHS",
+  YEAR = "YEAR",
+  UNLIMITED = "UNLIMITED"
 }
 
 export const SKPeriodUnit = {

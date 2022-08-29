@@ -17,7 +17,8 @@ const propertyKeyMap = {
     [Property.KOCHAVA_DEVICE_ID]: "KochavaDeviceId",
     [Property.CUSTOM_USER_ID]: "CustomUserId",
     [Property.FACEBOOK_ATTRIBUTION]: "FacebookAttribution", // android only
-    [Property.ADVERTISING_ID]: "AdvertisingId" // ios only
+    [Property.ADVERTISING_ID]: "AdvertisingId", // ios only
+    [Property.FIREBASE_APP_INSTANCE_ID]: "FirebaseAppInstanceId"
 };
 
 export const convertPropertyToNativeKey = (property: Property): string => {

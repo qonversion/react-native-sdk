@@ -238,6 +238,15 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
     }
 }
 
+RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime)
+{
+    NSNumber *lifetimeNumber = [EntitiesConverter permissionsCacheLifetimeForString:lifetime];
+
+    if (lifetimeNumber) {
+        [Qonversion setPermissionsCacheLifetime:lifetimeNumber.integerValue];
+    }
+}
+
 #pragma mark - Private
 
 - (void)purchaseWithId:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject {

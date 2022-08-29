@@ -22,6 +22,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.dependency "React"
-  s.dependency "Qonversion", "2.18.4"
+  s.dependency "Qonversion", "2.20.0"
   s.dependency "QonversionSandwich", "0.0.2"
 end
