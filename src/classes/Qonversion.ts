@@ -7,7 +7,13 @@ import Mapper from "./Mapper";
 import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
-import {convertPropertyToNativeKey, convertProviderToNativeKey, isAndroid, isIos} from "../utils";
+import {
+  convertPropertyToNativeKey,
+  convertProviderToNativeKey,
+  DefinedNativeErrorCodes,
+  isAndroid,
+  isIos
+} from "../utils";
 import {UpdatedPurchasesDelegate} from './UpdatedPurchasesDelegate';
 import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
@@ -173,19 +179,12 @@ export default class Qonversion {
 
       const permissions = await purchasePromise;
 
+      // noinspection UnnecessaryLocalVariableJS
       const mappedPermissions = Mapper.convertPermissions(permissions);
 
       return mappedPermissions;
     } catch (e) {
-      const iOSCancelCode = "1";
-      const iOSCancelErrorDomain = "com.qonversion.io";
-      const androidCancelCode = "CanceledPurchase";
-      e.userCanceled =
-        (isIos() &&
-          e.domain === iOSCancelErrorDomain &&
-          e.code === iOSCancelCode) ||
-        (isAndroid() && e.code === androidCancelCode);
-
+      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
       throw e;
     }
   }
@@ -214,23 +213,26 @@ export default class Qonversion {
       return null;
     }
 
-    let permissions;
-    if (prorationMode == null) {
-      permissions = await RNQonversion.updatePurchase(productId, oldProductId);
-    } else {
-      permissions = await RNQonversion.updatePurchaseWithProrationMode(
-        productId,
-        oldProductId,
-        prorationMode
-      );
+    try {
+      let permissions;
+      if (prorationMode == null) {
+        permissions = await RNQonversion.updatePurchase(productId, oldProductId);
+      } else {
+        permissions = await RNQonversion.updatePurchaseWithProrationMode(
+          productId,
+          oldProductId,
+          prorationMode
+        );
+      }
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
+      throw e;
     }
-
-    const mappedPermissions: Map<
-      string,
-      Permission
-    > = Mapper.convertPermissions(permissions);
-
-    return mappedPermissions;
   }
 
   /**
@@ -257,23 +259,26 @@ export default class Qonversion {
       return null;
     }
 
-    let permissions;
-    if (prorationMode == null) {
-      permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
-    } else {
-      permissions = await RNQonversion.updateProductWithIdAndProrationMode(
+    try {
+      let permissions;
+      if (prorationMode == null) {
+        permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
+      } else {
+        permissions = await RNQonversion.updateProductWithIdAndProrationMode(
           product.qonversionID,
           product.offeringId,
           oldProductId,
           prorationMode);
+      }
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
+      throw e;
     }
-
-    const mappedPermissions: Map<
-      string,
-      Permission
-      > = Mapper.convertPermissions(permissions);
-
-    return mappedPermissions;
   }
 
   /**

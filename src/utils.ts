@@ -35,3 +35,7 @@ const providerKeyMap = {
 export const convertProviderToNativeKey = (provider: Provider): string => {
     return providerKeyMap[provider]
 }
+
+export enum DefinedNativeErrorCodes {
+    PURCHASE_CANCELLED_BY_USER = "PURCHASE_CANCELLED_BY_USER"
+}
