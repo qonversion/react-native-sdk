@@ -17,6 +17,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.qonversion.sandwich.ActivityProvider;
+import io.qonversion.sandwich.PurchaseResultListener;
 import io.qonversion.sandwich.QonversionEventsListener;
 import io.qonversion.sandwich.QonversionSandwich;
 import io.qonversion.sandwich.ResultListener;
@@ -27,6 +28,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     private final QonversionSandwich qonversionSandwich;
 
     private static final String EVENT_PERMISSIONS_UPDATED = "permissions_updated";
+
+    private static final String ERROR_CODE_PURCHASE_CANCELLED_BY_USER = "PURCHASE_CANCELLED_BY_USER";
 
     private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
 
@@ -70,12 +73,12 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     @ReactMethod
     public void purchaseProduct(String productId, String offeringId, final Promise promise) {
-        qonversionSandwich.purchaseProduct(productId, offeringId, getResultListener(promise));
+        qonversionSandwich.purchaseProduct(productId, offeringId, getPurchaseResultListener(promise));
     }
 
     @ReactMethod
     public void purchase(String productId, final Promise promise) {
-        qonversionSandwich.purchase(productId, getResultListener(promise));
+        qonversionSandwich.purchase(productId, getPurchaseResultListener(promise));
     }
 
     @ReactMethod
@@ -101,7 +104,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
                 offeringId,
                 oldProductId,
                 prorationMode,
-                getResultListener(promise)
+                getPurchaseResultListener(promise)
         );
     }
 
@@ -112,7 +115,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     @ReactMethod
     public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
-        qonversionSandwich.updatePurchase(productId, oldProductId, prorationMode, getResultListener(promise));
+        qonversionSandwich.updatePurchase(productId, oldProductId, prorationMode, getPurchaseResultListener(promise));
     }
 
     @ReactMethod
@@ -187,6 +190,11 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
+    public void setPermissionsCacheLifetime(String lifetime) {
+        qonversionSandwich.setPermissionsCacheLifetime(lifetime);
+    }
+
+    @ReactMethod
     public void setNotificationsToken(String token) {
         qonversionSandwich.setNotificationToken(token);
     }
@@ -233,8 +241,32 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         };
     }
 
+    private PurchaseResultListener getPurchaseResultListener(final Promise promise) {
+        return new PurchaseResultListener() {
+            @Override
+            public void onSuccess(@NonNull Map<String, ?> map) {
+                final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
+                promise.resolve(payload);
+            }
+
+            @Override
+            public void onError(@NonNull SandwichError error, boolean isCancelled) {
+                if (isCancelled) {
+                    rejectWithError(error, promise, ERROR_CODE_PURCHASE_CANCELLED_BY_USER);
+                } else {
+                    rejectWithError(error, promise);
+                }
+            }
+        };
+    }
+
     private void rejectWithError(@NonNull SandwichError sandwichError, final Promise promise) {
+        rejectWithError(sandwichError, promise, null);
+    }
+
+    private void rejectWithError(@NonNull SandwichError sandwichError, final Promise promise, @Nullable String customErrorCode) {
         String errorMessage = sandwichError.getDescription() + "\n" + sandwichError.getAdditionalMessage();
-        promise.reject(sandwichError.getCode(), errorMessage);
+        String errorCode = customErrorCode == null ? sandwichError.getCode() : customErrorCode;
+        promise.reject(errorCode, errorMessage);
     }
 }
