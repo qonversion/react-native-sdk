@@ -30,6 +30,8 @@ const providerKeyMap = {
     [Provider.BRANCH]: "Branch",
     [Provider.ADJUST]: "Adjust",
     [Provider.APPLE]: "AppleSearchAds", // ios only
+    [Provider.APPLE_SEARCH_ADS]: "AppleSearchAds", // ios only
+    [Provider.APPLE_AD_SERVICES]: "AppleAdServices", // ios only
 };
 
 export const convertProviderToNativeKey = (provider: Provider): string => {

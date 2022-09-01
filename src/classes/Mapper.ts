@@ -362,7 +362,7 @@ class Mapper {
       skProduct.price,
       skProduct.priceLocale.localeIdentifier,
       skProduct.productIdentifier,
-      skProduct.isDownloadable,
+      !!skProduct.isDownloadable,
       skProduct.downloadContentVersion,
       skProduct.downloadContentLengths,
       subscriptionPeriod,
@@ -464,23 +464,23 @@ class Mapper {
   }
 
   static convertActionResult(
-    actionResult: QActionResult
+    payload: Record<string, any>
   ): ActionResult {
     return new ActionResult(
-      actionResult.type,
-      actionResult.value,
-      this.convertQonversionError(actionResult.error)
+      payload["type"],
+      payload["value"],
+      this.convertQonversionError(payload["error"])
     )
   }
 
   static convertQonversionError(
-    error: QError | undefined
+    payload: Record<string, string> | undefined
   ): QonversionError | undefined {
-    return error ? new QonversionError(
-      error.code,
-      error.description,
-      error.additionalMessage,
-      error.domain,
+    return payload ? new QonversionError(
+      payload["code"],
+      payload["description"],
+      payload["additionalMessage"],
+      payload["domain"],
     ) : undefined;
   }
 
