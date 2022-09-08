@@ -7,8 +7,7 @@
 //
 
 #import "RNAutomations.h"
-#import "EntitiesConverter.h"
-@import QonversionSadnwich;
+@import QonversionSandwich;
 
 @interface RNAutomations () <AutomationsEventListener>
 
@@ -31,10 +30,10 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(subscribe) {
-    [QONAutomations setDelegate:self];
+    [_sandwich subscribe:self];
 }
 
-- (void)automationDidTrigger(NSString * event, NSDictionary * payload) {
+- (void)automationDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
   [self sendEventWithName:event body:payload];
 }
 

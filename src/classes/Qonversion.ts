@@ -479,7 +479,6 @@ export default class Qonversion {
       };
       delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
     });
-    RNQonversion.subscribeOnPromoPurchases();
   }
 
   /**
