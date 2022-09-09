@@ -25,7 +25,7 @@ export default class Automations {
 
     eventEmitter.removeAllListeners(EVENT_SCREEN_SHOWN);
     eventEmitter.addListener(EVENT_SCREEN_SHOWN, payload => {
-      const screenId = payload["screenId"];
+      const screenId = payload["screenId"] ?? "";
       automationsDelegate.automationsDidShowScreen(screenId);
     });
 
