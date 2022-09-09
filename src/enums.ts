@@ -56,7 +56,9 @@ export enum Provider {
   APPSFLYER = 0,
   BRANCH = 1,
   ADJUST = 2,
-  APPLE = 3,
+  /** @deprecated Use {@link APPLE_SEARCH_ADS} instead */ APPLE = 3,
+  APPLE_SEARCH_ADS = 4,
+  APPLE_AD_SERVICES = 5,
 }
 
 export enum ProrationMode {
@@ -68,14 +70,14 @@ export enum ProrationMode {
 }
 
 export enum PermissionsCacheLifetime {
-  WEEK = "WEEK",
-  TWO_WEEKS = "TWO_WEEKS",
-  MONTH = "MONTH",
-  TWO_MONTHS = "TWO_MONTHS",
-  THREE_MONTHS = "THREE_MONTHS",
-  SIX_MONTHS = "SIX_MONTHS",
-  YEAR = "YEAR",
-  UNLIMITED = "UNLIMITED"
+  WEEK = "Week",
+  TWO_WEEKS = "TwoWeeks",
+  MONTH = "Month",
+  TWO_MONTHS = "TwoMonths",
+  THREE_MONTHS = "ThreeMonths",
+  SIX_MONTHS = "SixMonths",
+  YEAR = "Year",
+  UNLIMITED = "Unlimited"
 }
 
 export const SKPeriodUnit = {

@@ -13,17 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EntitiesConverter : NSObject
 
-+ (NSDictionary *)convertLaunchResult:(QNLaunchResult *)launchResult;
-+ (NSDictionary *)convertProducts:(NSArray<QNProduct *> *)products;
-+ (NSDictionary *)convertPermissions:(NSArray<QNPermission *> *)permissions;
-+ (NSDictionary *)convertOfferings:(QNOfferings *)offerings;
-+ (NSDictionary *)convertIntroEligibility:(NSDictionary<NSString *, QNIntroEligibility *> *)introEligibilityInfo;
-+ (NSArray *)convertExperiments:(NSDictionary<NSString *, QNExperimentInfo *> *)experiments;
 + (NSDictionary *)convertActionResult:(QONActionResult *)actionResult;
-+ (NSDictionary *)convertError:(NSError *)error;
 + (NSDictionary *)convertAutomationsEvent:(QONAutomationsEvent *)event;
-+ (NSNumber *)propertyForString:(NSString *)key;
-+ (NSNumber *)permissionsCacheLifetimeForString:(NSString *)key;
 
 @end
 

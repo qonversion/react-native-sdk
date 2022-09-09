@@ -119,12 +119,12 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void setProperty(String key, String value) {
+    public void setDefinedProperty(String key, String value) {
         qonversionSandwich.setDefinedProperty(key, value);
     }
 
     @ReactMethod
-    public void setUserProperty(String key, String value) {
+    public void setCustomProperty(String key, String value) {
         qonversionSandwich.setCustomProperty(key, value);
     }
 
