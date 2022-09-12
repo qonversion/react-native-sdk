@@ -7,53 +7,40 @@
 //
 
 #import "RNAutomations.h"
-#import "EntitiesConverter.h"
+@import QonversionSandwich;
 
-static NSString *const kEventScreenShown = @"automations_screen_shown";
-static NSString *const kEventActionStarted = @"automations_action_started";
-static NSString *const kEventActionFailed = @"automations_action_failed";
-static NSString *const kEventActionFinished = @"automations_action_finished";
-static NSString *const kEventAutomationsFinished = @"automations_finished";
+@interface RNAutomations () <AutomationsEventListener>
 
-@interface RNAutomations () <QONAutomationsDelegate>
+@property (nonatomic, strong) AutomationsSandwich *sandwich;
 
 @end
 
 @implementation RNAutomations
 
+- (instancetype)init {
+  self = [super init];
+    
+  if (self) {
+      _sandwich = [AutomationsSandwich new];
+  }
+    
+  return self;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(subscribe) {
-    [QONAutomations setDelegate:self];
+    [_sandwich subscribe:self];
 }
 
-- (void)automationsDidShowScreen:(NSString * _Nonnull)screenID {
-    [self sendEventWithName:kEventScreenShown body:screenID];
-}
-
-- (void)automationsDidStartExecutingActionResult:(QONActionResult * _Nonnull)actionResult {
-    NSDictionary *payload = [EntitiesConverter convertActionResult:actionResult];
-    [self sendEventWithName:kEventActionStarted body:payload];
-}
-
-- (void)automationsDidFailExecutingActionResult:(QONActionResult * _Nonnull)actionResult {
-    NSDictionary *payload = [EntitiesConverter convertActionResult:actionResult];
-    [self sendEventWithName:kEventActionFailed body:payload];
-}
-
-- (void)automationsDidFinishExecutingActionResult:(QONActionResult * _Nonnull)actionResult {
-    NSDictionary *payload = [EntitiesConverter convertActionResult:actionResult];
-    [self sendEventWithName:kEventActionFinished body:payload];
-}
-
-- (void)automationsFinished {
-    [self sendEventWithName:kEventAutomationsFinished body:nil];
+- (void)automationDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
+  [self sendEventWithName:event body:payload];
 }
 
 #pragma mark - Emitter
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[kEventScreenShown, kEventActionStarted, kEventActionFailed, kEventActionFinished, kEventAutomationsFinished];
+    return [self.sandwich getAvailableEvents];
 }
 
 @end

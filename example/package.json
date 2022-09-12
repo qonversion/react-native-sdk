@@ -3,13 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "reAndroid": "yarn clean && yarn android",
     "android": "react-native run-android",
+    "reIos": "yarn cleanIos && yarn ios",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
     "clean": "rm -rf node_modules/ && cd .. && rm -rf node_modules/ && yarn install && cd example && yarn install",
-    "clean_ios": "yarn clean && cd ios && pod install && cd .."
+    "cleanIos": "yarn clean && cd ios && pod install && cd .."
   },
   "dependencies": {
     "@react-native-community/push-notification-ios": "^1.10.1",

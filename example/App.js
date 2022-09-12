@@ -41,11 +41,13 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             checkPermissionsHidden: true,
         };
 
+        // eslint-disable-next-line consistent-this
+        const outerClassRef = this; // necessary for anonymous classes to access this.
         Qonversion.launchWithKey('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2');
         Qonversion.setUpdatedPurchasesDelegate({
             onPermissionsUpdated(permissions) {
                 console.log('Permissions updated!', permissions);
-                this.handlePermissions(permissions);
+                outerClassRef.handlePermissions(permissions);
             },
         });
         Qonversion.setPromoPurchasesDelegate({
@@ -53,7 +55,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                 try {
                     const permissions = await promoPurchaseExecutor(productId);
                     console.log('Promo purchase completed. Permissions: ', permissions);
-                    this.handlePermissions(permissions);
+                    outerClassRef.handlePermissions(permissions);
                 } catch (e) {
                     console.log('Promo purchase failed.');
                 }

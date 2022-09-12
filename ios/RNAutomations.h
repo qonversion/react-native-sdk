@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
-#import "Qonversion.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
