@@ -7,15 +7,18 @@ import Mapper from "./Mapper";
 import Offerings from "./Offerings";
 import Permission from "./Permission";
 import Product from "./Product";
-import {convertPropertyToNativeKey, isAndroid, isIos} from "../utils";
+import {
+  convertPropertyToNativeKey,
+  convertProviderToNativeKey,
+  DefinedNativeErrorCodes,
+  isAndroid,
+  isIos
+} from "../utils";
 import {UpdatedPurchasesDelegate} from './UpdatedPurchasesDelegate';
 import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
-const keyPrefix = "com.qonversion.keys";
-const sourceKey = keyPrefix + ".source";
-const versionKey = keyPrefix + ".sourceVersion";
 const sdkVersion = "3.4.0";
 
 const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
@@ -37,8 +40,8 @@ export default class Qonversion {
     key: string,
     observerMode: boolean = false
   ): Promise<LaunchResult> {
-    RNQonversion.storeSDKInfo(sourceKey, "rn", versionKey, sdkVersion);
-    const response = await RNQonversion.launchWithKey(key, observerMode);
+    RNQonversion.storeSDKInfo("rn", sdkVersion);
+    const response = await RNQonversion.launch(key, observerMode);
     const launchResult = Mapper.convertLaunchResult(response);
 
     return launchResult;
@@ -76,7 +79,7 @@ export default class Qonversion {
     const key = convertPropertyToNativeKey(property)
 
     if (key) {
-      RNQonversion.setProperty(key, value);
+      RNQonversion.setDefinedProperty(key, value);
     }
   }
 
@@ -93,7 +96,7 @@ export default class Qonversion {
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
   static setUserProperty(property: string, value: string) {
-    RNQonversion.setUserProperty(property, value);
+    RNQonversion.setCustomProperty(property, value);
   }
 
   /**
@@ -118,7 +121,11 @@ export default class Qonversion {
    * @param provider the provider to which the data will be sent.
    */
   static addAttributionData(data: Object, provider: Provider) {
-    RNQonversion.addAttributionData(data, provider);
+    const key = convertProviderToNativeKey(provider);
+
+    if (key) {
+      RNQonversion.addAttributionData(data, key);
+    }
   }
 
   /**
@@ -172,19 +179,12 @@ export default class Qonversion {
 
       const permissions = await purchasePromise;
 
+      // noinspection UnnecessaryLocalVariableJS
       const mappedPermissions = Mapper.convertPermissions(permissions);
 
       return mappedPermissions;
     } catch (e) {
-      const iOSCancelCode = "1";
-      const iOSCancelErrorDomain = "com.qonversion.io";
-      const androidCancelCode = "CanceledPurchase";
-      e.userCanceled =
-        (isIos() &&
-          e.domain === iOSCancelErrorDomain &&
-          e.code === iOSCancelCode) ||
-        (isAndroid() && e.code === androidCancelCode);
-
+      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
       throw e;
     }
   }
@@ -213,23 +213,26 @@ export default class Qonversion {
       return null;
     }
 
-    let permissions;
-    if (prorationMode == null) {
-      permissions = await RNQonversion.updatePurchase(productId, oldProductId);
-    } else {
-      permissions = await RNQonversion.updatePurchaseWithProrationMode(
-        productId,
-        oldProductId,
-        prorationMode
-      );
+    try {
+      let permissions;
+      if (prorationMode == null) {
+        permissions = await RNQonversion.updatePurchase(productId, oldProductId);
+      } else {
+        permissions = await RNQonversion.updatePurchaseWithProrationMode(
+          productId,
+          oldProductId,
+          prorationMode
+        );
+      }
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
+      throw e;
     }
-
-    const mappedPermissions: Map<
-      string,
-      Permission
-    > = Mapper.convertPermissions(permissions);
-
-    return mappedPermissions;
   }
 
   /**
@@ -256,23 +259,26 @@ export default class Qonversion {
       return null;
     }
 
-    let permissions;
-    if (prorationMode == null) {
-      permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
-    } else {
-      permissions = await RNQonversion.updateProductWithIdAndProrationMode(
+    try {
+      let permissions;
+      if (prorationMode == null) {
+        permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
+      } else {
+        permissions = await RNQonversion.updateProductWithIdAndProrationMode(
           product.qonversionID,
           product.offeringId,
           oldProductId,
           prorationMode);
+      }
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions: Map<string, Permission> = Mapper.convertPermissions(permissions);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
+      throw e;
     }
-
-    const mappedPermissions: Map<
-      string,
-      Permission
-      > = Mapper.convertPermissions(permissions);
-
-    return mappedPermissions;
   }
 
   /**
@@ -338,9 +344,7 @@ export default class Qonversion {
   static async checkTrialIntroEligibilityForProductIds(
     ids: string[]
   ): Promise<Map<string, IntroEligibility>> {
-    const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(
-      ids
-    );
+    const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
 
     const mappedEligibility: Map<
       string,
@@ -452,7 +456,6 @@ export default class Qonversion {
       const permissions = Mapper.convertPermissions(payload);
       delegate.onPermissionsUpdated(permissions);
     });
-    RNQonversion.subscribeOnUpdatedPurchases();
   }
 
   /**
@@ -476,7 +479,6 @@ export default class Qonversion {
       };
       delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
     });
-    RNQonversion.subscribeOnPromoPurchases();
   }
 
   /**

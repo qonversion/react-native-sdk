@@ -1,4 +1,4 @@
-import {Property} from "./enums";
+import {Property, Provider} from "./enums";
 import {Platform} from "react-native";
 
 export const isIos = (): boolean => {
@@ -10,17 +10,34 @@ export const isAndroid = (): boolean => {
 }
 
 const propertyKeyMap = {
-    [Property.EMAIL]: "EMAIL",
-    [Property.NAME]: "NAME",
-    [Property.APPS_FLYER_USER_ID]: "APPS_FLYER_USER_ID",
-    [Property.ADJUST_USER_ID]: "ADJUST_USER_ID",
-    [Property.KOCHAVA_DEVICE_ID]: "KOCHAVA_DEVICE_ID",
-    [Property.CUSTOM_USER_ID]: "CUSTOM_USER_ID",
-    [Property.FACEBOOK_ATTRIBUTION]: "FACEBOOK_ATTRIBUTION", // android only
-    [Property.ADVERTISING_ID]: "ADVERTISING_ID", // ios only
-    [Property.FIREBASE_APP_INSTANCE_ID]: "FIREBASE_APP_INSTANCE_ID"
+    [Property.EMAIL]: "Email",
+    [Property.NAME]: "Name",
+    [Property.APPS_FLYER_USER_ID]: "AppsFlyerUserId",
+    [Property.ADJUST_USER_ID]: "AdjustAdId",
+    [Property.KOCHAVA_DEVICE_ID]: "KochavaDeviceId",
+    [Property.CUSTOM_USER_ID]: "CustomUserId",
+    [Property.FACEBOOK_ATTRIBUTION]: "FacebookAttribution", // android only
+    [Property.ADVERTISING_ID]: "AdvertisingId", // ios only
+    [Property.FIREBASE_APP_INSTANCE_ID]: "FirebaseAppInstanceId"
 };
 
 export const convertPropertyToNativeKey = (property: Property): string => {
     return propertyKeyMap[property]
+}
+
+const providerKeyMap = {
+    [Provider.APPSFLYER]: "AppsFlyer",
+    [Provider.BRANCH]: "Branch",
+    [Provider.ADJUST]: "Adjust",
+    [Provider.APPLE]: "AppleSearchAds", // ios only
+    [Provider.APPLE_SEARCH_ADS]: "AppleSearchAds", // ios only
+    [Provider.APPLE_AD_SERVICES]: "AppleAdServices", // ios only
+};
+
+export const convertProviderToNativeKey = (provider: Provider): string => {
+    return providerKeyMap[provider]
+}
+
+export enum DefinedNativeErrorCodes {
+    PURCHASE_CANCELLED_BY_USER = "PURCHASE_CANCELLED_BY_USER"
 }
