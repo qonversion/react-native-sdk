@@ -47,9 +47,10 @@ export enum Property {
   ADJUST_USER_ID = 3,
   KOCHAVA_DEVICE_ID = 4,
   CUSTOM_USER_ID = 5,
-  FACEBOOK_ATTRIBUTION = 6,
-  ADVERTISING_ID = 7,
-  FIREBASE_APP_INSTANCE_ID = 8
+  FACEBOOK_ATTRIBUTION = 6,  // Android only
+  ADVERTISING_ID = 7, // iOS only
+  FIREBASE_APP_INSTANCE_ID = 8,
+  APP_SET_ID = 9, // Android only
 }
 
 export enum Provider {

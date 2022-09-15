@@ -77,7 +77,7 @@ PODS:
   - Qonversion (2.20.0):
     - Qonversion/Main (= 2.20.0)
   - Qonversion/Main (2.20.0)
-  - QonversionSandwich (0.1.0):
+  - QonversionSandwich (0.1.2):
     - Qonversion (= 2.20.0)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
@@ -286,8 +286,8 @@ PODS:
   - React-jsinspector (0.68.2)
   - React-logger (0.68.2):
     - glog
-  - react-native-qonversion (3.4.0):
-    - QonversionSandwich (= 0.1.0)
+  - react-native-qonversion (3.5.0):
+    - QonversionSandwich (= 0.1.2)
     - React
   - React-perflogger (0.68.2)
   - React-RCTActionSheet (0.68.2):
@@ -526,7 +526,7 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   Qonversion: 11af455df897239813c302f9d8916c66515a6335
-  QonversionSandwich: 1ae7f01cb3eb742313a6518722c5d1d030b306c2
+  QonversionSandwich: fb74f3c9807fb73b8fdf758e6e7f10b49136192e
   RCT-Folly: 4d8508a426467c48885f1151029bc15fa5d7b3b8
   RCTRequired: 3e917ea5377751094f38145fdece525aa90545a0
   RCTTypeSafety: c43c072a4bd60feb49a9570b0517892b4305c45e
@@ -540,7 +540,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b7b553412f2ec768fe6c8f27cd6bafdb9d8719e6
   React-jsinspector: c5989c77cb89ae6a69561095a61cce56a44ae8e8
   React-logger: a0833912d93b36b791b7a521672d8ee89107aff1
-  react-native-qonversion: 64621cf65c2b0192cb1d57e6bff10145610d0f62
+  react-native-qonversion: acc1fde8d559c4e3a83b0ceb6a7c6af25c018c54
   React-perflogger: a18b4f0bd933b8b24ecf9f3c54f9bf65180f3fe6
   React-RCTActionSheet: 547fe42fdb4b6089598d79f8e1d855d7c23e2162
   React-RCTAnimation: bc9440a1c37b06ae9ebbb532d244f607805c6034

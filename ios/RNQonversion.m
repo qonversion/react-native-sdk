@@ -54,7 +54,7 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)completion rejecter:(
 }
 
 RCT_EXPORT_METHOD(purchaseProduct:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    [_qonversionSandwich purchaseProduct:productId :offeringId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+    [_qonversionSandwich purchaseProduct:productId offeringId:offeringId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handlePurchaseResult:result error:error completion:completion rejecter:reject];
     }];
 }
