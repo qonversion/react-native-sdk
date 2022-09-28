@@ -40,6 +40,14 @@ export enum RenewState {
   BILLING_ISSUE = 3,
 }
 
+export enum PermissionSource {
+  UNKNOWN = "Unknown",
+  APP_STORE = "AppStore",
+  PLAY_STORE = "PlayStore",
+  STRIPE = "Stripe",
+  MANUAL = "Manual",
+}
+
 export enum Property {
   EMAIL = 0,
   NAME = 1,

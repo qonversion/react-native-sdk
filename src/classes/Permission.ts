@@ -1,10 +1,11 @@
-import { RenewState } from "../enums";
+import {PermissionSource, RenewState} from "../enums";
 
 class Permission {
   permissionID: string;
   productID: string;
   isActive: boolean;
   renewState: RenewState;
+  source: PermissionSource;
   startedDate: number;
   expirationDate?: number;
 
@@ -13,13 +14,15 @@ class Permission {
     productID: string,
     isActive: boolean,
     renewState: RenewState,
+    source: PermissionSource,
     startedDate: number,
-    expirationDate: number | undefined
+    expirationDate: number | undefined,
   ) {
     this.permissionID = permissionID;
     this.productID = productID;
     this.isActive = isActive;
     this.renewState = renewState;
+    this.source = source;
     this.startedDate = startedDate;
     this.expirationDate = expirationDate;
   }

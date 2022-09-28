@@ -1,11 +1,10 @@
-import {Platform} from "react-native";
-
 import {
   ActionResultType,
   AutomationsEventType,
   ExperimentGroupType,
   IntroEligibilityStatus,
   OfferingTag,
+  PermissionSource,
   ProductDuration,
   ProductDurations,
   ProductType,
@@ -118,6 +117,7 @@ type QPermission = {
   associatedProduct: string;
   active: boolean;
   renewState: number;
+  source: string;
   startedTimestamp: number;
   expirationTimestamp: number;
 };
@@ -196,11 +196,14 @@ class Mapper {
           break;
       }
 
+      const permissionSource = this.convertPermissionSource(permission.source);
+
       const mappedPermission = new Permission(
         permission.id,
         permission.associatedProduct,
         permission.active,
         renewState,
+        permissionSource,
         permission.startedTimestamp,
         permission.expirationTimestamp
       );
@@ -208,6 +211,23 @@ class Mapper {
     }
 
     return mappedPermissions;
+  }
+
+  static convertPermissionSource(sourceKey: string): PermissionSource {
+    switch (sourceKey) {
+      case "Unknown":
+        return PermissionSource.UNKNOWN;
+      case "AppStore":
+        return PermissionSource.APP_STORE;
+      case "PlayStore":
+        return PermissionSource.PLAY_STORE;
+      case "Stripe":
+        return PermissionSource.STRIPE;
+      case "Manual":
+        return PermissionSource.MANUAL;
+    }
+
+    return PermissionSource.UNKNOWN;
   }
 
   static convertProducts(products: Record<string, QProduct>): Map<string, Product> {
