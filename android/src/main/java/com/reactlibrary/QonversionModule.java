@@ -200,6 +200,31 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
+    public void getNotificationCustomPayload(final ReadableMap notificationData, final Promise promise) {
+        if (notificationData == null) {
+            promise.resolve(null);
+            return;
+        }
+
+        final Map<String, Object> dataMap;
+        try {
+            dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
+        } catch (JSONException e) {
+            promise.reject(e);
+            return;
+        }
+
+        Map<String, Object> payload = qonversionSandwich.getNotificationCustomPayload(dataMap);
+        if (payload == null) {
+            promise.resolve(null);
+        } else {
+            final WritableMap convertedPayload = EntitiesConverter.convertMapToWritableMap(payload);
+
+            promise.resolve(convertedPayload);
+        }
+    }
+
+    @ReactMethod
     public void handleNotification(final ReadableMap notificationData, final Promise promise) {
         if (notificationData == null) {
             promise.resolve(false);

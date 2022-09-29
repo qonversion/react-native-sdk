@@ -119,6 +119,18 @@ RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
     [_qonversionSandwich setNotificationToken:token];
 }
 
+RCT_EXPORT_METHOD(getNotificationCustomPayload:(NSDictionary *)notificationData
+                  completion:(RCTResponseSenderBlock)completion
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    if (![notificationData isKindOfClass:[NSDictionary class]]) {
+        completion(nil);
+        return;
+    }
+
+    NSDictionary *payload = [_qonversionSandwich getNotificationCustomPayload:notificationData];
+    completion(@[payload]);
+}
+
 RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
                   completion:(RCTResponseSenderBlock)completion
                   rejecter:(RCTPromiseRejectBlock)reject) {
@@ -135,6 +147,12 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
     [_qonversionSandwich promoPurchase:storeProductId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handlePurchaseResult:result error:error completion:completion rejecter:reject];
     }];
+}
+
+RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
+    if (@available(iOS 14.0, *)) {
+        [_qonversionSandwich presentCodeRedemptionSheet];
+    }
 }
 
 RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime) {

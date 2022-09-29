@@ -19,7 +19,7 @@ import {PromoPurchasesDelegate} from './PromoPurchasesDelegate';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "3.5.1";
+const sdkVersion = "3.6.0";
 
 const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -431,7 +431,7 @@ export default class Qonversion {
   /**
    * Call to handle push notifications sent by Qonversion Automation.
    * @param notificationData notification payload data
-   * @return true when a push notification was received from Qonversion. Otherwise returns false, so you need to handle a notification yourself
+   * @return true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle a notification yourself
    * @see [Firebase RemoteMessage data](https://pub.dev/documentation/firebase_messaging_platform_interface/latest/firebase_messaging_platform_interface/RemoteMessage/data.html)
    * @see [APNs notification data](https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649869-userinfo)
    */
@@ -440,6 +440,19 @@ export default class Qonversion {
       return await RNQonversion.handleNotification(notificationData);
     } catch (e) {
       return false;
+    }
+  }
+
+  /**
+   * Get parsed custom payload, which you added to the notification in the dashboard
+   * @param notificationData notification payload data
+   * @return a map with custom payload from the notification or null if it's not provided.
+   */
+  static async getNotificationCustomPayload(notificationData: Map<string, Object>): Promise<Map<string, Object> | null> {
+    try {
+      return await RNQonversion.getNotificationCustomPayload(notificationData);
+    } catch (e) {
+      return null;
     }
   }
 
@@ -479,6 +492,16 @@ export default class Qonversion {
       };
       delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
     });
+  }
+
+  /**
+   * iOS only.
+   * On iOS 14.0+ shows up a sheet for users to redeem AppStore offer codes.
+   */
+  static presentCodeRedemptionSheet() {
+    if (isIos()) {
+      RNQonversion.presentCodeRedemptionSheet();
+    }
   }
 
   /**
