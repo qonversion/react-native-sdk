@@ -149,6 +149,12 @@ RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTRespon
     }];
 }
 
+RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
+    if (@available(iOS 14.0, *)) {
+        [_qonversionSandwich presentCodeRedemptionSheet];
+    }
+}
+
 RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime) {
     [_qonversionSandwich setPermissionsCacheLifetime:lifetime];
 }

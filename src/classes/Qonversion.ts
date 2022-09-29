@@ -495,6 +495,16 @@ export default class Qonversion {
   }
 
   /**
+   * iOS only.
+   * On iOS 14.0+ shows up a sheet for users to redeem AppStore offer codes.
+   */
+  static presentCodeRedemptionSheet() {
+    if (isIos()) {
+      RNQonversion.presentCodeRedemptionSheet();
+    }
+  }
+
+  /**
    * Permissions cache is used when there are problems with the Qonversion API
    * or internet connection. If so, Qonversion will return the last successfully loaded
    * permissions. The current method allows you to configure how long that cache may be used.
