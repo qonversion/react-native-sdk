@@ -431,7 +431,7 @@ export default class Qonversion {
   /**
    * Call to handle push notifications sent by Qonversion Automation.
    * @param notificationData notification payload data
-   * @return true when a push notification was received from Qonversion. Otherwise returns false, so you need to handle a notification yourself
+   * @return true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle a notification yourself
    * @see [Firebase RemoteMessage data](https://pub.dev/documentation/firebase_messaging_platform_interface/latest/firebase_messaging_platform_interface/RemoteMessage/data.html)
    * @see [APNs notification data](https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649869-userinfo)
    */
@@ -440,6 +440,19 @@ export default class Qonversion {
       return await RNQonversion.handleNotification(notificationData);
     } catch (e) {
       return false;
+    }
+  }
+
+  /**
+   * Get parsed custom payload, which you added to the notification in the dashboard
+   * @param notificationData notification payload data
+   * @return a map with custom payload from the notification or null if it's not provided.
+   */
+  static async getNotificationCustomPayload(notificationData: Map<string, Object>): Promise<Map<string, Object> | null> {
+    try {
+      return await RNQonversion.getNotificationCustomPayload(notificationData);
+    } catch (e) {
+      return null;
     }
   }
 

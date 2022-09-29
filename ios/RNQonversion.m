@@ -119,6 +119,18 @@ RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
     [_qonversionSandwich setNotificationToken:token];
 }
 
+RCT_EXPORT_METHOD(getNotificationCustomPayload:(NSDictionary *)notificationData
+                  completion:(RCTResponseSenderBlock)completion
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    if (![notificationData isKindOfClass:[NSDictionary class]]) {
+        completion(nil);
+        return;
+    }
+
+    NSDictionary *payload = [_qonversionSandwich getNotificationCustomPayload:notificationData];
+    completion(@[payload]);
+}
+
 RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
                   completion:(RCTResponseSenderBlock)completion
                   rejecter:(RCTPromiseRejectBlock)reject) {
