@@ -1,9 +1,28 @@
 {
   "name": "react-native-qonversion",
   "title": "React Native Qonversion",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "description": "Qonversion provides full in-app purchases infrastructure, so you do not need to build your own server for receipt validation. Implement in-app subscriptions, validate user receipts, check subscription status, and provide access to your app features and content using our StoreKit wrapper and Google Play Billing wrapper.",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build",
+    "android",
+    "!android/local.properties",
+    "!android/gradle",
+    "!android/.gradle",
+    "!android/gradlew*",
+    "!android/build",
+    "ios",
+    "!ios/build",
+    "!ios/Qonversion.xcodeproj/xcuserdata",
+    "!ios/Qonversion.xcworkspace",
+    "react-native-qonversion.podspec",
+    "!.github",
+    "!**/.gitignore",
+    "!**/.gitattributes",
+    "!**/.idea"
+  ],
   "scripts": {
     "prepare": "rm -rf build && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
