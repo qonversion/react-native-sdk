@@ -1,4 +1,4 @@
-name: Checks
+name: Upgrde Sandwich
 on:
   workflow_dispatch:
     inputs:
@@ -15,4 +15,4 @@ jobs:
 
     steps:
       - name: Success
-        run: echo '{{ github.event.inputs.sandwich_version }}'
+        run: echo '${{ github.event.inputs.sandwich_version }}'
