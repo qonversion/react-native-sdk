@@ -12,5 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Success
-        run: echo '${{ github.event.inputs.sandwich_version }}'
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Echo requested version
+        run: echo 'Upgrading Sandwich to version ${{ github.event.inputs.sandwich_version }}'
+
+      - name: Bump version
+        run: |
+          fastlane upgrade_sandwich version:${{ github.event.inputs.sandwich_version }}

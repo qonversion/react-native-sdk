@@ -14,6 +14,22 @@ def update_package(new_version)
   update_file(path, regex, result_value)
 end
 
+def upgrade_sandwich_android(new_version)
+  path = "../android/build.gradle"
+  regex = /implementation "io.qonversion.sandwich:sandwich:.*"/
+  result_value = "implementation \"io.qonversion.sandwich:sandwich:#{new_version}\""
+
+  update_file(path, regex, result_value)
+end
+
+def upgrade_sandwich_ios(new_version)
+  path = "../react-native-qonversion.podspec"
+  regex = /s.dependency "QonversionSandwich", ".*"/
+  result_value = "s.dependency \"QonversionSandwich\", \"#{new_version}\""
+
+  update_file(path, regex, result_value)
+end
+
 def update_file(path, regex, result_value)
   file = File.read(path)
   new_content = file.gsub(regex, result_value)
@@ -25,4 +41,11 @@ lane :bump do |options|
 
   update_js(new_version)
   update_package(new_version)
+end
+
+lane :upgrade_sandwich do |options|
+  new_version = options[:version]
+
+  upgrade_sandwich_android(new_version)
+  upgrade_sandwich_ios(new_version)
 end
