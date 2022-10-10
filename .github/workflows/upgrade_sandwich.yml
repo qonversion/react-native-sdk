@@ -1,4 +1,4 @@
-name: Upgrde Sandwich
+name: Upgrade Sandwich
 on:
   workflow_dispatch:
     inputs:
