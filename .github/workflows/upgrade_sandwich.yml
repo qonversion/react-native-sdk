@@ -21,3 +21,12 @@ jobs:
       - name: Bump version
         run: |
           fastlane upgrade_sandwich version:${{ github.event.inputs.sandwich_version }}
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Sandwich upgrade to ${{ steps.tagName.outputs.tag }}
+          body: Sandwich upgrade to ${{ steps.tagName.outputs.tag }}
+          labels: autocreated
+          branch: tech/sandwich_${{ steps.tagName.outputs.tag }}
+          base: develop
