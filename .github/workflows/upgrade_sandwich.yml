@@ -25,8 +25,8 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          title: Sandwich upgrade to ${{ steps.tagName.outputs.tag }}
-          body: Sandwich upgrade to ${{ steps.tagName.outputs.tag }}
+          title: Sandwich upgrade to ${{ github.event.inputs.sandwich_version }}
+          body: Sandwich upgrade to ${{ github.event.inputs.sandwich_version }}
           labels: autocreated
-          branch: tech/sandwich_${{ steps.tagName.outputs.tag }}
+          branch: tech/sandwich_${{ github.event.inputs.sandwich_version }}
           base: develop
