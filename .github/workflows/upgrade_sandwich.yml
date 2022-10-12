@@ -10,23 +10,22 @@ on:
 jobs:
   upgrade_sandwich:
     runs-on: ubuntu-latest
+    env:
+      sandwich_version: ${{ github.event.inputs.sandwich_version }}
 
     steps:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Echo requested version
-        run: echo 'Upgrading Sandwich to version ${{ github.event.inputs.sandwich_version }}'
-
       - name: Bump version
         run: |
-          fastlane upgrade_sandwich version:${{ github.event.inputs.sandwich_version }}
+          fastlane upgrade_sandwich version:$sandwich_version
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          title: Sandwich upgrade to ${{ github.event.inputs.sandwich_version }}
-          body: Sandwich upgrade to ${{ github.event.inputs.sandwich_version }}
+          title: Sandwich upgrade to $sandwich_version
+          body: Sandwich upgrade to $sandwich_version
           labels: autocreated
-          branch: tech/sandwich_${{ github.event.inputs.sandwich_version }}
+          branch: tech/sandwich_$sandwich_version
           base: develop
