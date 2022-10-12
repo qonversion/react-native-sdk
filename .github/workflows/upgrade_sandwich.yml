@@ -21,11 +21,14 @@ jobs:
         run: |
           fastlane upgrade_sandwich version:$sandwich_version
 
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: Sandwich upgrade to ${{ env.sandwich_version }}
-          body: Sandwich upgrade to ${{ env.sandwich_version }}
-          labels: autocreated
-          branch: tech/sandwich_${{ env.sandwich_version }}
-          base: develop
+#      - name: Create pull request
+#        uses: peter-evans/create-pull-request@v3
+#        with:
+#          title: Sandwich upgrade to ${{ env.sandwich_version }}
+#          body: Sandwich upgrade to ${{ env.sandwich_version }}
+#          labels: autocreated
+#          branch: tech/sandwich_${{ env.sandwich_version }}
+#          base: develop
+
+      - name: Create release pull requests
+        uses: qonversion/shared_workflows/test.yml@main
