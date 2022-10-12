@@ -31,4 +31,4 @@ jobs:
 #          base: develop
 
       - name: Create release pull requests
-        uses: qonversion/shared_workflows/test.yml@main
+        uses: qonversion/sdk-workflows/test.yml@main
