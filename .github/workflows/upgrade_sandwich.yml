@@ -32,6 +32,11 @@ jobs:
         run: |
           fastlane bump version:${{ steps.release-version.outputs.version }}
 
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: repo-state
+
   release_pull_requests:
     name: Create release pull requests
     needs: upgrade_sandwich
