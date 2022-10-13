@@ -36,6 +36,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: repo-state
+          path: /
 
   release_pull_requests:
     name: Create release pull requests
