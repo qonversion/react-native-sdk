@@ -31,7 +31,7 @@ jobs:
       - name: Commit changes
         run: |
           git checkout -b ${{ env.branch_name }}
-          git commit -am "Sandwich version upgraded to $sandwich_version" --author="${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>"
+          git commit --author="${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>" -am "Sandwich version upgraded to $sandwich_version"
           git push --set-upstream origin ${{ env.branch_name }}
 
       - name: Calculate release version
