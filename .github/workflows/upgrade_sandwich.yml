@@ -14,7 +14,8 @@ jobs:
     env:
       sandwich_version: ${{ github.event.inputs.sandwich_version }}
     outputs:
-      version: ${{ steps.release-version.outputs.version }}
+      branch_name: ${{ env.branch_name }}
+      version: ${{ env.version }}
 
     steps:
       - name: Check out code
@@ -24,23 +25,22 @@ jobs:
         run: |
           fastlane upgrade_sandwich version:$sandwich_version
 
-      - name: Calculate release version
-        id: release-version
-        run: echo "::set-output name=version::3.6.2"
+      - name: Generate branch name
+        run: echo "{branch_name}={sandwich_upgrade_$sandwich_version}" >> $GITHUB_ENV
 
-      - name: Bump release version
+      - name: Commit changes
         run: |
-          fastlane bump version:${{ steps.release-version.outputs.version }}
+          git checkout -b ${{ env.branch_name }}
+          git commit -am "Sandwich version upgraded to $sandwich_version"
+          git push --set-upstream origin ${{ env.branch_name }}
 
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: repo-state
-          path: /
+      - name: Calculate release version
+        run: echo "{version}={3.6.2}" >> $GITHUB_ENV
 
   release_pull_requests:
     name: Create release pull requests
     needs: upgrade_sandwich
     uses: qonversion/react-native-sdk/.github/workflows/release_pull_requests_2.yml@tech/autoupgradeCP
     with:
-      version: ${{needs.upgrade_sandwich.outputs.version}}
+      base_branch: ${{ needs.upgrade_sandwich.outputs.branch_name }}
+      version: ${{ needs.upgrade_sandwich.outputs.version }}

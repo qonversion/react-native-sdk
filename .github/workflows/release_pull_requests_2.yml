@@ -7,6 +7,11 @@ on:
         required: true
         type: string
         default: '0.0.0'
+      base_branch:
+        description: 'Base branch name'
+        required: true
+        type: string
+        default: 'develop'
 
 jobs:
   release_pull-requests:
@@ -14,10 +19,14 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
+      - name: Check out code
+        uses: actions/checkout@v3
         with:
-          name: repo-state
+          ref: ${{ steps.release-version.outputs.base_branch }}
+
+      - name: Bump release version
+        run: |
+          fastlane bump version:${{ steps.release-version.outputs.version }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
