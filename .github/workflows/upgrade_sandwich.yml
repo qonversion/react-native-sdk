@@ -26,7 +26,7 @@ jobs:
           fastlane upgrade_sandwich version:$sandwich_version
 
       - name: Generate branch name
-        run: echo "{branch_name}={sandwich_upgrade_$sandwich_version}" >> $GITHUB_ENV
+        run: echo "branch_name=sandwich_upgrade_$sandwich_version" >> $GITHUB_ENV
 
       - name: Commit changes
         run: |
@@ -35,7 +35,7 @@ jobs:
           git push --set-upstream origin ${{ env.branch_name }}
 
       - name: Calculate release version
-        run: echo "{version}={3.6.2}" >> $GITHUB_ENV
+        run: echo "version=3.6.2" >> $GITHUB_ENV
 
   release_pull_requests:
     name: Create release pull requests
