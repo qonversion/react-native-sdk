@@ -28,6 +28,10 @@ jobs:
         id: release-version
         run: echo "::set-output name=version::3.6.2"
 
+      - name: Bump release version
+        run: |
+          fastlane bump version:${{ steps.release-version.outputs.version }}
+
   release_pull_requests:
     name: Create release pull requests
     needs: upgrade_sandwich
