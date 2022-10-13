@@ -46,3 +46,14 @@ jobs:
     with:
       base_branch: ${{ needs.upgrade_sandwich.outputs.branch_name }}
       version: ${{ needs.upgrade_sandwich.outputs.version }}
+
+  cleanup:
+    needs: [upgrade_sandwich, release_pull_requests]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Delete temporary branch
+        run: |
+          git branch -d ${{ needs.upgrade_sandwich.outputs.branch_name }}
+          git push origin --delete ${{ needs.upgrade_sandwich.outputs.branch_name }}

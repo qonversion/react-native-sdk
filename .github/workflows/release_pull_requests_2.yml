@@ -22,11 +22,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          ref: ${{ steps.release-version.outputs.base_branch }}
+          ref: ${{ github.event.inputs.base_branch }}
 
       - name: Bump release version
         run: |
-          fastlane bump version:${{ steps.release-version.outputs.version }}
+          fastlane bump version:${{ github.event.inputs.version }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
