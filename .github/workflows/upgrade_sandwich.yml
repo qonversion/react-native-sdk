@@ -35,7 +35,6 @@ jobs:
   release_pull_requests:
     name: Create release pull requests
     needs: upgrade_sandwich
-    uses: qonversion/shared-sdk-workflows/.github/workflows/release_pull_requests.yml@main
+    uses: qonversion/react-native-sdk/.github/workflows/release_pull_requests_2.yml@tech/autoupgradeCP
     with:
       version: ${{needs.upgrade_sandwich.outputs.version}}
-    secrets: inherit

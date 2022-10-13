@@ -1,0 +1,42 @@
+name: Release pull requests
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        type: string
+        default: '0.0.0'
+
+jobs:
+  release_pull-requests:
+    name: Bump version and create release PRs
+    runs-on: macos-latest
+
+    steps:
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Release ${{ github.event.inputs.version }}
+          body: Release PR
+          labels: autocreated
+          branch: release/${{ github.event.inputs.version }}
+          base: develop
+
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Reset main branch
+        run: |
+          git fetch origin release/${{ github.event.inputs.version }}:release/${{ github.event.inputs.version }}
+          git reset --hard release/${{ github.event.inputs.version }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Release ${{ github.event.inputs.version }}
+          body: Release PR
+          labels: autocreated
+          branch: release/${{ github.event.inputs.version }}
+          base: main
