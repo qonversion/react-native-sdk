@@ -33,4 +33,4 @@ jobs:
     needs: upgrade_sandwich
     uses: qonversion/shared-sdk-workflows/.github/workflows/release_pull_requests.yml@main
     with:
-      version: ${{needs.release_version.outputs.version}}
+      version: ${{needs.upgrade_sandwich.outputs.version}}
