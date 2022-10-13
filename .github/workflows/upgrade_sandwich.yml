@@ -9,6 +9,7 @@ on:
 
 jobs:
   upgrade_sandwich:
+    name: Upgrade Sandwich
     runs-on: ubuntu-latest
     env:
       sandwich_version: ${{ github.event.inputs.sandwich_version }}
@@ -30,5 +31,7 @@ jobs:
 #          branch: tech/sandwich_${{ env.sandwich_version }}
 #          base: develop
 
-      - name: Create release pull requests
-        uses: qonversion/shared-sdk-workflows/.github/actions/test.yml@main
+  release_pull_requests:
+    name: Create release pull requests
+    needs: upgrade_sandwich
+    uses: qonversion/shared-sdk-workflows/.github/workflows/test_workflow.yml@main
