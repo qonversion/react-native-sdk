@@ -8,47 +8,7 @@ on:
         default: '0.0.0'
 
 jobs:
-  calculate_release_version:
-    name: Calculate release version
-    runs-on: macos-latest
-    outputs:
-      version: ${{ env.version }}
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Calculate release version
-        run: fastlane provide_next_patch_version
-
-  release_pull_requests:
-    name: Create release pull requests
-    needs: calculate_release_version
-    uses: qonversion/shared-sdk-workflows/.github/workflows/release_pull_requests.yml@main
+  upgrade:
+    uses: qonversion/shared-sdk-workflows/.github/workflows/upgrade_sandwich.yml@main
     with:
-      version: ${{ needs.calculate_release_version.outputs.version }}
-
-  upgrade_sandwich:
-    name: Upgrade Sandwich version
-    needs: [release_pull_requests]
-    runs-on: ubuntu-latest
-    env:
       sandwich_version: ${{ github.event.inputs.sandwich_version }}
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ needs.release_pull_requests.outputs.branch_name }}
-
-      - name: Bump Sandwich version
-        run: |
-          fastlane upgrade_sandwich version:$sandwich_version
-
-      - name: Commit changes
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
-          git commit -am "Sandwich version upgraded to $sandwich_version"
-          git push

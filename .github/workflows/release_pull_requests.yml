@@ -5,26 +5,5 @@ on:
       - prerelease/*
 
 jobs:
-  release_version:
-    name: Get release version
-    runs-on: macos-latest
-    outputs:
-      version: ${{ steps.tagName.outputs.tag }}
-
-    steps:
-      - uses: actions/checkout@v2
-        name: Checkout all
-        with:
-          fetch-depth: 0
-
-      - uses: olegtarasov/get-tag@v2.1
-        id: tagName
-        with:
-          tagRegex: 'prerelease\/(\d*\.\d*\.\d*)'
-
-  create_pull_requests:
-    name: Create release pull requests
-    needs: release_version
-    uses: qonversion/shared-sdk-workflows/.github/workflows/release_pull_requests.yml@main
-    with:
-      version: ${{needs.release_version.outputs.version}}
+  handle_prerelease:
+    uses: qonversion/shared-sdk-workflows/.github/workflows/prerelease_handling.yml@main
