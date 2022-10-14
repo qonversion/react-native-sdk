@@ -8,52 +8,47 @@ on:
         default: '0.0.0'
 
 jobs:
+  calculate_release_version:
+    name: Calculate release version
+    runs-on: macos-latest
+    outputs:
+      version: ${{ env.version }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Calculate release version
+        run: fastlane provide_next_patch_version
+
+  release_pull_requests:
+    name: Create release pull requests
+    needs: calculate_release_version
+    uses: qonversion/shared-sdk-workflows/.github/workflows/release_pull_requests.yml@main
+    with:
+      version: ${{ needs.calculate_release_version.outputs.version }}
+
   upgrade_sandwich:
-    name: Upgrade Sandwich and release versions
+    name: Upgrade Sandwich version
+    needs: [release_pull_requests]
     runs-on: ubuntu-latest
     env:
       sandwich_version: ${{ github.event.inputs.sandwich_version }}
-    outputs:
-      branch_name: ${{ env.branch_name }}
-      version: ${{ env.version }}
 
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.release_pull_requests.outputs.branch_name }}
 
       - name: Bump Sandwich version
         run: |
           fastlane upgrade_sandwich version:$sandwich_version
 
-      - name: Generate branch name
-        run: echo "branch_name=sandwich_upgrade_$sandwich_version" >> $GITHUB_ENV
-
       - name: Commit changes
         run: |
-          git checkout -b ${{ env.branch_name }}
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
           git commit -am "Sandwich version upgraded to $sandwich_version"
-          git push --set-upstream origin ${{ env.branch_name }}
-
-      - name: Calculate release version
-        run: echo "version=3.6.2" >> $GITHUB_ENV
-
-  release_pull_requests:
-    name: Create release pull requests
-    needs: upgrade_sandwich
-    uses: qonversion/react-native-sdk/.github/workflows/release_pull_requests_2.yml@tech/autoupgradeCP
-    with:
-      base_branch: ${{ needs.upgrade_sandwich.outputs.branch_name }}
-      version: ${{ needs.upgrade_sandwich.outputs.version }}
-
-  cleanup:
-    needs: [upgrade_sandwich, release_pull_requests]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Delete temporary branch
-        run: |
-          git push origin --delete ${{ needs.upgrade_sandwich.outputs.branch_name }}
+          git push

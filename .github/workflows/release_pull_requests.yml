@@ -2,7 +2,7 @@ name: Release pull requests from dev by tag
 on:
   push:
     tags:
-    - prerelease/*
+      - prerelease/*
 
 jobs:
   release_version:
