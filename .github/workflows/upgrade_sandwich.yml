@@ -1,0 +1,14 @@
+name: Upgrade Sandwich
+on:
+  workflow_dispatch:
+    inputs:
+      sandwich_version:
+        description: 'Sandwich version'
+        required: true
+        default: '0.0.0'
+
+jobs:
+  upgrade:
+    uses: qonversion/shared-sdk-workflows/.github/workflows/upgrade_sandwich.yml@main
+    with:
+      sandwich_version: ${{ github.event.inputs.sandwich_version }}
