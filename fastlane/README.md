@@ -13,10 +13,42 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
+### patch
+
+```sh
+[bundle exec] fastlane patch
+```
+
+
+
+### minor
+
+```sh
+[bundle exec] fastlane minor
+```
+
+
+
 ### bump
 
 ```sh
 [bundle exec] fastlane bump
+```
+
+
+
+### upgrade_sandwich
+
+```sh
+[bundle exec] fastlane upgrade_sandwich
+```
+
+
+
+### provide_next_patch_version
+
+```sh
+[bundle exec] fastlane provide_next_patch_version
 ```
 
 
