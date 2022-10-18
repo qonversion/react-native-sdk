@@ -45,12 +45,26 @@ def get_tag
   return result_tag
 end
 
+def calculate_minor_version(tag)
+  major, minor, patch = parse_versions(tag)
+  new_minor_version = minor.to_i.next.to_s
+  new_version = major + "." + new_minor_version + "." + "0"
+  return new_version
+end
+
 def calculate_patch_version(tag)
   major, minor, patch = parse_versions(tag)
   new_patch_version = patch.to_i.next.to_s
   new_version = major + "." + minor + "." + new_patch_version
 
   return new_version
+end
+
+def push_tag(tag)
+  system("git checkout develop")
+  system("git pull origin develop")
+  add_git_tag(tag: tag)
+  push_git_tags(tag: tag)
 end
 
 def parse_versions(tag)
@@ -63,6 +77,20 @@ def parse_versions(tag)
 
     return major, minor, patch
   end
+end
+
+lane :patch do
+  tag = get_tag
+  new_version = calculate_patch_version(tag)
+  new_tag = "prerelease/" + new_version
+  push_tag(new_tag)
+end
+
+lane :minor do
+  tag = get_tag
+  new_version = calculate_minor_version(tag)
+  new_tag = "prerelease/" + new_version
+  push_tag(new_tag)
 end
 
 lane :bump do |options|
