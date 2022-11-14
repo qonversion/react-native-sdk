@@ -17,7 +17,7 @@
     "@react-native-community/push-notification-ios": "^1.10.1",
     "babel-preset-react-native": "2.1.0",
     "react": "18.1.0",
-    "react-native": "0.70.3",
+    "react-native": "0.70.5",
     "react-native-push-notification": "^8.1.1",
     "react-native-qonversion": "file:../"
   },

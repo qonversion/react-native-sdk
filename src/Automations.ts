@@ -5,7 +5,7 @@ import AutomationsInternal from './internal/AutomationsInternal';
 export default class Automations {
   private constructor() {}
 
-  private static backingInstance: AutomationsApi | undefined = undefined
+  private static backingInstance: AutomationsApi | undefined;
 
   /**
    * Use this variable to get a current initialized instance of the Qonversion SDK.

@@ -134,15 +134,15 @@ type QUser = {
 const skuDetailsPriceRatio = 1000000;
 
 class Mapper {
-  static convertPermissions(
-    permissions: Record<string, QEntitlement>
+  static convertEntitlements(
+    entitlements: Record<string, QEntitlement>
   ): Map<string, Entitlement> {
     let mappedPermissions = new Map();
 
-    for (const [key, permission] of Object.entries(permissions)) {
+    for (const [key, entitlement] of Object.entries(entitlements)) {
       let renewState: RenewState = RenewState.UNKNOWN;
 
-      switch (permission.renewState) {
+      switch (entitlement.renewState) {
         case -1:
           renewState = RenewState.NON_RENEWABLE;
           break;
@@ -157,16 +157,16 @@ class Mapper {
           break;
       }
 
-      const permissionSource = this.convertPermissionSource(permission.source);
+      const entitlementSource = this.convertEntitlementSource(entitlement.source);
 
       const mappedPermission = new Entitlement(
-        permission.id,
-        permission.associatedProduct,
-        permission.active,
+        entitlement.id,
+        entitlement.associatedProduct,
+        entitlement.active,
         renewState,
-        permissionSource,
-        permission.startedTimestamp,
-        permission.expirationTimestamp
+        entitlementSource,
+        entitlement.startedTimestamp,
+        entitlement.expirationTimestamp
       );
       mappedPermissions.set(key, mappedPermission);
     }
@@ -174,7 +174,7 @@ class Mapper {
     return mappedPermissions;
   }
 
-  static convertPermissionSource(sourceKey: string): EntitlementSource {
+  static convertEntitlementSource(sourceKey: string): EntitlementSource {
     switch (sourceKey) {
       case "Unknown":
         return EntitlementSource.UNKNOWN;

@@ -3,17 +3,17 @@ import {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
 import QonversionConfig from './QonversionConfig';
 
 class QonversionConfigBuilder {
-  readonly projectKey: string;
-  readonly launchMode: LaunchMode;
+  private readonly projectKey: string;
+  private readonly launchMode: LaunchMode;
 
   constructor(projectKey: string, launchMode: LaunchMode) {
     this.projectKey = projectKey;
     this.launchMode = launchMode;
   }
 
-  environment: Environment = Environment.PRODUCTION;
-  entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH;
-  entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined;
+  private environment: Environment = Environment.PRODUCTION;
+  private entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH;
+  private entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined;
 
   /**
    * Set current application {@link Environment}. Used to distinguish sandbox and production users.

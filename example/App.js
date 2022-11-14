@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier,react-native/no-inline-styles */
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -9,7 +9,14 @@
 
 import React, {Component} from 'react';
 import {Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert} from 'react-native';
-import Qonversion, {Product, Permission} from 'react-native-qonversion';
+import Qonversion, {
+    Product,
+    QonversionConfigBuilder,
+    LaunchMode,
+    Environment,
+    Entitlement,
+    EntitlementsCacheLifetime, Automations,
+} from 'react-native-qonversion';
 import NotificationsManager from './notificationsManager';
 
 NotificationsManager.init();
@@ -18,7 +25,7 @@ type StateType = {
     inAppButtonTitle: string;
     subscriptionButtonTitle: string;
     loading: boolean;
-    checkPermissionsHidden: boolean;
+    checkEntitlementsHidden: boolean;
 };
 
 const prettyDuration = {
@@ -35,62 +42,70 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         super(props);
 
         this.state = {
-            inAppButtonTitle: "Loading...",
-            subscriptionButtonTitle: "Loading...",
+            inAppButtonTitle: 'Loading...',
+            subscriptionButtonTitle: 'Loading...',
             loading: true,
-            checkPermissionsHidden: true,
+            checkEntitlementsHidden: true,
         };
 
         // eslint-disable-next-line consistent-this
         const outerClassRef = this; // necessary for anonymous classes to access this.
-        Qonversion.launchWithKey('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2');
-        Qonversion.setUpdatedPurchasesDelegate({
-            onPermissionsUpdated(permissions) {
-                console.log('Permissions updated!', permissions);
-                outerClassRef.handlePermissions(permissions);
-            },
-        });
-        Qonversion.setPromoPurchasesDelegate({
+        const config = new QonversionConfigBuilder(
+          'PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2',
+          LaunchMode.SUBSCRIPTION_MANAGEMENT
+        )
+          .setEnvironment(Environment.SANDBOX)
+          .setEntitlementsCacheLifetime(EntitlementsCacheLifetime.MONTH)
+          .setEntitlementsUpdateListener({
+              onEntitlementsUpdated(entitlements) {
+                  console.log('Entitlements updated!', entitlements);
+                  outerClassRef.handleEntitlements(entitlements);
+              },
+          })
+          .build();
+        Qonversion.initialize(config);
+        Automations.initialize();
+        Qonversion.getSharedInstance().setPromoPurchasesDelegate({
             onPromoPurchaseReceived: async (productId, promoPurchaseExecutor) => {
                 try {
-                    const permissions = await promoPurchaseExecutor(productId);
-                    console.log('Promo purchase completed. Permissions: ', permissions);
-                    outerClassRef.handlePermissions(permissions);
+                    const entitlements = await promoPurchaseExecutor(productId);
+                    console.log('Promo purchase completed. Entitlements: ', entitlements);
+                    outerClassRef.handleEntitlements(entitlements);
                 } catch (e) {
                     console.log('Promo purchase failed.');
                 }
             },
         });
-        Qonversion.checkPermissions().then(permissions => {
-            this.handlePermissions(permissions);
+        Qonversion.getSharedInstance().checkEntitlements().then(entitlements => {
+            this.handleEntitlements(entitlements);
         });
     }
 
-    handlePermissions(permissions) {
-        let checkActivePermissionsButtonHidden = this.state.checkPermissionsHidden;
-        if (permissions.size > 0) {
-            const permissionsValues = Array.from(permissions.values());
-            checkActivePermissionsButtonHidden = !permissionsValues.some(item => item.isActive === true);
+    handleEntitlements(entitlements) {
+        let checkActiveEntitlementsButtonHidden = this.state.checkEntitlementsHidden;
+        if (entitlements.size > 0) {
+            const entitlementsValues = Array.from(entitlements.values());
+            checkActiveEntitlementsButtonHidden = !entitlementsValues.some(item => item.isActive === true);
         }
-        Qonversion.products().then(products => {
+        Qonversion.getSharedInstance().products().then(products => {
             let inAppTitle = this.state.inAppButtonTitle;
             let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
 
             const inApp: Product = products.get('in_app');
             if (inApp) {
                 inAppTitle = 'Buy for ' + inApp.prettyPrice;
-                const permission = permissions.get('Test Permission');
-                if (permission) {
-                    inAppTitle = permission.isActive ? 'Purchased' : inAppTitle;
+                const entitlement = entitlements.get('Test Entitlement');
+                if (entitlement) {
+                    inAppTitle = entitlement.isActive ? 'Purchased' : inAppTitle;
                 }
             }
 
             const main: Product = products.get('main');
             if (main) {
                 subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + prettyDuration[main.duration];
-                const permission = permissions.get('plus');
-                if (permission) {
-                    subscriptionButtonTitle = permission.isActive ? 'Purchased' : subscriptionButtonTitle;
+                const entitlement = entitlements.get('plus');
+                if (entitlement) {
+                    subscriptionButtonTitle = entitlement.isActive ? 'Purchased' : subscriptionButtonTitle;
                 }
             }
 
@@ -98,7 +113,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                 loading: false,
                 inAppButtonTitle: inAppTitle,
                 subscriptionButtonTitle: subscriptionButtonTitle,
-                checkPermissionsHidden: checkActivePermissionsButtonHidden,
+                checkEntitlementsHidden: checkActiveEntitlementsButtonHidden,
             });
         });
     }
@@ -131,7 +146,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                   style={styles.subscriptionButton}
                   onPress={() => {
                       this.setState({loading: true});
-                      Qonversion.purchase('main').then(() => {
+                      Qonversion.getSharedInstance().purchase('main').then(() => {
                           this.setState({loading: false, subscriptionButtonTitle: 'Purchased'});
                       }).catch(error => {
                           this.setState({loading: false});
@@ -155,7 +170,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                   style={styles.inAppButton}
                   onPress={() => {
                       this.setState({loading: true});
-                      Qonversion.purchase('in_app').then(() => {
+                      Qonversion.getSharedInstance().purchase('in_app').then(() => {
                           this.setState({loading: false, inAppButtonTitle: 'Purchased'});
                       }).catch(error => {
                           this.setState({loading: false});
@@ -179,23 +194,23 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                   style={styles.additionalButton}
                   onPress={() => {
                       this.setState({loading: true});
-                      Qonversion.restore().then(permissions => {
+                      Qonversion.getSharedInstance().restore().then(entitlements => {
                           this.setState({loading: false});
 
-                          let checkActivePermissionsButtonHidden = this.state.checkPermissionsHidden;
+                          let checkActiveEntitlementsButtonHidden = this.state.checkEntitlementsHidden;
                           let inAppTitle = this.state.inAppButtonTitle;
                           let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
-                          if (permissions.size > 0) {
-                              const permissionsValues = Array.from(permissions.values());
-                              checkActivePermissionsButtonHidden = permissionsValues.some(item => item.isActive === true);
+                          if (entitlements.size > 0) {
+                              const entitlementsValues = Array.from(entitlements.values());
+                              checkActiveEntitlementsButtonHidden = entitlementsValues.some(item => item.isActive === true);
 
-                              const standartPermission = permissions.get('Test Permission');
-                              if (standartPermission && standartPermission.isActive) {
+                              const standartEntitlement = entitlements.get('Test Entitlement');
+                              if (standartEntitlement && standartEntitlement.isActive) {
                                   inAppTitle = 'Restored';
                               }
 
-                              const plusPermission = permissions.get('plus');
-                              if (plusPermission && plusPermission.isActive) {
+                              const plusEntitlement = entitlements.get('plus');
+                              if (plusEntitlement && plusEntitlement.isActive) {
                                   subscriptionButtonTitle = 'Restored';
                               }
                           } else {
@@ -203,46 +218,46 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                                   'Error',
                                   'No purchases to restore',
                                   [
-                                      { text: 'OK' }
+                                      { text: 'OK' },
                                   ],
                                   { cancelable: true }
                               );
                           }
 
-                          this.setState({loading: false, checkPermissionsButtonHidden: checkActivePermissionsButtonHidden, inAppButtonTitle: inAppTitle,
-                              subscriptionButtonTitle: subscriptionButtonTitle});
-
-                          // if let permission: Qonversion.Permission = self.permissions["plus"], permission.isActive {
-                          //     self.mainProductSubscriptionButton.setTitle("Restored", for: .normal)
-                          // }
+                          this.setState({
+                              loading: false,
+                              checkEntitlementsButtonHidden: checkActiveEntitlementsButtonHidden,
+                              inAppButtonTitle: inAppTitle,
+                              subscriptionButtonTitle: subscriptionButtonTitle,
+                          });
                       });
                   }}
               >
                   <Text style={styles.additionalButtonsText}>Restore purchases</Text>
               </TouchableOpacity>
-              {!this.state.checkPermissionsHidden && <TouchableOpacity
+              {!this.state.checkEntitlementsHidden && <TouchableOpacity
                   style={styles.additionalButton}
                   onPress={() => {
-                      Qonversion.checkPermissions().then(permissions => {
+                      Qonversion.getSharedInstance().checkEntitlements().then(entitlements => {
                           let message = '';
-                          const permissionsValues = Array.from(permissions.values());
-                          permissionsValues.map((permission: Permission) => {
-                              if (permission.isActive) {
-                                  message = message + 'permissionID: ' + permission.permissionID + '\n' + 'productID: ' + permission.productID + '\n' + 'renewState: ' + permission.renewState + '\n\n';
+                          const entitlementsValues = Array.from(entitlements.values());
+                          entitlementsValues.map((entitlement: Entitlement) => {
+                              if (entitlement.isActive) {
+                                  message = message + 'entitlementID: ' + entitlement.id + '\n' + 'productID: ' + entitlement.productId + '\n' + 'renewState: ' + entitlement.renewState + '\n\n';
                               }
                           });
                           Alert.alert(
-                              'Active permissions',
+                              'Active entitlements',
                               message,
                               [
-                                  { text: 'OK' }
+                                  { text: 'OK' },
                               ],
                               { cancelable: true }
                           );
                       });
                   }}
               >
-                  <Text style={styles.additionalButtonsText}>Check active permissions</Text>
+                  <Text style={styles.additionalButtonsText}>Check active entitlements</Text>
               </TouchableOpacity>
               }
           </View>

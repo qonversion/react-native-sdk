@@ -22,7 +22,7 @@ const {RNQonversion} = NativeModules;
 
 const sdkVersion = "3.6.2";
 
-const EVENT_PERMISSIONS_UPDATED = "permissions_updated";
+const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
 
 export default class QonversionInternal implements QonversionApi {
@@ -56,10 +56,10 @@ export default class QonversionInternal implements QonversionApi {
           :
           RNQonversion.purchase(productId);
 
-      const permissions = await purchasePromise;
+      const entitlements = await purchasePromise;
 
       // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions = Mapper.convertPermissions(permissions);
+      const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
     } catch (e) {
@@ -78,11 +78,11 @@ export default class QonversionInternal implements QonversionApi {
     }
 
     try {
-      let permissions;
+      let entitlements;
       if (!prorationMode) {
-        permissions = await RNQonversion.updatePurchase(productId, oldProductId);
+        entitlements = await RNQonversion.updatePurchase(productId, oldProductId);
       } else {
-        permissions = await RNQonversion.updatePurchaseWithProrationMode(
+        entitlements = await RNQonversion.updatePurchaseWithProrationMode(
           productId,
           oldProductId,
           prorationMode
@@ -90,7 +90,7 @@ export default class QonversionInternal implements QonversionApi {
       }
 
       // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions: Map<string, Entitlement> = Mapper.convertPermissions(permissions);
+      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
     } catch (e) {
@@ -109,11 +109,11 @@ export default class QonversionInternal implements QonversionApi {
     }
 
     try {
-      let permissions;
+      let entitlements;
       if (!prorationMode) {
-        permissions = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
+        entitlements = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
       } else {
-        permissions = await RNQonversion.updateProductWithIdAndProrationMode(
+        entitlements = await RNQonversion.updateProductWithIdAndProrationMode(
           product.qonversionID,
           product.offeringId,
           oldProductId,
@@ -122,7 +122,7 @@ export default class QonversionInternal implements QonversionApi {
       }
 
       // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions: Map<string, Entitlement> = Mapper.convertPermissions(permissions);
+      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
     } catch (e) {
@@ -161,22 +161,22 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   async checkEntitlements(): Promise<Map<string, Entitlement>> {
-    const permissions = await RNQonversion.checkPermissions();
+    const entitlements = await RNQonversion.checkEntitlements();
     const mappedPermissions: Map<
       string,
       Entitlement
-      > = Mapper.convertPermissions(permissions);
+      > = Mapper.convertEntitlements(entitlements);
 
     return mappedPermissions;
   }
 
   async restore(): Promise<Map<string, Entitlement>> {
-    const permissions = await RNQonversion.restore();
+    const entitlements = await RNQonversion.restore();
 
     const mappedPermissions: Map<
       string,
       Entitlement
-    > = Mapper.convertPermissions(permissions);
+    > = Mapper.convertEntitlements(entitlements);
 
     return mappedPermissions;
   }
@@ -238,10 +238,10 @@ export default class QonversionInternal implements QonversionApi {
 
   setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
     const eventEmitter = new NativeEventEmitter(RNQonversion);
-    eventEmitter.removeAllListeners(EVENT_PERMISSIONS_UPDATED);
-    eventEmitter.addListener(EVENT_PERMISSIONS_UPDATED, payload => {
-      const permissions = Mapper.convertPermissions(payload);
-      listener.onEntitlementsUpdated(permissions);
+    eventEmitter.removeAllListeners(EVENT_ENTITLEMENTS_UPDATED);
+    eventEmitter.addListener(EVENT_ENTITLEMENTS_UPDATED, payload => {
+      const entitlements = Mapper.convertEntitlements(payload);
+      listener.onEntitlementsUpdated(entitlements);
     });
   }
 
@@ -254,8 +254,8 @@ export default class QonversionInternal implements QonversionApi {
     eventEmitter.removeAllListeners(EVENT_PROMO_PURCHASE_RECEIVED);
     eventEmitter.addListener(EVENT_PROMO_PURCHASE_RECEIVED, productId => {
       const promoPurchaseExecutor = async () => {
-        const permissions = await RNQonversion.promoPurchase(productId);
-        const mappedPermissions: Map<string, Entitlement> = Mapper.convertPermissions(permissions);
+        const entitlements = await RNQonversion.promoPurchase(productId);
+        const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
         return mappedPermissions;
       };
       delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);

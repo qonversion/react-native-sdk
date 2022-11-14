@@ -1,9 +1,9 @@
 export { default } from './Qonversion';
 export { default as QonversionApi } from './QonversionApi';
 export { default as QonversionConfig } from './QonversionConfig';
-export { default as QonversionConfigBuilder } from './QonversionConfig';
+export { default as QonversionConfigBuilder } from './QonversionConfigBuilder';
 
-export { default as Automations } from './internal/AutomationsInternal';
+export { default as Automations } from './Automations';
 
 export { default as ActionResult } from './dto/ActionResult';
 export { AutomationsDelegate } from './dto/AutomationsDelegate';
@@ -13,7 +13,7 @@ export * from './dto/enums';
 export { default as IntroEligibility } from './dto/IntroEligibility';
 export { default as Offering } from './dto/Offering';
 export { default as Offerings } from './dto/Offerings';
-export { default as Permission } from './dto/Entitlement';
+export { default as Entitlement } from './dto/Entitlement';
 export { default as Product } from './dto/Product';
 export { PromoPurchasesListener } from './dto/PromoPurchasesListener';
 export { default as QonversionError } from './dto/QonversionError';

@@ -5,7 +5,7 @@ import QonversionInternal from './internal/QonversionInternal';
 export default class Qonversion {
   private constructor() {}
 
-  private static backingInstance: QonversionApi | undefined = undefined
+  private static backingInstance: QonversionApi | undefined;
 
   /**
    * Use this variable to get a current initialized instance of the Qonversion SDK.
