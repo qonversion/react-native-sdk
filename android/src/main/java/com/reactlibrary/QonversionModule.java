@@ -183,6 +183,11 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         qonversionSandwich.logout();
     }
 
+    @ReactMethod
+    public void userInfo(final Promise promise) {
+        qonversionSandwich.userInfo(getResultListener(promise));
+    }
+
     @Override
     public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);

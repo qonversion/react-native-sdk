@@ -43,11 +43,11 @@ export const TrialDuration = {
 export type TrialDurations = typeof TrialDuration[keyof typeof TrialDuration];
 
 export enum RenewState {
-  NON_RENEWABLE = -1,
-  UNKNOWN = 0,
-  WILL_RENEW = 1,
-  CANCELED = 2,
-  BILLING_ISSUE = 3,
+  NON_RENEWABLE = 'non_renewable',
+  UNKNOWN = 'unknown',
+  WILL_RENEW = 'will_renew',
+  CANCELED = 'canceled',
+  BILLING_ISSUE = 'billing_issue',
 }
 
 export enum EntitlementSource {

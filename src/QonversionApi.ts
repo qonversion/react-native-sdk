@@ -135,7 +135,6 @@ interface QonversionApi {
    */
   syncPurchases(): void;
 
-
   /**
    * Call this function to link a user to his unique ID in your system and share purchase data.
    *
@@ -190,19 +189,6 @@ interface QonversionApi {
   setUserProperty(property: string, value: string): void;
 
   /**
-   * iOS only. Returns `null` if called on Android.
-   *
-   * On iOS 14.5+, after requesting the app tracking permission using ATT, you need to notify Qonversion if tracking
-   * is allowed and IDFA is available.
-   */
-  setAdvertisingID(): void;
-
-  /**
-   * Enable attribution collection from Apple Search Ads. False by default.
-   */
-  setAppleSearchAdsAttributionEnabled(enabled: boolean): void;
-
-  /**
    * Provide a listener to be notified about asynchronous user entitlements updates.
    *
    * Make sure you provide this listener for being up-to-date with the user entitlements.
@@ -216,6 +202,21 @@ interface QonversionApi {
    * @param listener listener to be called when entitlements update
    */
   setEntitlementsUpdateListener(listener: EntitlementsUpdateListener): void;
+
+  /**
+   * iOS only. Does nothing if called on Android.
+   *
+   * On iOS 14.5+, after requesting the app tracking permission using ATT, you need to notify Qonversion if tracking
+   * is allowed and IDFA is available.
+   */
+  setAdvertisingID(): void;
+
+  /**
+   * iOS only. Does nothing if called on Android.
+   *
+   * Enable attribution collection from Apple Search Ads. False by default.
+   */
+  setAppleSearchAdsAttributionEnabled(enabled: boolean): void;
 
   /**
    * iOS only. Does nothing if called on Android.

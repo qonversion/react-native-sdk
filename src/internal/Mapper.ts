@@ -1,8 +1,8 @@
 import {
   AutomationsEventType,
+  EntitlementSource,
   IntroEligibilityStatus,
   OfferingTag,
-  EntitlementSource,
   ProductDuration,
   ProductDurations,
   ProductType,
@@ -102,9 +102,9 @@ type QLocale = {
 
 type QEntitlement = {
   id: string;
-  associatedProduct: string;
+  productId: string;
   active: boolean;
-  renewState: number;
+  renewState: string;
   source: string;
   startedTimestamp: number;
   expirationTimestamp: number;
@@ -140,20 +140,22 @@ class Mapper {
     let mappedPermissions = new Map();
 
     for (const [key, entitlement] of Object.entries(entitlements)) {
-      let renewState: RenewState = RenewState.UNKNOWN;
-
+      let renewState: RenewState;
       switch (entitlement.renewState) {
-        case -1:
+        case RenewState.NON_RENEWABLE:
           renewState = RenewState.NON_RENEWABLE;
           break;
-        case 1:
+        case RenewState.WILL_RENEW:
           renewState = RenewState.WILL_RENEW;
           break;
-        case 2:
+        case RenewState.CANCELED:
           renewState = RenewState.CANCELED;
           break;
-        case 3:
+        case RenewState.BILLING_ISSUE:
           renewState = RenewState.BILLING_ISSUE;
+          break;
+        default:
+          renewState = RenewState.UNKNOWN;
           break;
       }
 
@@ -161,7 +163,7 @@ class Mapper {
 
       const mappedPermission = new Entitlement(
         entitlement.id,
-        entitlement.associatedProduct,
+        entitlement.productId,
         entitlement.active,
         renewState,
         entitlementSource,
