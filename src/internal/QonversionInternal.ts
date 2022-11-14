@@ -5,13 +5,7 @@ import Mapper from "./Mapper";
 import Offerings from "../dto/Offerings";
 import Entitlement from "../dto/Entitlement";
 import Product from "../dto/Product";
-import {
-  convertPropertyToNativeKey,
-  convertProviderToNativeKey,
-  DefinedNativeErrorCodes,
-  isAndroid,
-  isIos
-} from "./utils";
+import {DefinedNativeErrorCodes, isAndroid, isIos} from "./utils";
 import {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
@@ -205,19 +199,11 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   attribution(data: Object, provider: Provider) {
-    const key = convertProviderToNativeKey(provider);
-
-    if (key) {
-      RNQonversion.addAttributionData(data, key);
-    }
+    RNQonversion.addAttributionData(data, provider);
   }
 
   setProperty(property: Property, value: string) {
-    const key = convertPropertyToNativeKey(property)
-
-    if (key) {
-      RNQonversion.setDefinedProperty(key, value);
-    }
+    RNQonversion.setDefinedProperty(property, value);
   }
 
   setUserProperty(property: string, value: string) {
