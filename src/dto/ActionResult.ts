@@ -1,4 +1,4 @@
-import {ActionResultType} from "../enums";
+import {ActionResultType} from "./enums";
 import QonversionError from "./QonversionError";
 
 class ActionResult {

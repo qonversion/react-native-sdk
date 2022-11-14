@@ -1,3 +1,13 @@
+export enum LaunchMode {
+  ANALYTICS = 'Analytics',
+  SUBSCRIPTION_MANAGEMENT = 'SubscriptionManagement'
+}
+
+export enum Environment {
+  SANDBOX = "Sandbox",
+  PRODUCTION = "Production"
+}
+
 export const ProductType = {
   "0": "TRIAL",
   "1": "DIRECT_SUBSCRIPTION",
@@ -40,7 +50,7 @@ export enum RenewState {
   BILLING_ISSUE = 3,
 }
 
-export enum PermissionSource {
+export enum EntitlementSource {
   UNKNOWN = "Unknown",
   APP_STORE = "AppStore",
   PLAY_STORE = "PlayStore",
@@ -78,7 +88,7 @@ export enum ProrationMode {
   DEFERRED = 4,
 }
 
-export enum PermissionsCacheLifetime {
+export enum EntitlementsCacheLifetime {
   WEEK = "Week",
   TWO_WEEKS = "TwoWeeks",
   MONTH = "Month",
@@ -122,11 +132,6 @@ export enum IntroEligibilityStatus {
   NON_INTRO_OR_TRIAL_PRODUCT = "non_intro_or_trial_product",
   ELIGIBLE = "intro_or_trial_eligible",
   INELIGIBLE = "intro_or_trial_ineligible",
-}
-
-export enum ExperimentGroupType {
-  GROUP_TYPE_A = 0,
-  GROUP_TYPE_B = 1,
 }
 
 export enum ActionResultType {

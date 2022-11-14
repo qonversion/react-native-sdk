@@ -1,18 +1,24 @@
-export { default } from "./classes/Qonversion";
-export { default as Automations } from "./classes/Automations";
+export { default } from './Qonversion';
+export { default as QonversionApi } from './QonversionApi';
+export { default as QonversionConfig } from './QonversionConfig';
+export { default as QonversionConfigBuilder } from './QonversionConfig';
 
-export { default as LaunchResult } from "./classes/LaunchResult";
-export { default as Product } from "./classes/Product";
-export { default as Permission } from "./classes/Permission";
-export { default as Offerings } from "./classes/Offerings";
-export { default as Offering } from "./classes/Offering";
-export { default as IntroEligibility } from "./classes/IntroEligibility";
-export { default as ExperimentInfo } from "./classes/ExperimentInfo";
-export { default as ExperimentGroup } from "./classes/ExperimentGroup";
+export { default as Automations } from './internal/AutomationsInternal';
 
-export { default as SkuDetails } from "./classes/storeProducts/SkuDetails";
-export { default as SKProduct } from "./classes/storeProducts/SKProduct";
-export { default as SKSubscriptionPeriod } from "./classes/storeProducts/SKSubscriptionPeriod";
-export { default as SKProductDiscount } from "./classes/storeProducts/SKProductDiscount";
-
-export * from "./enums";
+export { default as ActionResult } from './dto/ActionResult';
+export { AutomationsDelegate } from './dto/AutomationsDelegate';
+export { default as AutomationsEvent } from './dto/AutomationsEvent';
+export { EntitlementsUpdateListener } from './dto/EntitlementsUpdateListener';
+export * from './dto/enums';
+export { default as IntroEligibility } from './dto/IntroEligibility';
+export { default as Offering } from './dto/Offering';
+export { default as Offerings } from './dto/Offerings';
+export { default as Permission } from './dto/Entitlement';
+export { default as Product } from './dto/Product';
+export { PromoPurchasesListener } from './dto/PromoPurchasesListener';
+export { default as QonversionError } from './dto/QonversionError';
+export { default as User } from './dto/User';
+export { default as SkuDetails } from './dto/storeProducts/SkuDetails';
+export { default as SKProduct } from './dto/storeProducts/SKProduct';
+export { default as SKSubscriptionPeriod } from './dto/storeProducts/SKSubscriptionPeriod';
+export { default as SKProductDiscount } from './dto/storeProducts/SKProductDiscount';

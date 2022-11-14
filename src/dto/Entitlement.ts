@@ -1,25 +1,25 @@
-import {PermissionSource, RenewState} from "../enums";
+import {EntitlementSource, RenewState} from "./enums";
 
-class Permission {
-  permissionID: string;
-  productID: string;
+class Entitlement {
+  id: string;
+  productId: string;
   isActive: boolean;
   renewState: RenewState;
-  source: PermissionSource;
+  source: EntitlementSource;
   startedDate: number;
   expirationDate?: number;
 
   constructor(
-    permissionID: string,
-    productID: string,
+    id: string,
+    productId: string,
     isActive: boolean,
     renewState: RenewState,
-    source: PermissionSource,
+    source: EntitlementSource,
     startedDate: number,
     expirationDate: number | undefined,
   ) {
-    this.permissionID = permissionID;
-    this.productID = productID;
+    this.id = id;
+    this.productId = productId;
     this.isActive = isActive;
     this.renewState = renewState;
     this.source = source;
@@ -28,4 +28,4 @@ class Permission {
   }
 }
 
-export default Permission;
+export default Entitlement;

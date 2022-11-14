@@ -1,4 +1,4 @@
-import {Property, Provider} from "./enums";
+import {Property, Provider} from "../dto/enums";
 import {Platform} from "react-native";
 
 export const isIos = (): boolean => {

@@ -1,4 +1,4 @@
-import { ProductDurations, ProductTypes, TrialDurations } from "../enums";
+import { ProductDurations, ProductTypes, TrialDurations } from "./enums";
 import SKProduct from "./storeProducts/SKProduct";
 import SkuDetails from "./storeProducts/SkuDetails";
 
