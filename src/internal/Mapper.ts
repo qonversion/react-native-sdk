@@ -7,7 +7,7 @@ import {
   ProductDurations,
   ProductType,
   ProductTypes,
-  RenewState,
+  EntitlementRenewState,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
@@ -140,22 +140,22 @@ class Mapper {
     let mappedPermissions = new Map();
 
     for (const [key, entitlement] of Object.entries(entitlements)) {
-      let renewState: RenewState;
+      let renewState: EntitlementRenewState;
       switch (entitlement.renewState) {
-        case RenewState.NON_RENEWABLE:
-          renewState = RenewState.NON_RENEWABLE;
+        case EntitlementRenewState.NON_RENEWABLE:
+          renewState = EntitlementRenewState.NON_RENEWABLE;
           break;
-        case RenewState.WILL_RENEW:
-          renewState = RenewState.WILL_RENEW;
+        case EntitlementRenewState.WILL_RENEW:
+          renewState = EntitlementRenewState.WILL_RENEW;
           break;
-        case RenewState.CANCELED:
-          renewState = RenewState.CANCELED;
+        case EntitlementRenewState.CANCELED:
+          renewState = EntitlementRenewState.CANCELED;
           break;
-        case RenewState.BILLING_ISSUE:
-          renewState = RenewState.BILLING_ISSUE;
+        case EntitlementRenewState.BILLING_ISSUE:
+          renewState = EntitlementRenewState.BILLING_ISSUE;
           break;
         default:
-          renewState = RenewState.UNKNOWN;
+          renewState = EntitlementRenewState.UNKNOWN;
           break;
       }
 

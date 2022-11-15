@@ -1,10 +1,10 @@
-import {EntitlementSource, RenewState} from "./enums";
+import {EntitlementSource, EntitlementRenewState} from "./enums";
 
 class Entitlement {
   id: string;
   productId: string;
   isActive: boolean;
-  renewState: RenewState;
+  renewState: EntitlementRenewState;
   source: EntitlementSource;
   startedDate: number;
   expirationDate?: number;
@@ -13,7 +13,7 @@ class Entitlement {
     id: string,
     productId: string,
     isActive: boolean,
-    renewState: RenewState,
+    renewState: EntitlementRenewState,
     source: EntitlementSource,
     startedDate: number,
     expirationDate: number | undefined,
