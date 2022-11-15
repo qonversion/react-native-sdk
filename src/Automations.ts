@@ -13,7 +13,7 @@ export default class Automations {
    * Otherwise, trying to access the variable will cause an exception.
    *
    * @return Current initialized instance of the Automations SDK.
-   * @throws error if the instance has not been initialized
+   * @throws error if the instance has not been initialized.
    */
   static getSharedInstance(): AutomationsApi {
     if (!this.backingInstance) {
@@ -29,6 +29,7 @@ export default class Automations {
    * Make sure you have initialized {@link Qonversion} first.
    *
    * @return Initialized instance of the Automations SDK.
+   * @throws error if {@link Qonversion} has not been initialized.
    */
   static initialize(): AutomationsApi {
     try {
