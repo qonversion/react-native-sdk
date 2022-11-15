@@ -33,6 +33,7 @@ class QonversionConfigBuilder {
    * The default value is {@link EntitlementsCacheLifetime.MONTH}.
    *
    * @param lifetime desired entitlements cache lifetime duration
+   * @return builder instance for chain calls.
    */
   setEntitlementsCacheLifetime(lifetime: EntitlementsCacheLifetime): QonversionConfigBuilder {
     this.entitlementsCacheLifetime = lifetime;
