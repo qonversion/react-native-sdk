@@ -58,7 +58,6 @@ class QonversionConfigBuilder {
   /**
    * Generate {@link QonversionConfig} instance with all the provided configurations.
    *
-   * @throws IllegalStateException if unacceptable configuration was provided.
    * @return the complete {@link QonversionConfig} instance.
    */
   build(): QonversionConfig {
