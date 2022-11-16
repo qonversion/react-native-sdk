@@ -1,5 +1,5 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {Property, ProrationMode, Provider} from "../dto/enums";
+import {UserProperty, ProrationMode, AttributionSource} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Mapper from "./Mapper";
 import Offerings from "../dto/Offerings";
@@ -141,7 +141,7 @@ export default class QonversionInternal implements QonversionApi {
     return mappedOfferings;
   }
 
-  async checkTrialIntroEligibilityForProductIds(
+  async checkTrialIntroEligibility(
     ids: string[]
   ): Promise<Map<string, IntroEligibility>> {
     const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
@@ -198,11 +198,11 @@ export default class QonversionInternal implements QonversionApi {
     return mappedUserInfo;
   }
 
-  attribution(data: Object, provider: Provider) {
+  attribution(data: Object, provider: AttributionSource) {
     RNQonversion.addAttributionData(data, provider);
   }
 
-  setProperty(property: Property, value: string) {
+  setProperty(property: UserProperty, value: string) {
     RNQonversion.setDefinedProperty(property, value);
   }
 

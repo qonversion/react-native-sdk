@@ -58,20 +58,20 @@ export enum EntitlementSource {
   MANUAL = "Manual",
 }
 
-export enum Property {
+export enum UserProperty {
   EMAIL = "Email",
   NAME = "Name",
+  KOCHAVA_DEVICE_ID = "KochavaDeviceId",
   APPS_FLYER_USER_ID = "AppsFlyerUserId",
   ADJUST_USER_ID = "AdjustAdId",
-  KOCHAVA_DEVICE_ID = "KochavaDeviceId",
   CUSTOM_USER_ID = "CustomUserId",
   FACEBOOK_ATTRIBUTION = "FacebookAttribution", // Android only
-  ADVERTISING_ID = "AdvertisingId", // iOS only
   FIREBASE_APP_INSTANCE_ID = "FirebaseAppInstanceId",
   APP_SET_ID = "AppSetId", // Android only
+  ADVERTISING_ID = "AdvertisingId", // iOS only
 }
 
-export enum Provider {
+export enum AttributionSource {
   APPSFLYER = "AppsFlyer",
   BRANCH = "Branch",
   ADJUST = "Adjust",

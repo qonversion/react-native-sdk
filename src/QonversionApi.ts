@@ -1,6 +1,6 @@
 import Entitlement from './dto/Entitlement';
 import Product from './dto/Product';
-import {Property, ProrationMode, Provider} from './dto/enums';
+import {UserProperty, ProrationMode, AttributionSource} from './dto/enums';
 import Offerings from './dto/Offerings';
 import IntroEligibility from './dto/IntroEligibility';
 import User from './dto/User';
@@ -98,7 +98,7 @@ interface QonversionApi {
    * @param ids products identifiers that must be checked
    * @returns the promise with eligibility map
    */
-  checkTrialIntroEligibilityForProductIds(ids: string[]): Promise<Map<string, IntroEligibility>>;
+  checkTrialIntroEligibility(ids: string[]): Promise<Map<string, IntroEligibility>>;
 
   /**
    * You need to call the checkEntitlements method to check if a user has the required entitlement.
@@ -158,7 +158,7 @@ interface QonversionApi {
    * @param data an object containing your attribution data
    * @param provider the provider to which the data will be sent
    */
-  attribution(data: Object, provider: Provider): void;
+  attribution(data: Object, provider: AttributionSource): void;
 
   /**
    * Sets Qonversion reserved user {@link property}, like email or one-signal id
@@ -172,7 +172,7 @@ interface QonversionApi {
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
-  setProperty(property: Property, value: string): void;
+  setProperty(property: UserProperty, value: string): void;
 
   /**
    * Adds custom user {@link property}.
