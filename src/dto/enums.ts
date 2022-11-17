@@ -63,7 +63,7 @@ export enum UserProperty {
   NAME = "Name",
   KOCHAVA_DEVICE_ID = "KochavaDeviceId",
   APPS_FLYER_USER_ID = "AppsFlyerUserId",
-  ADJUST_USER_ID = "AdjustAdId",
+  ADJUST_AD_ID = "AdjustAdId",
   CUSTOM_USER_ID = "CustomUserId",
   FACEBOOK_ATTRIBUTION = "FacebookAttribution", // Android only
   FIREBASE_APP_INSTANCE_ID = "FirebaseAppInstanceId",
@@ -71,7 +71,7 @@ export enum UserProperty {
   ADVERTISING_ID = "AdvertisingId", // iOS only
 }
 
-export enum AttributionSource {
+export enum AttributionProvider {
   APPSFLYER = "AppsFlyer",
   BRANCH = "Branch",
   ADJUST = "Adjust",

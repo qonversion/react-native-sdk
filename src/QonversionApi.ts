@@ -1,6 +1,6 @@
 import Entitlement from './dto/Entitlement';
 import Product from './dto/Product';
-import {UserProperty, ProrationMode, AttributionSource} from './dto/enums';
+import {UserProperty, ProrationMode, AttributionProvider} from './dto/enums';
 import Offerings from './dto/Offerings';
 import IntroEligibility from './dto/IntroEligibility';
 import User from './dto/User';
@@ -158,7 +158,7 @@ interface QonversionApi {
    * @param data an object containing your attribution data
    * @param provider the provider to which the data will be sent
    */
-  attribution(data: Object, provider: AttributionSource): void;
+  attribution(data: Object, provider: AttributionProvider): void;
 
   /**
    * Sets Qonversion reserved user {@link property}, like email or one-signal id

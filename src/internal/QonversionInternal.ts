@@ -1,5 +1,5 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {UserProperty, ProrationMode, AttributionSource} from "../dto/enums";
+import {UserProperty, ProrationMode, AttributionProvider} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Mapper from "./Mapper";
 import Offerings from "../dto/Offerings";
@@ -198,7 +198,7 @@ export default class QonversionInternal implements QonversionApi {
     return mappedUserInfo;
   }
 
-  attribution(data: Object, provider: AttributionSource) {
+  attribution(data: Object, provider: AttributionProvider) {
     RNQonversion.addAttributionData(data, provider);
   }
 
