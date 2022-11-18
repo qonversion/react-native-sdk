@@ -10,7 +10,7 @@ export default class Automations {
   /**
    * Use this variable to get a current initialized instance of the Qonversion Automations.
    * Please, use the property only after calling {@link Automations.initialize}.
-   * Otherwise, trying to access the variable will cause an exception.
+   * Otherwise, trying to access the variable will cause an error.
    *
    * @return Current initialized instance of the Automations SDK.
    * @throws error if the instance has not been initialized.
