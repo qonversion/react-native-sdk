@@ -17,7 +17,7 @@ interface AutomationsApi {
   setNotificationsToken(token: string): void;
 
   /**
-   * Call to handle push notifications sent by Qonversion Automation.
+   * Call to handle push notifications sent by Qonversion Automations.
    *
    * @param notificationData notification payload data
    * @return true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle a notification yourself
