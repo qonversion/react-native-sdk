@@ -1,9 +1,8 @@
 class User {
   qonversionId: string;
-  identityId: string;
+  identityId?: string | null;
 
-
-  constructor(qonversionId: string, identityId: string) {
+  constructor(qonversionId: string, identityId?: string | null) {
     this.qonversionId = qonversionId;
     this.identityId = identityId;
   }

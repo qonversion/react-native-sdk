@@ -128,7 +128,7 @@ type QAutomationsEvent = {
 
 type QUser = {
   qonversionId: string;
-  identityId: string;
+  identityId?: string | null;
 };
 
 const skuDetailsPriceRatio = 1000000;
