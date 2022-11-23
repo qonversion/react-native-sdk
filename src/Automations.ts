@@ -12,7 +12,7 @@ export default class Automations {
    * Please, use the property only after calling {@link Automations.initialize}.
    * Otherwise, trying to access the variable will cause an error.
    *
-   * @return Current initialized instance of the Automations SDK.
+   * @return Current initialized instance of the Qonversion Automations.
    * @throws error if the instance has not been initialized.
    */
   static getSharedInstance(): AutomationsApi {
@@ -28,7 +28,7 @@ export default class Automations {
    * An entry point to use Qonversion Automations. Call to initialize Automations.
    * Make sure you have initialized {@link Qonversion} first.
    *
-   * @return Initialized instance of the Automations SDK.
+   * @return Initialized instance of the Qonversion Automations.
    * @throws error if {@link Qonversion} has not been initialized.
    */
   static initialize(): AutomationsApi {
