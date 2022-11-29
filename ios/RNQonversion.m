@@ -29,10 +29,8 @@ RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)source version:(NSString *)version) {
     [_qonversionSandwich storeSdkInfoWithSource:source version:version];
 }
 
-RCT_EXPORT_METHOD(launch:(NSString *)key observerMode:(BOOL)observerMode completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    [_qonversionSandwich launchWithProjectKey:key completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-        [self handleResult:result error:error completion:completion rejecter:reject];
-    }];
+RCT_EXPORT_METHOD(initializeSdk:(NSString *)key launchMode:(NSString *)launchModeKey environment:(NSString *)environmentKey cacheLifetime:(NSString *)cacheLifetimeKey completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+    [_qonversionSandwich initializeWithProjectKey:key launchModeKey:launchModeKey environmentKey:environmentKey entitlementsCacheLifetimeKey:cacheLifetimeKey];
 }
 
 RCT_EXPORT_METHOD(setDefinedProperty:(NSString *)property value:(NSString *)value) {
@@ -44,11 +42,11 @@ RCT_EXPORT_METHOD(setCustomProperty:(NSString *)property value:(NSString *)value
 }
 
 RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data provider:(NSString *)provider) {
-    [_qonversionSandwich addAttributionDataWithSourceKey:provider value:data];
+    [_qonversionSandwich attributionWithSourceKey:provider value:data];
 }
 
 RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    [_qonversionSandwich checkPermissions:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+    [_qonversionSandwich checkEntitlements:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];
     }];
 }
@@ -77,10 +75,6 @@ RCT_EXPORT_METHOD(restore:(RCTResponseSenderBlock)completion rejecter:(RCTPromis
     }];
 }
 
-RCT_EXPORT_METHOD(setDebugMode) {
-    [_qonversionSandwich setDebugMode];
-}
-
 RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich offerings:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];
@@ -89,12 +83,6 @@ RCT_EXPORT_METHOD(offerings:(RCTResponseSenderBlock)completion rejecter:(RCTProm
 
 RCT_EXPORT_METHOD(checkTrialIntroEligibilityForProductIds:(NSArray *)data completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich checkTrialIntroEligibility:data completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-        [self handleResult:result error:error completion:completion rejecter:reject];
-    }];
-}
-
-RCT_EXPORT_METHOD(experiments:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    [_qonversionSandwich experiments:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];
     }];
 }
@@ -155,10 +143,6 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
     }
 }
 
-RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime) {
-    [_qonversionSandwich setPermissionsCacheLifetime:lifetime];
-}
-
 #pragma mark - Private
 
 - (void)handleResult:(NSDictionary *)result
@@ -193,12 +177,12 @@ RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime) {
 
 #pragma mark - QonversionEventListener
 
-- (void)qonversionDidReceiveUpdatedPermissions:(NSDictionary<NSString *, id> * _Nonnull)permissions {
-    [self sendEventWithName:kEventPermissionsUpdated body:permissions];
-}
-
 - (void)shouldPurchasePromoProductWith:(NSString * _Nonnull)productId {
     [self sendEventWithName:kEventPromoPurchaseReceived body:productId];
+}
+
+- (void)qonversionDidReceiveUpdatedEntitlements:(NSDictionary<NSString *,id> * _Nonnull)permissions { 
+    [self sendEventWithName:kEventPermissionsUpdated body:permissions];
 }
 
 #pragma mark - Emitter
