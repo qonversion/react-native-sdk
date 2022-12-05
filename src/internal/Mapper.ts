@@ -292,7 +292,7 @@ class Mapper {
       products.push(mappedProduct);
     });
 
-    const tag = OfferingTag[offering.tag] ?? OfferingTag[0];
+    const tag = OfferingTag[offering.tag] ?? OfferingTag['0'];
 
     return new Offering(offering.id, tag, products);
   }

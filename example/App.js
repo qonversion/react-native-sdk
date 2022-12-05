@@ -65,7 +65,6 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
       })
       .build();
     Qonversion.initialize(config);
-    Automations.initialize();
     Qonversion.getSharedInstance().setPromoPurchasesDelegate({
       onPromoPurchaseReceived: async (productId, promoPurchaseExecutor) => {
         try {

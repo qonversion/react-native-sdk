@@ -34,6 +34,12 @@ interface AutomationsApi {
    * @return a map with custom payload from the notification or null if it's not provided.
    */
   getNotificationCustomPayload(notificationData: Map<string, Object>): Promise<Map<string, Object> | null>;
+
+  /**
+   * Show the screen using its ID.
+   * @param screenId identifier of the screen which must be shown
+   */
+  showScreen(screenId: string): Promise<void>;
 }
 
 export default AutomationsApi;
