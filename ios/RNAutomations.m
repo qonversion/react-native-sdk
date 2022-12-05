@@ -27,6 +27,11 @@
   return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(subscribe) {

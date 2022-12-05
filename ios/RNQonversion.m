@@ -23,6 +23,11 @@ static NSString *const errorCodePurchaseCancelledByUser = @"PURCHASE_CANCELLED_B
   return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)source version:(NSString *)version) {
