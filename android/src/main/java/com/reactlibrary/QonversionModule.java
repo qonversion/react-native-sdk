@@ -12,11 +12,9 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import android.app.Activity;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import io.qonversion.sandwich.ActivityProvider;
 import io.qonversion.sandwich.PurchaseResultListener;
 import io.qonversion.sandwich.QonversionEventsListener;
 import io.qonversion.sandwich.QonversionSandwich;
@@ -27,7 +25,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     private final QonversionSandwich qonversionSandwich;
 
-    private static final String EVENT_PERMISSIONS_UPDATED = "permissions_updated";
+    private static final String EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 
     private static final String ERROR_CODE_PURCHASE_CANCELLED_BY_USER = "PURCHASE_CANCELLED_BY_USER";
 
@@ -38,13 +36,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
         qonversionSandwich = new QonversionSandwich(
                 (Application) reactContext.getApplicationContext(),
-                new ActivityProvider() {
-                    @Nullable
-                    @Override
-                    public Activity getCurrentActivity() {
-                        return QonversionModule.this.getCurrentActivity();
-                    }
-                },
+                QonversionModule.this::getCurrentActivity,
                 this
         );
     }
@@ -56,6 +48,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         eventEmitter = getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "RNQonversion";
@@ -67,8 +60,19 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void launch(String key, Boolean observeMode, final Promise promise) {
-        qonversionSandwich.launch(key, observeMode, getResultListener(promise));
+    public void initializeSdk(
+            String projectKey,
+            String launchModeKey,
+            @Nullable String environmentKey,
+            @Nullable String entitlementsCacheLifetimeKey
+    ) {
+        qonversionSandwich.initialize(
+                getReactApplicationContext(),
+                projectKey,
+                launchModeKey,
+                environmentKey,
+                entitlementsCacheLifetimeKey
+        );
     }
 
     @ReactMethod
@@ -139,8 +143,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void checkPermissions(final Promise promise) {
-        qonversionSandwich.checkPermissions(getResultListener(promise));
+    public void checkEntitlements(final Promise promise) {
+        qonversionSandwich.checkEntitlements(getResultListener(promise));
     }
 
     @ReactMethod
@@ -160,11 +164,6 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void experiments(final Promise promise) {
-        qonversionSandwich.experiments(getResultListener(promise));
-    }
-
-    @ReactMethod
     public void restore(final Promise promise) {
         qonversionSandwich.restore(getResultListener(promise));
     }
@@ -172,11 +171,6 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     @ReactMethod
     public void syncPurchases() {
         qonversionSandwich.syncPurchases();
-    }
-
-    @ReactMethod
-    public void setDebugMode() {
-        qonversionSandwich.setDebugMode();
     }
 
     @ReactMethod
@@ -189,65 +183,11 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         qonversionSandwich.logout();
     }
 
-    @ReactMethod
-    public void setPermissionsCacheLifetime(String lifetime) {
-        qonversionSandwich.setPermissionsCacheLifetime(lifetime);
-    }
-
-    @ReactMethod
-    public void setNotificationsToken(String token) {
-        qonversionSandwich.setNotificationToken(token);
-    }
-
-    @ReactMethod
-    public void getNotificationCustomPayload(final ReadableMap notificationData, final Promise promise) {
-        if (notificationData == null) {
-            promise.resolve(null);
-            return;
-        }
-
-        final Map<String, Object> dataMap;
-        try {
-            dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
-        } catch (JSONException e) {
-            promise.reject(e);
-            return;
-        }
-
-        Map<String, Object> payload = qonversionSandwich.getNotificationCustomPayload(dataMap);
-        if (payload == null) {
-            promise.resolve(null);
-        } else {
-            final WritableMap convertedPayload = EntitiesConverter.convertMapToWritableMap(payload);
-
-            promise.resolve(convertedPayload);
-        }
-    }
-
-    @ReactMethod
-    public void handleNotification(final ReadableMap notificationData, final Promise promise) {
-        if (notificationData == null) {
-            promise.resolve(false);
-            return;
-        }
-
-        final Map<String, Object> dataMap;
-        try {
-            dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
-        } catch (JSONException e) {
-            promise.resolve(false);
-            return;
-        }
-
-        boolean isQonversionNotification = qonversionSandwich.handleNotification(dataMap);
-        promise.resolve(isQonversionNotification);
-    }
-
     @Override
-    public void onPermissionsUpdate(@NonNull Map<String, ?> map) {
+    public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
         if (eventEmitter != null) {
-            eventEmitter.emit(EVENT_PERMISSIONS_UPDATED, payload);
+            eventEmitter.emit(EVENT_ENTITLEMENTS_UPDATED, payload);
         }
     }
 
