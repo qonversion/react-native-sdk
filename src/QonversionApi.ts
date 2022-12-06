@@ -140,7 +140,7 @@ interface QonversionApi {
    *
    * @param userID unique user ID in your system
    */
-  identify(userID: string): void
+  identify(userID: string): void;
 
   /**
    * Call this function to unlink a user from his unique ID in your system and his purchase data.
