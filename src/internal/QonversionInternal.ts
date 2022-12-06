@@ -210,15 +210,15 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.setCustomProperty(property, value);
   }
 
-  setAdvertisingID() {
+  collectAdvertisingID() {
     if (isIos()) {
-      RNQonversion.setAdvertisingID();
+      RNQonversion.collectAdvertisingID();
     }
   }
 
-  setAppleSearchAdsAttributionEnabled(enabled: boolean) {
+  collectAppleSearchAdsAttribution() {
     if (isIos()) {
-      RNQonversion.setAppleSearchAdsAttributionEnabled(enabled);
+      RNQonversion.collectAppleSearchAdsAttribution();
     }
   }
 

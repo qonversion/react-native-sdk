@@ -13,10 +13,6 @@ const EVENT_AUTOMATIONS_FINISHED = "automations_finished";
 
 export default class AutomationsInternal implements AutomationsApi {
 
-  constructor() {
-    RNAutomations.initializeSdk();
-  }
-
   setDelegate(delegate: AutomationsDelegate) {
     AutomationsInternal.subscribe(delegate);
   }
@@ -35,10 +31,14 @@ export default class AutomationsInternal implements AutomationsApi {
 
   async getNotificationCustomPayload(notificationData: Map<string, Object>): Promise<Map<string, Object> | null> {
     try {
-      return await RNAutomations.getNotificationCustomPayload(notificationData);
+      return await RNAutomations.getNotificationCustomPayload(notificationData) ?? null;
     } catch (e) {
       return null;
     }
+  }
+
+  async showScreen(screenId: string): Promise<void> {
+    return await RNAutomations.showScreen(screenId);
   }
 
   private static subscribe(automationsDelegate: AutomationsDelegate) {

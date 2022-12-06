@@ -9,37 +9,24 @@ export default class Automations {
 
   /**
    * Use this variable to get a current initialized instance of the Qonversion Automations.
-   * Please, use the property only after calling {@link Automations.initialize}.
+   * Please, use Automations only after calling {@link Qonversion.initialize}.
    * Otherwise, trying to access the variable will cause an error.
    *
    * @return Current initialized instance of the Qonversion Automations.
-   * @throws error if the instance has not been initialized.
+   * @throws error if Qonversion has not been initialized.
    */
   static getSharedInstance(): AutomationsApi {
     if (!this.backingInstance) {
-      throw "Automations have not been initialized. You should call " +
-        "the initialize method before accessing the shared instance of Automations."
+      try {
+        Qonversion.getSharedInstance();
+      } catch (e) {
+        throw "Qonversion has not been initialized. " +
+        "Automations should be used after Qonversion is initialized."
+      }
+
+      this.backingInstance = new AutomationsInternal();
     }
 
-    return this.backingInstance;
-  }
-
-  /**
-   * An entry point to use Qonversion Automations. Call to initialize Automations.
-   * Make sure you have initialized {@link Qonversion} first.
-   *
-   * @return Initialized instance of the Qonversion Automations.
-   * @throws error if {@link Qonversion} has not been initialized.
-   */
-  static initialize(): AutomationsApi {
-    try {
-      Qonversion.getSharedInstance();
-    } catch (e) {
-      throw "Qonversion has not been initialized. " +
-        "Automations initialization should be called after Qonversion is initialized."
-    }
-
-    this.backingInstance = new AutomationsInternal();
     return this.backingInstance;
   }
 }

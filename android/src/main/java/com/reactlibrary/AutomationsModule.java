@@ -17,6 +17,8 @@ import java.util.Map;
 
 import io.qonversion.sandwich.AutomationsEventListener;
 import io.qonversion.sandwich.AutomationsSandwich;
+import io.qonversion.sandwich.ResultListener;
+import io.qonversion.sandwich.SandwichError;
 
 class AutomationsModule extends ReactContextBaseJavaModule implements AutomationsEventListener {
 
@@ -41,11 +43,6 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
     @Override
     public String getName() {
         return "RNAutomations";
-    }
-
-    @ReactMethod
-    void initializeSdk() {
-        automationsSandwich.initialize();
     }
 
     @ReactMethod
@@ -100,6 +97,21 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
 
         final boolean isQonversionNotification = automationsSandwich.handleNotification(dataMap);
         promise.resolve(isQonversionNotification);
+    }
+
+    @ReactMethod
+    public void showScreen(final String screenId, final Promise promise) {
+        automationsSandwich.showScreen(screenId, new ResultListener() {
+            @Override
+            public void onSuccess(@NonNull Map<String, ?> map) {
+                promise.resolve(null);
+            }
+
+            @Override
+            public void onError(@NonNull SandwichError error) {
+                Utils.rejectWithError(error, promise);
+            }
+        });
     }
 
     @Override

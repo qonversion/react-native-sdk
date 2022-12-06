@@ -29,6 +29,7 @@ export type ProductDurations = typeof ProductDuration[keyof typeof ProductDurati
 
 export const TrialDuration = {
   "-1": "NOT_AVAILABLE",
+  "0": "UNKNOWN",
   "1": "THREE_DAYS",
   "2": "WEEK",
   "3": "TWO_WEEKS",
@@ -121,8 +122,9 @@ export const SKProductDiscountPaymentMode = {
 export type SKProductDiscountPaymentModes = typeof SKProductDiscountPaymentMode[keyof typeof SKProductDiscountPaymentMode];
 
 export const OfferingTag = {
-  0: "NONE",
-  1: "MAIN",
+  "-1": "UNKNOWN",
+  "0": "NONE",
+  "1": "MAIN",
 } as const;
 export type OfferingTags = typeof OfferingTag[keyof typeof OfferingTag];
 

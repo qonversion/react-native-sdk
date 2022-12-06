@@ -6,8 +6,8 @@ class Entitlement {
   isActive: boolean;
   renewState: EntitlementRenewState;
   source: EntitlementSource;
-  startedDate: number;
-  expirationDate?: number;
+  startedDate: Date;
+  expirationDate?: Date;
 
   constructor(
     id: string,
@@ -23,8 +23,8 @@ class Entitlement {
     this.isActive = isActive;
     this.renewState = renewState;
     this.source = source;
-    this.startedDate = startedDate;
-    this.expirationDate = expirationDate;
+    this.startedDate = new Date(startedDate);
+    this.expirationDate = expirationDate ? new Date(expirationDate) : undefined;
   }
 }
 

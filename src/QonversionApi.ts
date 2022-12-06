@@ -140,7 +140,7 @@ interface QonversionApi {
    *
    * @param userID unique user ID in your system
    */
-  identify(userID: string): void
+  identify(userID: string): void;
 
   /**
    * Call this function to unlink a user from his unique ID in your system and his purchase data.
@@ -149,6 +149,7 @@ interface QonversionApi {
 
   /**
    * This method returns information about the current Qonversion user.
+   * @returns the promise with the information about the user.
    */
   userInfo(): Promise<User>;
 
@@ -209,14 +210,14 @@ interface QonversionApi {
    * On iOS 14.5+, after requesting the app tracking permission using ATT, you need to notify Qonversion if tracking
    * is allowed and IDFA is available.
    */
-  setAdvertisingID(): void;
+  collectAdvertisingID(): void;
 
   /**
    * iOS only. Does nothing if called on Android.
    *
-   * Enable attribution collection from Apple Search Ads. False by default.
+   * Enable attribution collection from Apple Search Ads.
    */
-  setAppleSearchAdsAttributionEnabled(enabled: boolean): void;
+  collectAppleSearchAdsAttribution(): void;
 
   /**
    * iOS only. Does nothing if called on Android.
