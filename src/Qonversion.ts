@@ -27,7 +27,7 @@ export default class Qonversion {
   /**
    * An entry point to use Qonversion SDK. Call to initialize Qonversion SDK with required and extra configs.
    * The function is the best way to set additional configs you need to use Qonversion SDK.
-   * You still have an option to set a part of additional configs later via calling separated setters.
+   * You still have an option to set a part of additional configs later via calling separate setters.
    *
    * @param config a config that contains key SDK settings.
    *        Call {@link QonversionConfigBuilder.build} to configure and create a QonversionConfig instance.

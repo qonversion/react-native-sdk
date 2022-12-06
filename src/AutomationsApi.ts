@@ -12,7 +12,7 @@ interface AutomationsApi {
   /**
    * Set push token to Qonversion to enable Qonversion push notifications
    *
-   * @param token Firebase device token on Android. APNs device token on iOS.
+   * @param token Firebase device token for Android. APNs device token for iOS.
    */
   setNotificationsToken(token: string): void;
 
@@ -20,7 +20,7 @@ interface AutomationsApi {
    * Call to handle push notifications sent by Qonversion Automations.
    *
    * @param notificationData notification payload data
-   * @return true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle a notification yourself
+   * @return true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle the notification yourself
    *
    * @see [Firebase RemoteMessage data](https://pub.dev/documentation/firebase_messaging_platform_interface/latest/firebase_messaging_platform_interface/RemoteMessage/data.html)
    * @see [APNs notification data](https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649869-userinfo)
