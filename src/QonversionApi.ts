@@ -149,6 +149,7 @@ interface QonversionApi {
 
   /**
    * This method returns information about the current Qonversion user.
+   * @returns the promise with the information about the user.
    */
   userInfo(): Promise<User>;
 

@@ -20,7 +20,7 @@ interface AutomationsApi {
    * Call to handle push notifications sent by Qonversion Automations.
    *
    * @param notificationData notification payload data
-   * @return true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle the notification yourself
+   * @returns true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle the notification yourself
    *
    * @see [Firebase RemoteMessage data](https://pub.dev/documentation/firebase_messaging_platform_interface/latest/firebase_messaging_platform_interface/RemoteMessage/data.html)
    * @see [APNs notification data](https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649869-userinfo)
@@ -31,13 +31,14 @@ interface AutomationsApi {
    * Get parsed custom payload, which you added to the notification in the dashboard
    *
    * @param notificationData notification payload data
-   * @return a map with custom payload from the notification or null if it's not provided.
+   * @returns a map with custom payload from the notification or null if it's not provided.
    */
   getNotificationCustomPayload(notificationData: Map<string, Object>): Promise<Map<string, Object> | null>;
 
   /**
    * Show the screen using its ID.
    * @param screenId identifier of the screen which must be shown
+   * @returns promise to await for completion.
    */
   showScreen(screenId: string): Promise<void>;
 }
