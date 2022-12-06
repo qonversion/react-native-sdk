@@ -1,3 +1,13 @@
+export enum LaunchMode {
+  ANALYTICS = 'Analytics',
+  SUBSCRIPTION_MANAGEMENT = 'SubscriptionManagement'
+}
+
+export enum Environment {
+  SANDBOX = "Sandbox",
+  PRODUCTION = "Production"
+}
+
 export const ProductType = {
   "0": "TRIAL",
   "1": "DIRECT_SUBSCRIPTION",
@@ -32,15 +42,15 @@ export const TrialDuration = {
 
 export type TrialDurations = typeof TrialDuration[keyof typeof TrialDuration];
 
-export enum RenewState {
-  NON_RENEWABLE = -1,
-  UNKNOWN = 0,
-  WILL_RENEW = 1,
-  CANCELED = 2,
-  BILLING_ISSUE = 3,
+export enum EntitlementRenewState {
+  NON_RENEWABLE = 'non_renewable',
+  UNKNOWN = 'unknown',
+  WILL_RENEW = 'will_renew',
+  CANCELED = 'canceled',
+  BILLING_ISSUE = 'billing_issue',
 }
 
-export enum PermissionSource {
+export enum EntitlementSource {
   UNKNOWN = "Unknown",
   APP_STORE = "AppStore",
   PLAY_STORE = "PlayStore",
@@ -48,26 +58,25 @@ export enum PermissionSource {
   MANUAL = "Manual",
 }
 
-export enum Property {
-  EMAIL = 0,
-  NAME = 1,
-  APPS_FLYER_USER_ID = 2,
-  ADJUST_USER_ID = 3,
-  KOCHAVA_DEVICE_ID = 4,
-  CUSTOM_USER_ID = 5,
-  FACEBOOK_ATTRIBUTION = 6,  // Android only
-  ADVERTISING_ID = 7, // iOS only
-  FIREBASE_APP_INSTANCE_ID = 8,
-  APP_SET_ID = 9, // Android only
+export enum UserProperty {
+  EMAIL = "Email",
+  NAME = "Name",
+  KOCHAVA_DEVICE_ID = "KochavaDeviceId",
+  APPS_FLYER_USER_ID = "AppsFlyerUserId",
+  ADJUST_AD_ID = "AdjustAdId",
+  CUSTOM_USER_ID = "CustomUserId",
+  FACEBOOK_ATTRIBUTION = "FacebookAttribution", // Android only
+  FIREBASE_APP_INSTANCE_ID = "FirebaseAppInstanceId",
+  APP_SET_ID = "AppSetId", // Android only
+  ADVERTISING_ID = "AdvertisingId", // iOS only
 }
 
-export enum Provider {
-  APPSFLYER = 0,
-  BRANCH = 1,
-  ADJUST = 2,
-  /** @deprecated Use {@link APPLE_SEARCH_ADS} instead */ APPLE = 3,
-  APPLE_SEARCH_ADS = 4,
-  APPLE_AD_SERVICES = 5,
+export enum AttributionProvider {
+  APPSFLYER = "AppsFlyer",
+  BRANCH = "Branch",
+  ADJUST = "Adjust",
+  APPLE_SEARCH_ADS = "AppleSearchAds", // ios only
+  APPLE_AD_SERVICES = "AppleAdServices", // ios only
 }
 
 export enum ProrationMode {
@@ -78,7 +87,7 @@ export enum ProrationMode {
   DEFERRED = 4,
 }
 
-export enum PermissionsCacheLifetime {
+export enum EntitlementsCacheLifetime {
   WEEK = "Week",
   TWO_WEEKS = "TwoWeeks",
   MONTH = "Month",
@@ -122,11 +131,6 @@ export enum IntroEligibilityStatus {
   NON_INTRO_OR_TRIAL_PRODUCT = "non_intro_or_trial_product",
   ELIGIBLE = "intro_or_trial_eligible",
   INELIGIBLE = "intro_or_trial_ineligible",
-}
-
-export enum ExperimentGroupType {
-  GROUP_TYPE_A = 0,
-  GROUP_TYPE_B = 1,
 }
 
 export enum ActionResultType {

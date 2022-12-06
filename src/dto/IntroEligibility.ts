@@ -1,4 +1,4 @@
-import { IntroEligibilityStatus } from "../enums";
+import { IntroEligibilityStatus } from "./enums";
 
 class IntroEligibility {
   status?: IntroEligibilityStatus;
