@@ -210,7 +210,7 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.setCustomProperty(property, value);
   }
 
-  collectAdvertisingID() {
+  collectAdvertisingId() {
     if (isIos()) {
       RNQonversion.collectAdvertisingID();
     }

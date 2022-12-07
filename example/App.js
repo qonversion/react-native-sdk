@@ -16,7 +16,6 @@ import Qonversion, {
   Environment,
   Entitlement,
   EntitlementsCacheLifetime,
-  Automations,
 } from 'react-native-qonversion';
 import NotificationsManager from './notificationsManager';
 
