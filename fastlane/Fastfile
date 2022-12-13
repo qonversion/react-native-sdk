@@ -1,5 +1,5 @@
 def update_js(new_version)
-  path = Dir['../src/**/Qonversion.ts'].first
+  path = Dir['../src/**/QonversionInternal.ts'].first
   regex = /const sdkVersion = ".*";/
   result_value = "const sdkVersion = \"#{new_version}\";"
 

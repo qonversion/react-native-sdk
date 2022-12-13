@@ -24,7 +24,7 @@ export interface AutomationsDelegate {
    * Called when Automations flow finishes executing an action.
    * @param actionResult executed action.
    *                     For instance, if the user made a purchase then action.type = ActionResultType.purchase.
-   *                     You can use the Qonversion.checkPermissions() method to get available permissions.
+   *                     You can use the {@link QonversionApi.checkEntitlements} method to get available permissions.
    */
   automationsDidFinishExecuting(actionResult: ActionResult): void;
 

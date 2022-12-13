@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class EntitiesConverter {
@@ -27,7 +28,7 @@ public class EntitiesConverter {
     }
 
     static Map<String, Object> toMap(JSONObject jsonobj)  throws JSONException {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         Iterator<String> keys = jsonobj.keys();
         while(keys.hasNext()) {
             String key = keys.next();
@@ -42,7 +43,7 @@ public class EntitiesConverter {
     }
 
     public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         for(int i = 0; i < array.length(); i++) {
             Object value = array.get(i);
             if (value instanceof JSONArray) {
@@ -74,10 +75,10 @@ public class EntitiesConverter {
                     object.put(key, readableMap.getString(key));
                     break;
                 case Map:
-                    object.put(key, convertMapToJson(readableMap.getMap(key)));
+                    object.put(key, convertMapToJson(Objects.requireNonNull(readableMap.getMap(key))));
                     break;
                 case Array:
-                    object.put(key, convertArrayToJson(readableMap.getArray(key)));
+                    object.put(key, convertArrayToJson(Objects.requireNonNull(readableMap.getArray(key))));
                     break;
             }
         }

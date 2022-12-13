@@ -1,6 +1,8 @@
-import {AutomationsDelegate} from "./AutomationsDelegate";
+import {AutomationsDelegate} from "../dto/AutomationsDelegate";
 import {NativeEventEmitter, NativeModules} from "react-native";
 import Mapper from "./Mapper";
+import AutomationsApi from '../AutomationsApi';
+
 const {RNAutomations} = NativeModules;
 
 const EVENT_SCREEN_SHOWN = "automations_screen_shown";
@@ -9,15 +11,34 @@ const EVENT_ACTION_FAILED = "automations_action_failed";
 const EVENT_ACTION_FINISHED = "automations_action_finished";
 const EVENT_AUTOMATIONS_FINISHED = "automations_finished";
 
-export default class Automations {
+export default class AutomationsInternal implements AutomationsApi {
 
-  /**
-   * The Automations delegate is responsible for handling in-app screens and actions when push notification is received.
-   * Make sure the method is called before Qonversion.handleNotification.
-   * @param delegate the delegate to be notified about Automations events.
-   */
-  static setDelegate(delegate: AutomationsDelegate) {
-    Automations.subscribe(delegate);
+  setDelegate(delegate: AutomationsDelegate) {
+    AutomationsInternal.subscribe(delegate);
+  }
+
+  setNotificationsToken(token: string) {
+    RNAutomations.setNotificationsToken(token);
+  }
+
+  async handleNotification(notificationData: Map<String, Object>): Promise<boolean> {
+    try {
+      return await RNAutomations.handleNotification(notificationData);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async getNotificationCustomPayload(notificationData: Map<string, Object>): Promise<Map<string, Object> | null> {
+    try {
+      return await RNAutomations.getNotificationCustomPayload(notificationData) ?? null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async showScreen(screenId: string): Promise<void> {
+    return await RNAutomations.showScreen(screenId);
   }
 
   private static subscribe(automationsDelegate: AutomationsDelegate) {
