@@ -1,7 +1,7 @@
 import {
   SKProductDiscountPaymentModes,
   SKProductDiscountTypes,
-} from "../../enums";
+} from "../enums";
 import SKSubscriptionPeriod from "./SKSubscriptionPeriod";
 
 class SKProductDiscount {

@@ -1,44 +1,32 @@
 import {
-  ActionResultType,
   AutomationsEventType,
-  ExperimentGroupType,
+  EntitlementSource,
   IntroEligibilityStatus,
   OfferingTag,
-  PermissionSource,
   ProductDuration,
   ProductDurations,
   ProductType,
   ProductTypes,
-  RenewState,
+  EntitlementRenewState,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
   TrialDuration,
   TrialDurations,
-} from "../enums";
-import ExperimentGroup from "./ExperimentGroup";
-import ExperimentInfo from "./ExperimentInfo";
-import IntroEligibility from "./IntroEligibility";
-import LaunchResult from "./LaunchResult";
-import Offering from "./Offering";
-import Offerings from "./Offerings";
-import Permission from "./Permission";
-import Product from "./Product";
-import SKProduct from "./storeProducts/SKProduct";
-import SKProductDiscount from "./storeProducts/SKProductDiscount";
-import SKSubscriptionPeriod from "./storeProducts/SKSubscriptionPeriod";
-import SkuDetails from "./storeProducts/SkuDetails";
-import ActionResult from "./ActionResult";
-import QonversionError from "./QonversionError";
-import AutomationsEvent from "./AutomationsEvent";
-
-type QLaunchResult = {
-  products: Record<string, QProduct>;
-  userProducts: Record<string, QProduct>;
-  permissions: Record<string, QPermission>;
-  uid: string;
-  timestamp: number;
-};
+} from "../dto/enums";
+import IntroEligibility from "../dto/IntroEligibility";
+import Offering from "../dto/Offering";
+import Offerings from "../dto/Offerings";
+import Entitlement from "../dto/Entitlement";
+import Product from "../dto/Product";
+import SKProduct from "../dto/storeProducts/SKProduct";
+import SKProductDiscount from "../dto/storeProducts/SKProductDiscount";
+import SKSubscriptionPeriod from "../dto/storeProducts/SKSubscriptionPeriod";
+import SkuDetails from "../dto/storeProducts/SkuDetails";
+import ActionResult from "../dto/ActionResult";
+import QonversionError from "../dto/QonversionError";
+import AutomationsEvent from "../dto/AutomationsEvent";
+import User from '../dto/User';
 
 type QProduct = {
   id: string;
@@ -112,11 +100,11 @@ type QLocale = {
   localeIdentifier: string;
 };
 
-type QPermission = {
+type QEntitlement = {
   id: string;
-  associatedProduct: string;
+  productId: string;
   active: boolean;
-  renewState: number;
+  renewState: string;
   source: string;
   startedTimestamp: number;
   expirationTimestamp: number;
@@ -133,79 +121,54 @@ type QOffering = {
   products: Array<QProduct>;
 };
 
-type QActionResult = {
-  type: ActionResultType;
-  value: Map<string, string | undefined> | undefined;
-  error: QError | undefined;
-};
-
-type QError = {
-  code: string;
-  domain?: string; // ios only
-  description: string;
-  additionalMessage: string;
-};
-
 type QAutomationsEvent = {
   type: AutomationsEventType;
   timestamp: number;
 };
 
+type QUser = {
+  qonversionId: string;
+  identityId?: string | null;
+};
+
 const skuDetailsPriceRatio = 1000000;
 
 class Mapper {
-  static convertLaunchResult(launchResult: QLaunchResult): LaunchResult {
-    const products: Map<string, Product> = this.convertProducts(
-      launchResult.products
-    );
-    const permissions: Map<string, Permission> = this.convertPermissions(
-      launchResult.permissions
-    );
-    const userProducts: Map<string, Product> = this.convertProducts(
-      launchResult.userProducts
-    );
-    return new LaunchResult(
-      launchResult.uid,
-      launchResult.timestamp,
-      products,
-      permissions,
-      userProducts
-    );
-  }
-
-  static convertPermissions(
-    permissions: Record<string, QPermission>
-  ): Map<string, Permission> {
+  static convertEntitlements(
+    entitlements: Record<string, QEntitlement>
+  ): Map<string, Entitlement> {
     let mappedPermissions = new Map();
 
-    for (const [key, permission] of Object.entries(permissions)) {
-      let renewState: RenewState = RenewState.UNKNOWN;
-
-      switch (permission.renewState) {
-        case -1:
-          renewState = RenewState.NON_RENEWABLE;
+    for (const [key, entitlement] of Object.entries(entitlements)) {
+      let renewState: EntitlementRenewState;
+      switch (entitlement.renewState) {
+        case EntitlementRenewState.NON_RENEWABLE:
+          renewState = EntitlementRenewState.NON_RENEWABLE;
           break;
-        case 1:
-          renewState = RenewState.WILL_RENEW;
+        case EntitlementRenewState.WILL_RENEW:
+          renewState = EntitlementRenewState.WILL_RENEW;
           break;
-        case 2:
-          renewState = RenewState.CANCELED;
+        case EntitlementRenewState.CANCELED:
+          renewState = EntitlementRenewState.CANCELED;
           break;
-        case 3:
-          renewState = RenewState.BILLING_ISSUE;
+        case EntitlementRenewState.BILLING_ISSUE:
+          renewState = EntitlementRenewState.BILLING_ISSUE;
+          break;
+        default:
+          renewState = EntitlementRenewState.UNKNOWN;
           break;
       }
 
-      const permissionSource = this.convertPermissionSource(permission.source);
+      const entitlementSource = this.convertEntitlementSource(entitlement.source);
 
-      const mappedPermission = new Permission(
-        permission.id,
-        permission.associatedProduct,
-        permission.active,
+      const mappedPermission = new Entitlement(
+        entitlement.id,
+        entitlement.productId,
+        entitlement.active,
         renewState,
-        permissionSource,
-        permission.startedTimestamp,
-        permission.expirationTimestamp
+        entitlementSource,
+        entitlement.startedTimestamp,
+        entitlement.expirationTimestamp
       );
       mappedPermissions.set(key, mappedPermission);
     }
@@ -213,21 +176,21 @@ class Mapper {
     return mappedPermissions;
   }
 
-  static convertPermissionSource(sourceKey: string): PermissionSource {
+  static convertEntitlementSource(sourceKey: string): EntitlementSource {
     switch (sourceKey) {
       case "Unknown":
-        return PermissionSource.UNKNOWN;
+        return EntitlementSource.UNKNOWN;
       case "AppStore":
-        return PermissionSource.APP_STORE;
+        return EntitlementSource.APP_STORE;
       case "PlayStore":
-        return PermissionSource.PLAY_STORE;
+        return EntitlementSource.PLAY_STORE;
       case "Stripe":
-        return PermissionSource.STRIPE;
+        return EntitlementSource.STRIPE;
       case "Manual":
-        return PermissionSource.MANUAL;
+        return EntitlementSource.MANUAL;
     }
 
-    return PermissionSource.UNKNOWN;
+    return EntitlementSource.UNKNOWN;
   }
 
   static convertProducts(products: Record<string, QProduct>): Map<string, Product> {
@@ -329,7 +292,7 @@ class Mapper {
       products.push(mappedProduct);
     });
 
-    const tag = OfferingTag[offering.tag] ?? OfferingTag[0];
+    const tag = OfferingTag[offering.tag] ?? OfferingTag['0'];
 
     return new Offering(offering.id, tag, products);
   }
@@ -464,25 +427,6 @@ class Mapper {
     }
   }
 
-  static convertExperimentInfo(
-    experimentInfo: Record<string, { id: string; group: { type: number } }>
-  ): Map<string, ExperimentInfo> {
-    const mappedExperimentInfo = new Map<string, ExperimentInfo>();
-
-    for (const [key, value] of Object.entries(experimentInfo)) {
-      const groupType =
-        value.group.type === 1
-          ? ExperimentGroupType.GROUP_TYPE_B
-          : ExperimentGroupType.GROUP_TYPE_A;
-      const group = new ExperimentGroup(groupType);
-
-      const experiment = new ExperimentInfo(value.id, group);
-      mappedExperimentInfo.set(key, experiment);
-    }
-
-    return mappedExperimentInfo;
-  }
-
   static convertActionResult(
     payload: Record<string, any>
   ): ActionResult {
@@ -511,6 +455,10 @@ class Mapper {
       automationsEvent.type,
       automationsEvent.timestamp
     )
+  }
+
+  static convertUserInfo(user: QUser) {
+    return new User(user.qonversionId, user.identityId);
   }
 }
 

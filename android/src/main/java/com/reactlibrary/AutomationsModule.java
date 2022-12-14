@@ -3,16 +3,22 @@ package com.reactlibrary;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.json.JSONException;
 
 import java.util.Map;
 
 import io.qonversion.sandwich.AutomationsEventListener;
 import io.qonversion.sandwich.AutomationsSandwich;
+import io.qonversion.sandwich.ResultListener;
+import io.qonversion.sandwich.SandwichError;
 
 class AutomationsModule extends ReactContextBaseJavaModule implements AutomationsEventListener {
 
@@ -33,6 +39,7 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
         eventEmitter = getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "RNAutomations";
@@ -40,7 +47,71 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
 
     @ReactMethod
     void subscribe() {
-        automationsSandwich.subscribe(this);
+        automationsSandwich.setDelegate(this);
+    }
+
+    @ReactMethod
+    public void setNotificationsToken(String token) {
+        automationsSandwich.setNotificationToken(token);
+    }
+
+    @ReactMethod
+    public void getNotificationCustomPayload(final ReadableMap notificationData, final Promise promise) {
+        if (notificationData == null) {
+            promise.resolve(null);
+            return;
+        }
+
+        final Map<String, Object> dataMap;
+        try {
+            dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
+        } catch (JSONException e) {
+            promise.reject(e);
+            return;
+        }
+
+        final Map<String, Object> payload = automationsSandwich.getNotificationCustomPayload(dataMap);
+        if (payload == null) {
+            promise.resolve(null);
+        } else {
+            final WritableMap convertedPayload = EntitiesConverter.convertMapToWritableMap(payload);
+
+            promise.resolve(convertedPayload);
+        }
+    }
+
+    @ReactMethod
+    public void handleNotification(final ReadableMap notificationData, final Promise promise) {
+        if (notificationData == null) {
+            promise.resolve(false);
+            return;
+        }
+
+        final Map<String, Object> dataMap;
+        try {
+            dataMap = EntitiesConverter.convertReadableMapToHashMap(notificationData);
+        } catch (JSONException e) {
+            promise.resolve(false);
+            return;
+        }
+
+        final boolean isQonversionNotification = automationsSandwich.handleNotification(dataMap);
+        promise.resolve(isQonversionNotification);
+    }
+
+    @ReactMethod
+    public void showScreen(final String screenId, final Promise promise) {
+        automationsSandwich.showScreen(screenId, new ResultListener() {
+            @Override
+            public void onSuccess(@NonNull Map<String, ?> map) {
+                promise.resolve(null);
+            }
+
+            @Override
+            public void onError(@NonNull SandwichError error) {
+                Utils.rejectWithError(error, promise);
+            }
+        });
     }
 
     @Override

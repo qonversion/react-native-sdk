@@ -1,4 +1,4 @@
-import {AutomationsEventType} from "../enums";
+import {AutomationsEventType} from "./enums";
 
 class AutomationsEvent {
 
