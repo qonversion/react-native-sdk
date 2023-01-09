@@ -7,7 +7,11 @@ jobs:
   patch-minor:
     runs-on: ubuntu-latest
 
-    steps:
+    steps:  
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+
       - name: Minor
         run: |
           fastlane minor
