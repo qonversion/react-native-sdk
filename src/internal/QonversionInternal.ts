@@ -14,7 +14,7 @@ import QonversionConfig from '../QonversionConfig';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "4.0.0";
+const sdkVersion = "4.0.1";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
