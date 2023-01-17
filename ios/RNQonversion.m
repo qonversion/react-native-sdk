@@ -171,7 +171,11 @@ RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime) {
         return;
     }
 
-    completion(@[result]);
+    if (result) {
+        completion(@[result]);
+    } else {
+        completion(@[]);
+    }
 }
 
 - (void)handlePurchaseResult:(NSDictionary *)result
@@ -188,7 +192,11 @@ RCT_EXPORT_METHOD(setPermissionsCacheLifetime:(NSString *)lifetime) {
         return;
     }
 
-    completion(@[result]);
+    if (result) {
+        completion(@[result]);
+    } else {
+        completion(@[]);
+    }
 }
 
 #pragma mark - QonversionEventListener

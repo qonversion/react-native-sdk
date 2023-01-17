@@ -154,7 +154,17 @@ type QAutomationsEvent = {
 const skuDetailsPriceRatio = 1000000;
 
 class Mapper {
-  static convertLaunchResult(launchResult: QLaunchResult): LaunchResult {
+  static convertLaunchResult(launchResult: QLaunchResult | null | undefined): LaunchResult {
+    if (!launchResult) {
+      return {
+        uid: '',
+        timestamp: new Date().getTime(),
+        products: new Map<string, Product>(),
+        permissions: new Map<string, Permission>(),
+        userProducts: new Map<string, Product>(),
+      };
+    }
+
     const products: Map<string, Product> = this.convertProducts(
       launchResult.products
     );
@@ -174,9 +184,13 @@ class Mapper {
   }
 
   static convertPermissions(
-    permissions: Record<string, QPermission>
+    permissions: Record<string, QPermission> | null | undefined
   ): Map<string, Permission> {
     let mappedPermissions = new Map();
+
+    if (!permissions) {
+      return mappedPermissions;
+    }
 
     for (const [key, permission] of Object.entries(permissions)) {
       let renewState: RenewState = RenewState.UNKNOWN;
@@ -230,8 +244,12 @@ class Mapper {
     return PermissionSource.UNKNOWN;
   }
 
-  static convertProducts(products: Record<string, QProduct>): Map<string, Product> {
+  static convertProducts(products: Record<string, QProduct> | null | undefined): Map<string, Product> {
     let mappedProducts = new Map();
+
+    if (!products) {
+      return mappedProducts;
+    }
 
     for (const [key, product] of Object.entries(products)) {
       const mappedProduct = this.convertProduct(product);
@@ -297,7 +315,11 @@ class Mapper {
     return mappedProduct;
   }
 
-  static convertOfferings(offerings: QOfferings): Offerings | null {
+  static convertOfferings(offerings: QOfferings | null | undefined): Offerings | null {
+    if (!offerings) {
+      return null;
+    }
+
     if (
       !Array.isArray(offerings.availableOfferings) ||
       offerings.availableOfferings.length === 0
@@ -437,9 +459,13 @@ class Mapper {
         | "non_intro_or_trial_product"
         | "intro_or_trial_eligible"
         | "intro_or_trial_ineligible";
-    }>
+    }>  | null | undefined
   ): Map<string, IntroEligibility> {
     let mappedEligibility = new Map<string, IntroEligibility>();
+
+    if (!eligibilityMap) {
+      return mappedEligibility;
+    }
 
     for (const [key, value] of Object.entries(eligibilityMap)) {
       const status = Mapper.convertEligibilityStatus(value.status);
@@ -465,9 +491,13 @@ class Mapper {
   }
 
   static convertExperimentInfo(
-    experimentInfo: Record<string, { id: string; group: { type: number } }>
+    experimentInfo: Record<string, { id: string; group: { type: number } }> | null | undefined
   ): Map<string, ExperimentInfo> {
     const mappedExperimentInfo = new Map<string, ExperimentInfo>();
+
+    if (!experimentInfo) {
+      return mappedExperimentInfo;
+    }
 
     for (const [key, value] of Object.entries(experimentInfo)) {
       const groupType =
