@@ -27,6 +27,7 @@ import ActionResult from "../dto/ActionResult";
 import QonversionError from "../dto/QonversionError";
 import AutomationsEvent from "../dto/AutomationsEvent";
 import User from '../dto/User';
+import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
 
 type QProduct = {
   id: string;
@@ -475,6 +476,13 @@ class Mapper {
 
   static convertUserInfo(user: QUser) {
     return new User(user.qonversionId, user.identityId);
+  }
+
+  static convertScreenPresentationConfig(config: ScreenPresentationConfig): Object {
+    return {
+      presentationStyle: config.presentationStyle,
+      animate: config.animate,
+    };
   }
 }
 

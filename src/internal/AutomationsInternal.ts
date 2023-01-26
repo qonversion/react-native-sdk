@@ -2,6 +2,7 @@ import {AutomationsDelegate} from "../dto/AutomationsDelegate";
 import {NativeEventEmitter, NativeModules} from "react-native";
 import Mapper from "./Mapper";
 import AutomationsApi from '../AutomationsApi';
+import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
 
 const {RNAutomations} = NativeModules;
 
@@ -39,6 +40,11 @@ export default class AutomationsInternal implements AutomationsApi {
 
   async showScreen(screenId: string): Promise<void> {
     return await RNAutomations.showScreen(screenId);
+  }
+
+  setScreenPresentationConfig(config: ScreenPresentationConfig, screenId?: string): void {
+    const data = Mapper.convertScreenPresentationConfig(config);
+    RNAutomations.setScreenPresentationConfig(data, screenId);
   }
 
   private static subscribe(automationsDelegate: AutomationsDelegate) {
