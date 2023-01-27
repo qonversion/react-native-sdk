@@ -481,7 +481,7 @@ class Mapper {
   static convertScreenPresentationConfig(config: ScreenPresentationConfig): Object {
     return {
       presentationStyle: config.presentationStyle,
-      animate: config.animate,
+      animated: config.animated,
     };
   }
 }

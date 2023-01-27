@@ -13,10 +13,10 @@ export class ScreenPresentationConfig {
    * Describes whether should transaction be animated or not.
    * Default value is true.
    */
-  animate: boolean;
+  animated: boolean;
 
-  constructor(presentationStyle: ScreenPresentationStyle, animate?: boolean) {
+  constructor(presentationStyle: ScreenPresentationStyle, animated?: boolean) {
     this.presentationStyle = presentationStyle;
-    this.animate = animate === undefined ? true : animate;
+    this.animated = animated === undefined ? true : animated;
   }
 }
