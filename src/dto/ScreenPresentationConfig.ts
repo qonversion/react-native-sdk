@@ -8,7 +8,7 @@ export class ScreenPresentationConfig {
   presentationStyle: ScreenPresentationStyle;
 
   /**
-   * iOS only. Ignored on Android.
+   * iOS only. For Android consider using {@link ScreenPresentationStyle.NO_ANIMATION}.
    *
    * Describes whether should transaction be animated or not.
    * Default value is true.

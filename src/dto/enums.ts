@@ -182,7 +182,8 @@ export enum ScreenPresentationStyle {
    */
   POPOVER = 'Popover',
   /**
-   * Android only - screen will appear/disappear without any animation
+   * Android only - screen will appear/disappear without any animation.
+   * For iOS consider providing the {@link ScreenPresentationConfig.animated} flag.
    */
   NO_ANIMATION = 'NoAnimation'
 }
