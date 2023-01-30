@@ -80,6 +80,11 @@ RCT_EXPORT_METHOD(showScreen:(NSString *)screenId
   }];
 }
 
+RCT_EXPORT_METHOD(setScreenPresentationConfig:(NSDictionary *)config
+                  screenId:(NSString *)screenId) {
+    [_sandwich setScreenPresentationConfig:config forScreenId:screenId];
+}
+
 - (void)automationDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
   [self sendEventWithName:event body:payload];
 }
