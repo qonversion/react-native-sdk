@@ -16,6 +16,7 @@ export { default as Offerings } from './dto/Offerings';
 export { default as Entitlement } from './dto/Entitlement';
 export { default as Product } from './dto/Product';
 export { PromoPurchasesListener } from './dto/PromoPurchasesListener';
+export { ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
 export { default as QonversionError } from './dto/QonversionError';
 export { default as User } from './dto/User';
 export { default as SkuDetails } from './dto/storeProducts/SkuDetails';

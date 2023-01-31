@@ -114,6 +114,16 @@ class AutomationsModule extends ReactContextBaseJavaModule implements Automation
         });
     }
 
+    @ReactMethod
+    public void setScreenPresentationConfig(final ReadableMap configData, final @Nullable String screenId) {
+        try {
+            final Map<String, Object> config = EntitiesConverter.convertReadableMapToHashMap(configData);
+            automationsSandwich.setScreenPresentationConfig(config, screenId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onAutomationEvent(@NonNull AutomationsEventListener.Event event, @Nullable Map<String, ?> payload) {
         WritableMap payloadMap = null;
