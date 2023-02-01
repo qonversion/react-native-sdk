@@ -14,6 +14,7 @@ class QonversionConfigBuilder {
   private environment: Environment = Environment.PRODUCTION;
   private entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH;
   private entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined;
+  private proxyUrl: string | undefined = undefined;
 
   /**
    * Set current application {@link Environment}. Used to distinguish sandbox and production users.
@@ -56,6 +57,19 @@ class QonversionConfigBuilder {
   }
 
   /**
+   * Provide a URL to your proxy server which will redirect all the requests from the app
+   * to our API. Please, contact us before using this feature.
+   *
+   * @param url your proxy server url
+   * @return builder instance for chain calls.
+   * @see [The documentation](https://documentation.qonversion.io/docs/custom-proxy-server-for-sdks)
+   */
+  setProxyURL(url: string): QonversionConfigBuilder {
+    this.proxyUrl = url;
+    return this;
+  }
+
+  /**
    * Generate {@link QonversionConfig} instance with all the provided configurations.
    *
    * @return the complete {@link QonversionConfig} instance.
@@ -66,7 +80,8 @@ class QonversionConfigBuilder {
       this.launchMode,
       this.environment,
       this.entitlementsCacheLifetime,
-      this.entitlementsUpdateListener
+      this.entitlementsUpdateListener,
+      this.proxyUrl
     )
   }
 }
