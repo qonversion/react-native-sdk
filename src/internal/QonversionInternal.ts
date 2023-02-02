@@ -14,7 +14,7 @@ import QonversionConfig from '../QonversionConfig';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "4.0.2";
+const sdkVersion = "4.1.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -27,7 +27,8 @@ export default class QonversionInternal implements QonversionApi {
       qonversionConfig.projectKey,
       qonversionConfig.launchMode,
       qonversionConfig.environment,
-      qonversionConfig.entitlementsCacheLifetime
+      qonversionConfig.entitlementsCacheLifetime,
+      qonversionConfig.proxyUrl
     )
 
     if (qonversionConfig.entitlementsUpdateListener) {

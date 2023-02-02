@@ -164,3 +164,26 @@ export enum AutomationsEventType {
   SUBSCRIPTION_DOWNGRADED = "subscription_downgraded",
   SUBSCRIPTION_PRODUCT_CHANGED = "subscription_product_changed",
 }
+
+export enum ScreenPresentationStyle {
+  /**
+   * on Android - default screen transaction animation will be used.
+   * on iOS - not a modal presentation. This style pushes a controller to a current navigation stack.
+   * For iOS NavigationController on the top of the stack is required.
+   */
+  PUSH = 'Push',
+  /**
+   * on Android - screen will move from bottom to top.
+   * on iOS - UIModalPresentationFullScreen analog.
+   */
+  FULL_SCREEN = 'FullScreen',
+  /**
+   * iOS only - UIModalPresentationPopover analog
+   */
+  POPOVER = 'Popover',
+  /**
+   * Android only - screen will appear/disappear without any animation.
+   * For iOS consider providing the {@link ScreenPresentationConfig.animated} flag.
+   */
+  NO_ANIMATION = 'NoAnimation'
+}
