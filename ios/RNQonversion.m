@@ -34,7 +34,7 @@ RCT_EXPORT_METHOD(storeSDKInfo:(NSString *)source version:(NSString *)version) {
     [_qonversionSandwich storeSdkInfoWithSource:source version:version];
 }
 
-RCT_EXPORT_METHOD(initializeSdk:(NSString *)key launchMode:(NSString *)launchModeKey environment:(NSString *)environmentKey cacheLifetime:(NSString *)cacheLifetimeKey proxyUrl:(NSString *)proxyUrl) {
+RCT_EXPORT_METHOD(initializeSdk:(NSString *)key launchMode:(NSString *)launchModeKey environment:(NSString *)environmentKey cacheLifetime:(NSString *)cacheLifetimeKey proxyUrl:(NSString *)proxyUrl kidsMode:(BOOL)kidsMode) {
     [_qonversionSandwich initializeWithProjectKey:key launchModeKey:launchModeKey environmentKey:environmentKey entitlementsCacheLifetimeKey:cacheLifetimeKey proxyUrl:proxyUrl];
 }
 

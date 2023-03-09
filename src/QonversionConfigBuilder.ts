@@ -15,6 +15,7 @@ class QonversionConfigBuilder {
   private entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH;
   private entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined;
   private proxyUrl: string | undefined = undefined;
+  private kidsMode: boolean = false;
 
   /**
    * Set current application {@link Environment}. Used to distinguish sandbox and production users.
@@ -69,6 +70,11 @@ class QonversionConfigBuilder {
     return this;
   }
 
+  enableKidsMode(): QonversionConfigBuilder {
+    this.kidsMode = true;
+    return this;
+  }
+
   /**
    * Generate {@link QonversionConfig} instance with all the provided configurations.
    *
@@ -81,7 +87,8 @@ class QonversionConfigBuilder {
       this.environment,
       this.entitlementsCacheLifetime,
       this.entitlementsUpdateListener,
-      this.proxyUrl
+      this.proxyUrl,
+      this.kidsMode
     )
   }
 }
