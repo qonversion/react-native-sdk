@@ -28,7 +28,8 @@ export default class QonversionInternal implements QonversionApi {
       qonversionConfig.launchMode,
       qonversionConfig.environment,
       qonversionConfig.entitlementsCacheLifetime,
-      qonversionConfig.proxyUrl
+      qonversionConfig.proxyUrl,
+      qonversionConfig.kidsMode
     )
 
     if (qonversionConfig.entitlementsUpdateListener) {

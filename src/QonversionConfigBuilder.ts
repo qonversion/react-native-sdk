@@ -15,6 +15,7 @@ class QonversionConfigBuilder {
   private entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH;
   private entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined;
   private proxyUrl: string | undefined = undefined;
+  private kidsMode: boolean = false;
 
   /**
    * Set current application {@link Environment}. Used to distinguish sandbox and production users.
@@ -70,6 +71,17 @@ class QonversionConfigBuilder {
   }
 
   /**
+   * Android only.
+   * Use this function to enable Qonversion SDK Kids mode.
+   * With this mode activated, our SDK does not collect any information that violates Google Children’s Privacy Policy.
+   * @return builder instance for chain calls.
+   */
+  enableKidsMode(): QonversionConfigBuilder {
+    this.kidsMode = true;
+    return this;
+  }
+
+  /**
    * Generate {@link QonversionConfig} instance with all the provided configurations.
    *
    * @return the complete {@link QonversionConfig} instance.
@@ -81,7 +93,8 @@ class QonversionConfigBuilder {
       this.environment,
       this.entitlementsCacheLifetime,
       this.entitlementsUpdateListener,
-      this.proxyUrl
+      this.proxyUrl,
+      this.kidsMode
     )
   }
 }
