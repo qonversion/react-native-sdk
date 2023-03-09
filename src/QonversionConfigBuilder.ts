@@ -74,6 +74,7 @@ class QonversionConfigBuilder {
    * Android only.
    * Use this function to enable Qonversion SDK Kids mode.
    * With this mode activated, our SDK does not collect any information that violates Google Children’s Privacy Policy.
+   * @return builder instance for chain calls.
    */
   enableKidsMode(): QonversionConfigBuilder {
     this.kidsMode = true;
