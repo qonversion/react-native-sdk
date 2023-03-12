@@ -64,7 +64,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
             String launchModeKey,
             @Nullable String environmentKey,
             @Nullable String entitlementsCacheLifetimeKey,
-            @Nullable String proxyUrl
+            @Nullable String proxyUrl,
+            boolean kidsMode
     ) {
         qonversionSandwich.initialize(
                 getReactApplicationContext(),
@@ -72,7 +73,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
                 launchModeKey,
                 environmentKey,
                 entitlementsCacheLifetimeKey,
-                proxyUrl
+                proxyUrl,
+                kidsMode
         );
     }
 
