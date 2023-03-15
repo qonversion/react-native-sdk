@@ -79,6 +79,11 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
+    public void syncHistoricalData() {
+        qonversionSandwich.syncHistoricalData();
+    }
+
+    @ReactMethod
     public void purchaseProduct(String productId, String offeringId, final Promise promise) {
         qonversionSandwich.purchaseProduct(productId, offeringId, getPurchaseResultListener(promise));
     }
