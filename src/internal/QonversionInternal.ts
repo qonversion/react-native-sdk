@@ -30,10 +30,10 @@ export default class QonversionInternal implements QonversionApi {
       qonversionConfig.entitlementsCacheLifetime,
       qonversionConfig.proxyUrl,
       qonversionConfig.kidsMode
-    )
+    );
 
     if (qonversionConfig.entitlementsUpdateListener) {
-      this.setEntitlementsUpdateListener(qonversionConfig.entitlementsUpdateListener)
+      this.setEntitlementsUpdateListener(qonversionConfig.entitlementsUpdateListener);
     }
   }
 
