@@ -14,7 +14,7 @@ import QonversionConfig from '../QonversionConfig';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "4.2.0";
+const sdkVersion = "4.3.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -30,11 +30,15 @@ export default class QonversionInternal implements QonversionApi {
       qonversionConfig.entitlementsCacheLifetime,
       qonversionConfig.proxyUrl,
       qonversionConfig.kidsMode
-    )
+    );
 
     if (qonversionConfig.entitlementsUpdateListener) {
-      this.setEntitlementsUpdateListener(qonversionConfig.entitlementsUpdateListener)
+      this.setEntitlementsUpdateListener(qonversionConfig.entitlementsUpdateListener);
     }
+  }
+
+  syncHistoricalData () {
+    RNQonversion.syncHistoricalData();
   }
 
   async purchase(productId: string): Promise<Map<string, Entitlement>> {

@@ -10,6 +10,11 @@ import {PromoPurchasesListener} from './dto/PromoPurchasesListener';
 interface QonversionApi {
 
   /**
+   * Call this function to sync the subscriber data with the first launch when Qonversion is implemented.
+   */
+  syncHistoricalData(): void;
+
+  /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend
    *
    * @param productId Qonversion product identifier for purchase
