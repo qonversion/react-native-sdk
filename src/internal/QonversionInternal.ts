@@ -41,6 +41,12 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.syncHistoricalData();
   }
 
+  syncStoreKit2Purchases() {
+    if (isIos()) {
+      RNQonversion.syncStoreKit2Purchases();
+    }
+  }
+
   async purchase(productId: string): Promise<Map<string, Entitlement>> {
     return QonversionInternal.purchaseProxy(productId);
   }

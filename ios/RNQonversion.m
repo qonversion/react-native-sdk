@@ -42,6 +42,10 @@ RCT_EXPORT_METHOD(syncHistoricalData) {
     [_qonversionSandwich syncHistoricalData];
 }
 
+RCT_EXPORT_METHOD(syncStoreKit2Purchases) {
+    [_qonversionSandwich syncStoreKit2Purchases];
+}
+
 RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich purchase:productId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handlePurchaseResult:result error:error completion:completion rejecter:reject];
