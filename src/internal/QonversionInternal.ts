@@ -14,7 +14,7 @@ import QonversionConfig from '../QonversionConfig';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "4.3.0";
+const sdkVersion = "4.4.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -39,6 +39,12 @@ export default class QonversionInternal implements QonversionApi {
 
   syncHistoricalData () {
     RNQonversion.syncHistoricalData();
+  }
+
+  syncStoreKit2Purchases() {
+    if (isIos()) {
+      RNQonversion.syncStoreKit2Purchases();
+    }
   }
 
   async purchase(productId: string): Promise<Map<string, Entitlement>> {
