@@ -1,13 +1,14 @@
 import {
   AutomationsEventType,
+  EntitlementRenewState,
   EntitlementSource,
+  ExperimentGroupType,
   IntroEligibilityStatus,
   OfferingTag,
   ProductDuration,
   ProductDurations,
   ProductType,
   ProductTypes,
-  EntitlementRenewState,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
@@ -28,6 +29,9 @@ import QonversionError from "../dto/QonversionError";
 import AutomationsEvent from "../dto/AutomationsEvent";
 import User from '../dto/User';
 import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
+import Experiment from "../dto/Experiment";
+import ExperimentGroup from "../dto/ExperimentGroup";
+import RemoteConfig from "../dto/RemoteConfig";
 
 type QProduct = {
   id: string;
@@ -131,6 +135,23 @@ type QUser = {
   qonversionId: string;
   identityId?: string | null;
 };
+
+type QRemoteConfig = {
+  payload: Map<string, Object>;
+  experiment?: QExperiment | null;
+};
+
+type QExperiment = {
+  id: string;
+  name: string;
+  group: QExperimentGroup;
+}
+
+type QExperimentGroup = {
+  id: string;
+  name: string;
+  type: string;
+}
 
 const skuDetailsPriceRatio = 1000000;
 
@@ -474,8 +495,30 @@ class Mapper {
     )
   }
 
-  static convertUserInfo(user: QUser) {
+  static convertUserInfo(user: QUser): User {
     return new User(user.qonversionId, user.identityId);
+  }
+
+  static convertRemoteConfig(remoteConfig: QRemoteConfig): RemoteConfig {
+    let experiment = null;
+    if (remoteConfig.experiment) {
+      let groupType = this.convertGroupType(remoteConfig.experiment.group.type);
+      let group = new ExperimentGroup(remoteConfig.experiment.group.id, remoteConfig.experiment.group.name, groupType);
+      experiment = new Experiment(remoteConfig.experiment.id, remoteConfig.experiment.name, group);
+    }
+
+    return new RemoteConfig(remoteConfig.payload, experiment);
+  }
+
+  static convertGroupType(type: String): ExperimentGroupType {
+    switch (type) {
+      case "control":
+        return ExperimentGroupType.CONTROL;
+      case "treatment":
+        return ExperimentGroupType.TREATMENT;
+      default:
+        return ExperimentGroupType.UNKNOWN;
+    }
   }
 
   static convertScreenPresentationConfig(config: ScreenPresentationConfig): Object {
