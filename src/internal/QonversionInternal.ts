@@ -11,10 +11,11 @@ import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
 import QonversionApi from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
+import RemoteConfig from "../dto/RemoteConfig";
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "4.4.2";
+const sdkVersion = "5.0.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -264,5 +265,22 @@ export default class QonversionInternal implements QonversionApi {
     if (isIos()) {
       RNQonversion.presentCodeRedemptionSheet();
     }
+  }
+
+  async remoteConfig(): Promise<RemoteConfig> {
+    const remoteConfig = await RNQonversion.remoteConfig();
+    const mappedRemoteConfig: RemoteConfig = Mapper.convertRemoteConfig(remoteConfig);
+
+    return mappedRemoteConfig;
+  }
+
+  async attachUserToExperiment(experimentId: string, groupId: string): Promise<void> {
+    await RNQonversion.attachUserToExperiment(experimentId, groupId);
+    return;
+  }
+
+  async detachUserFromExperiment(experimentId: string): Promise<void> {
+    await RNQonversion.detachUserFromExperiment(experimentId);
+    return;
   }
 }
