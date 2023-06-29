@@ -135,6 +135,12 @@ export enum IntroEligibilityStatus {
   INELIGIBLE = "intro_or_trial_ineligible",
 }
 
+export enum ExperimentGroupType {
+  UNKNOWN = "unknown",
+  CONTROL = "control",
+  TREATMENT = "treatment",
+}
+
 export enum ActionResultType {
   UNKNOWN = "unknown",
   URL = "url",
