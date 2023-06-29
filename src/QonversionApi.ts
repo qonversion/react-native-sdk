@@ -265,7 +265,7 @@ interface QonversionApi {
   attachUserToExperiment(experimentId: string, groupId: string): Promise<void>
 
   /**
-   * This function should be used for the test purpose only. Do not forget to delete the usage of this function before the release.
+   * This function should be used for the test purposes only. Do not forget to delete the usage of this function before the release.
    * Use this function to detach the user from the experiment.
    * @param experimentId identifier of the experiment
    * @returns the promise for success result or throws an error otherwise.
