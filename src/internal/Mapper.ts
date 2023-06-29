@@ -502,8 +502,8 @@ class Mapper {
   static convertRemoteConfig(remoteConfig: QRemoteConfig): RemoteConfig {
     let experiment = null;
     if (remoteConfig.experiment) {
-      let groupType = this.convertGroupType(remoteConfig.experiment.group.type);
-      let group = new ExperimentGroup(remoteConfig.experiment.group.id, remoteConfig.experiment.group.name, groupType);
+      const groupType = this.convertGroupType(remoteConfig.experiment.group.type);
+      const group = new ExperimentGroup(remoteConfig.experiment.group.id, remoteConfig.experiment.group.name, groupType);
       experiment = new Experiment(remoteConfig.experiment.id, remoteConfig.experiment.name, group);
     }
 
