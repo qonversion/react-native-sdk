@@ -1,7 +1,7 @@
 {
   "name": "react-native-qonversion",
   "title": "React Native Qonversion",
-  "version": "4.4.2",
+  "version": "5.0.0",
   "description": "Qonversion provides full in-app purchases infrastructure, so you do not need to build your own server for receipt validation. Implement in-app subscriptions, validate user receipts, check subscription status, and provide access to your app features and content using our StoreKit wrapper and Google Play Billing wrapper.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
