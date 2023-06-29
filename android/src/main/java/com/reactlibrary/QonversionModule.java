@@ -202,12 +202,12 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void attachUserToExperiment(String experimentId, String groupId, final Promise promise) {
+    public void attachUserToExperiment(final String experimentId, final String groupId, final Promise promise) {
         qonversionSandwich.attachUserToExperiment(experimentId, groupId, Utils.getResultListener(promise));
     }
 
     @ReactMethod
-    public void detachUserFromExperiment(String experimentId, final Promise promise) {
+    public void detachUserFromExperiment(final String experimentId, final Promise promise) {
         qonversionSandwich.detachUserFromExperiment(experimentId, Utils.getResultListener(promise));
     }
 
