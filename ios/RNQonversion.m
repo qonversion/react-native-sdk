@@ -126,7 +126,7 @@ RCT_EXPORT_METHOD(attachUserToExperiment:(NSString *)experimentId groupId:(NSStr
     }];
 }
 
-RCT_EXPORT_METHOD(detachUserToExperiment:(NSString *)experimentId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(detachUserFromExperiment:(NSString *)experimentId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich detachUserFromExperimentWith:experimentId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];
     }];
