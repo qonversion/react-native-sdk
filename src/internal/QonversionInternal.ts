@@ -15,7 +15,7 @@ import RemoteConfig from "../dto/RemoteConfig";
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "5.0.0";
+const sdkVersion = "5.0.1";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
