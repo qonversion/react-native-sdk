@@ -1,12 +1,13 @@
 import Entitlement from './dto/Entitlement';
 import Product from './dto/Product';
-import {UserProperty, ProrationMode, AttributionProvider} from './dto/enums';
+import {UserPropertyKey, ProrationMode, AttributionProvider} from './dto/enums';
 import Offerings from './dto/Offerings';
 import IntroEligibility from './dto/IntroEligibility';
 import User from './dto/User';
 import {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from './dto/PromoPurchasesListener';
 import RemoteConfig from "./dto/RemoteConfig";
+import UserProperties from './dto/UserProperties';
 
 interface QonversionApi {
 
@@ -175,32 +176,44 @@ interface QonversionApi {
   attribution(data: Object, provider: AttributionProvider): void;
 
   /**
-   * Sets Qonversion reserved user {@link property}, like email or one-signal id
+   * Sets Qonversion reserved user property, like email or one-signal id
    *
    * User properties are attributes you can set on a user level.
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
    * and analytics.
    *
-   * @param property defined enum key that will be transformed to string.
+   * Note that using {@link UserPropertyKey.CUSTOM} here will do nothing.
+   * To set custom user property, use {@link setCustomUserProperty} method instead.
+   *
+   * @param key defined enum key that will be transformed to string.
    * @param value property value.
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
-  setProperty(property: UserProperty, value: string): void;
+  setUserProperty(key: UserPropertyKey, value: string): void;
 
   /**
-   * Adds custom user {@link property}.
+   * Adds custom user property.
    *
    * User properties are attributes you can set on a user level.
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
    * and analytics.
    *
-   * @param property custom user property key.
+   * @param key custom user property key.
    * @param value property value.
    *
    * @see [documentation](https://documentation.qonversion.io/docs/user-properties)
    */
-  setUserProperty(property: string, value: string): void;
+  setCustomUserProperty(key: string, value: string): void;
+
+  /**
+   * This method returns all the properties, set for the current Qonversion user.
+   * All set properties are sent to the server with delay, so if you call
+   * this function right after setting some property, it may not be included
+   * in the result.
+   * @returns the promise with the user properties
+   */
+  userProperties(): Promise<UserProperties>;
 
   /**
    * Provide a listener to be notified about asynchronous user entitlements updates.

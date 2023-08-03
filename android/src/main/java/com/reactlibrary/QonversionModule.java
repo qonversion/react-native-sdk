@@ -141,6 +141,11 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
+    public void userProperties(final Promise promise) {
+        qonversionSandwich.userProperties(Utils.getResultListener(promise));
+    }
+
+    @ReactMethod
     public void addAttributionData(ReadableMap map, String provider) {
         try {
             HashMap<String, Object> attributesHashMap = EntitiesConverter.convertReadableMapToHashMap(map);
