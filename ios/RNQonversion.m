@@ -66,6 +66,12 @@ RCT_EXPORT_METHOD(setCustomProperty:(NSString *)property value:(NSString *)value
     [_qonversionSandwich setCustomProperty:property value:value];
 }
 
+RCT_EXPORT_METHOD(userProperties:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+    [_qonversionSandwich userProperties:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        [self handleResult:result error:error completion:completion rejecter:reject];
+    }];
+}
+
 RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data provider:(NSString *)provider) {
     [_qonversionSandwich attributionWithProviderKey:provider value:data];
 }
