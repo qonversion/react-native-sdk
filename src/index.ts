@@ -19,6 +19,8 @@ export { PromoPurchasesListener } from './dto/PromoPurchasesListener';
 export { ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
 export { default as QonversionError } from './dto/QonversionError';
 export { default as User } from './dto/User';
+export { default as UserProperty } from './dto/UserProperty';
+export { default as UserProperties } from './dto/UserProperties';
 export { default as SkuDetails } from './dto/storeProducts/SkuDetails';
 export { default as SKProduct } from './dto/storeProducts/SKProduct';
 export { default as SKSubscriptionPeriod } from './dto/storeProducts/SKSubscriptionPeriod';
