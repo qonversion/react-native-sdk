@@ -176,7 +176,7 @@ interface QonversionApi {
   attribution(data: Object, provider: AttributionProvider): void;
 
   /**
-   * Sets Qonversion reserved user property, like email or one-signal id
+   * Sets Qonversion reserved user properties, like email or user id
    *
    * User properties are attributes you can set on a user level.
    * You can send user properties to third party platforms as well as use them in Qonversion for customer segmentation
