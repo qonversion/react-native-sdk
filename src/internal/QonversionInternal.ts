@@ -1,5 +1,5 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {UserProperty, ProrationMode, AttributionProvider} from "../dto/enums";
+import {AttributionProvider, ProrationMode, UserPropertyKey} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Mapper from "./Mapper";
 import Offerings from "../dto/Offerings";
@@ -12,6 +12,7 @@ import User from '../dto/User';
 import QonversionApi from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
 import RemoteConfig from "../dto/RemoteConfig";
+import UserProperties from '../dto/UserProperties';
 
 const {RNQonversion} = NativeModules;
 
@@ -162,7 +163,7 @@ export default class QonversionInternal implements QonversionApi {
     const mappedEligibility: Map<
       string,
       IntroEligibility
-      > = Mapper.convertEligibility(eligibilityInfo);
+    > = Mapper.convertEligibility(eligibilityInfo);
 
     return mappedEligibility;
   }
@@ -172,7 +173,7 @@ export default class QonversionInternal implements QonversionApi {
     const mappedPermissions: Map<
       string,
       Entitlement
-      > = Mapper.convertEntitlements(entitlements);
+    > = Mapper.convertEntitlements(entitlements);
 
     return mappedPermissions;
   }
@@ -215,12 +216,25 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.addAttributionData(data, provider);
   }
 
-  setProperty(property: UserProperty, value: string) {
+  setUserProperty(property: UserPropertyKey, value: string) {
+    if (property === UserPropertyKey.CUSTOM) {
+      console.warn("Can not set user property with the key `UserPropertyKey.CUSTOM`. " +
+        "To set custom user property, use the `setCustomUserProperty` method.");
+      return;
+    }
+
     RNQonversion.setDefinedProperty(property, value);
   }
 
-  setUserProperty(property: string, value: string) {
+  setCustomUserProperty(property: string, value: string) {
     RNQonversion.setCustomProperty(property, value);
+  }
+
+  async userProperties(): Promise<UserProperties> {
+    const properties = await RNQonversion.userProperties();
+    const mappedUserProperties: UserProperties = Mapper.convertUserProperties(properties);
+
+    return mappedUserProperties;
   }
 
   collectAdvertisingId() {
