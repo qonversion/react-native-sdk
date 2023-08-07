@@ -30,7 +30,7 @@ target 'example' do
     inherit! :complete
     # Pods for testing
   end
-  
+
   pod 'RCT-Folly', :podspec => '../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec', :modular_headers => false
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 

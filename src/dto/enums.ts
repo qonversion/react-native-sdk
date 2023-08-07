@@ -59,7 +59,7 @@ export enum EntitlementSource {
   MANUAL = "Manual",
 }
 
-export enum UserProperty {
+export enum UserPropertyKey {
   EMAIL = "Email",
   NAME = "Name",
   KOCHAVA_DEVICE_ID = "KochavaDeviceId",
@@ -70,6 +70,7 @@ export enum UserProperty {
   FIREBASE_APP_INSTANCE_ID = "FirebaseAppInstanceId",
   APP_SET_ID = "AppSetId", // Android only
   ADVERTISING_ID = "AdvertisingId", // iOS only
+  CUSTOM = "Custom",
 }
 
 export enum AttributionProvider {

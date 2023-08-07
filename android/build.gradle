@@ -65,8 +65,7 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation "io.qonversion.sandwich:sandwich:2.0.2"
-
+    implementation "io.qonversion.sandwich:sandwich:3.0.0"
 }
 
 afterEvaluate { project ->
