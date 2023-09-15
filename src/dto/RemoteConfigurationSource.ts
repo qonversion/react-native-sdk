@@ -1,4 +1,3 @@
-import ExperimentGroup from "./ExperimentGroup";
 import {RemoteConfigurationAssignmentType, RemoteConfigurationSourceType} from "./enums";
 
 
