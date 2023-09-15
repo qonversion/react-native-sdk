@@ -567,9 +567,9 @@ class Mapper {
     const sourceType = this.convertRemoteConfigurationSourceType (remoteConfig.source.type);
     const assignmentType = this.convertRemoteConfigurationAssignmentType (remoteConfig.source.assignmentType);
 
-    let source = new RemoteConfigurationSource (remoteConfig.source.id, remoteConfig.source.name, sourceType, assignmentType)
+    const source = new RemoteConfigurationSource(remoteConfig.source.id, remoteConfig.source.name, sourceType, assignmentType)
 
-    return new RemoteConfig (remoteConfig.payload, experiment, source);
+    return new RemoteConfig(remoteConfig.payload, experiment, source);
   }
 
   static convertRemoteConfigurationSourceType(type: String): RemoteConfigurationSourceType {
