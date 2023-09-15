@@ -561,7 +561,7 @@ class Mapper {
     if (remoteConfig.experiment) {
       const groupType = this.convertGroupType(remoteConfig.experiment.group.type);
       const group = new ExperimentGroup(remoteConfig.experiment.group.id, remoteConfig.experiment.group.name, groupType);
-      experiment = new Experiment (remoteConfig.experiment.id, remoteConfig.experiment.name, group);
+      experiment = new Experiment(remoteConfig.experiment.id, remoteConfig.experiment.name, group);
     }
     
     const sourceType = this.convertRemoteConfigurationSourceType (remoteConfig.source.type);
