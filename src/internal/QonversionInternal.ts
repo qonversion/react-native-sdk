@@ -16,7 +16,7 @@ import UserProperties from '../dto/UserProperties';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "6.0.2";
+const sdkVersion = "6.1.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
