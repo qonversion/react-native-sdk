@@ -138,7 +138,7 @@ RCT_EXPORT_METHOD(detachUserFromExperiment:(NSString *)experimentId completion:(
     }];
 }
 
-RCT_EXPORT_METHOD(attachUserToRemoteConfiguration:(NSString *)remoteConfigurationId groupId:(NSString *)groupId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(attachUserToRemoteConfiguration:(NSString *)remoteConfigurationId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich attachUserToRemoteConfigurationWith:remoteConfigurationId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];
     }];
