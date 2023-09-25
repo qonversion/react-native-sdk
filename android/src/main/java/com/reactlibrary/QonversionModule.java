@@ -216,6 +216,16 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         qonversionSandwich.detachUserFromExperiment(experimentId, Utils.getResultListener(promise));
     }
 
+    @ReactMethod
+    public void attachUserToRemoteConfiguration(final String remoteConfigurationId, final Promise promise) {
+        qonversionSandwich.attachUserToRemoteConfiguration(remoteConfigurationId, Utils.getResultListener(promise));
+    }
+
+    @ReactMethod
+    public void detachUserFromRemoteConfiguration(final String remoteConfigurationId, final Promise promise) {
+        qonversionSandwich.detachUserFromRemoteConfiguration(remoteConfigurationId, Utils.getResultListener(promise));
+    }
+
     @Override
     public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);

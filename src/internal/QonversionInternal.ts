@@ -16,7 +16,7 @@ import UserProperties from '../dto/UserProperties';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "6.1.0";
+const sdkVersion = "6.2.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -295,6 +295,16 @@ export default class QonversionInternal implements QonversionApi {
 
   async detachUserFromExperiment(experimentId: string): Promise<void> {
     await RNQonversion.detachUserFromExperiment(experimentId);
+    return;
+  }
+
+  async attachUserToRemoteConfiguration(remoteConfigurationId: string): Promise<void> {
+    await RNQonversion.attachUserToRemoteConfiguration(remoteConfigurationId);
+    return;
+  }
+
+  async detachUserFromRemoteConfiguration(remoteConfigurationId: string): Promise<void> {
+    await RNQonversion.detachUserFromRemoteConfiguration(remoteConfigurationId);
     return;
   }
 }
