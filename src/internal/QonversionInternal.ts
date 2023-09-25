@@ -297,4 +297,14 @@ export default class QonversionInternal implements QonversionApi {
     await RNQonversion.detachUserFromExperiment(experimentId);
     return;
   }
+
+  async attachUserToRemoteConfiguration(remoteConfigurationId: string): Promise<void> {
+    await RNQonversion.attachUserToRemoteConfiguration(remoteConfigurationId);
+    return;
+  }
+
+  async detachUserFromRemoteConfiguration(remoteConfigurationId: string): Promise<void> {
+    await RNQonversion.detachUserFromRemoteConfiguration(remoteConfigurationId);
+    return;
+  }
 }
