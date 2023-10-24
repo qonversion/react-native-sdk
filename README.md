@@ -125,7 +125,7 @@ Contributions are what make the open source community such an amazing place to l
 
 ## Have a question?
 
-Contact us via [issues on GitHub](https://github.com/qonversion/qonversion-ios-sdk/issues) or [ask a question](https://documentation.qonversion.io/discuss-new) on the site.
+Contact us via [issues on GitHub](https://github.com/qonversion/react-native-sdk/issues) or [ask a question](https://documentation.qonversion.io/discuss-new) on the site.
 
 ## License
 
