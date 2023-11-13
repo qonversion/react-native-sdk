@@ -25,6 +25,29 @@ export const ProductDuration = {
   5: "LIFETIME",
 } as const;
 
+export enum ProductPeriodUnit {
+  DAY = "Day",
+  WEEK = "Week",
+  MONTH = "Month",
+  YEAR = "Year",
+  UNKNOWN = "Unknown"
+}
+
+export enum PricingPhaseRecurrenceMode {
+  INFINITE_RECURRING = "InfiniteRecurring",
+  FINITE_RECURRING = "FiniteRecurring",
+  NON_RECURRING = "NonRecurring",
+  UNKNOWN = "Unknown"
+}
+
+export enum PricingPhaseType {
+  REGULAR = "Regular",
+  FREE_TRIAL = "FreeTrial",
+  SINGLE_PAYMENT = "SinglePayment",
+  DISCOUNTED_RECURRING_PAYMENT = "DiscountedRecurringPayment",
+  UNKNOWN = "Unknown"
+}
+
 export type ProductDurations = typeof ProductDuration[keyof typeof ProductDuration];
 
 export const TrialDuration = {

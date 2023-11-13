@@ -1,6 +1,7 @@
 import { ProductDurations, ProductTypes, TrialDurations } from "./enums";
 import SKProduct from "./storeProducts/SKProduct";
 import SkuDetails from "./storeProducts/SkuDetails";
+import ProductStoreDetails from "./ProductStoreDetails";
 
 class Product {
   qonversionID: string;
@@ -8,6 +9,7 @@ class Product {
   type: ProductTypes;
   duration: ProductDurations;
   skuDetails: SkuDetails | null;
+  productDetails: ProductStoreDetails | null;
   skProduct: SKProduct | null;
   prettyPrice?: string;
   trialDuration?: TrialDurations;
@@ -24,6 +26,7 @@ class Product {
     type: ProductTypes,
     duration: ProductDurations,
     skuDetails: SkuDetails | null,
+    productDetails: ProductStoreDetails | null,
     skProduct: SKProduct | null,
     prettyPrice: string | undefined,
     trialDuration: TrialDurations | undefined,
@@ -39,6 +42,7 @@ class Product {
     this.type = type;
     this.duration = duration;
     this.skuDetails = skuDetails;
+    this.productDetails = productDetails;
     this.skProduct = skProduct;
     this.prettyPrice = prettyPrice;
     this.trialDuration = trialDuration;
