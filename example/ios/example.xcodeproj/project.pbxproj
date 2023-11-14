@@ -299,7 +299,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = MTVL2X9L7N;
+						DevelopmentTeam = 5ZBNSPDUJ2;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -720,7 +720,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = example/example.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = MTVL2X9L7N;
+				DEVELOPMENT_TEAM = 5ZBNSPDUJ2;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -736,7 +736,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.qonversion.sample;
+				PRODUCT_BUNDLE_IDENTIFIER = io.qonversion.sample;
 				PRODUCT_NAME = "RN Qonversion";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -753,7 +753,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = example/example.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = MTVL2X9L7N;
+				DEVELOPMENT_TEAM = 5ZBNSPDUJ2;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
@@ -764,7 +764,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.qonversion.sample;
+				PRODUCT_BUNDLE_IDENTIFIER = io.qonversion.sample;
 				PRODUCT_NAME = "RN Qonversion";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
