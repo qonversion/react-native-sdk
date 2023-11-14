@@ -289,7 +289,7 @@ PODS:
   - React-jsinspector (0.70.5)
   - React-logger (0.70.5):
     - glog
-  - react-native-qonversion (6.1.0):
+  - react-native-qonversion (6.2.0):
     - QonversionSandwich (= 3.2.0)
     - React
   - React-perflogger (0.70.5)
@@ -550,7 +550,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 31564fa6912459921568e8b0e49024285a4d584b
   React-jsinspector: badd81696361249893a80477983e697aab3c1a34
   React-logger: fdda34dd285bdb0232e059b19d9606fa0ec3bb9c
-  react-native-qonversion: 354f01c4eb53b94be79ebedb34a8a83788543a8c
+  react-native-qonversion: e5acd36fe8b8a657d3cfcbb4018cabea8d9e0eb7
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931
   React-RCTActionSheet: 05452c3b281edb27850253db13ecd4c5a65bc247
   React-RCTAnimation: 578eebac706428e68466118e84aeacf3a282b4da

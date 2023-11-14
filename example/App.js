@@ -9,14 +9,6 @@
 
 import React, {Component} from 'react';
 import {Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert} from 'react-native';
-import Qonversion, {
-  Product,
-  QonversionConfigBuilder,
-  LaunchMode,
-  Environment,
-  Entitlement,
-  EntitlementsCacheLifetime,
-} from 'react-native-qonversion';
 import NotificationsManager from './notificationsManager';
 
 NotificationsManager.init();
@@ -25,16 +17,6 @@ type StateType = {
   inAppButtonTitle: string;
   subscriptionButtonTitle: string;
   loading: boolean;
-  checkEntitlementsHidden: boolean;
-};
-
-const prettyDuration = {
-  'WEEKLY': 'weekly',
-  'MONTHLY': 'monthly',
-  '3_MONTHS': '3 months',
-  '6_MONTHS': '6 months',
-  'ANNUAL': 'annual',
-  'LIFETIME': 'lifetime',
 };
 
 export class QonversionSample extends React.PureComponent<{}, StateType> {
@@ -45,76 +27,10 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
       inAppButtonTitle: 'Loading...',
       subscriptionButtonTitle: 'Loading...',
       loading: true,
-      checkEntitlementsHidden: true,
     };
 
     // eslint-disable-next-line consistent-this
     const outerClassRef = this; // necessary for anonymous classes to access this.
-    const config = new QonversionConfigBuilder(
-      'PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2',
-      LaunchMode.SUBSCRIPTION_MANAGEMENT
-    )
-      .setEnvironment(Environment.SANDBOX)
-      .setEntitlementsCacheLifetime(EntitlementsCacheLifetime.MONTH)
-      .setEntitlementsUpdateListener({
-        onEntitlementsUpdated(entitlements) {
-          console.log('Entitlements updated!', entitlements);
-          outerClassRef.handleEntitlements(entitlements);
-        },
-      })
-      .build();
-    Qonversion.initialize(config);
-    Qonversion.getSharedInstance().setPromoPurchasesDelegate({
-      onPromoPurchaseReceived: async (productId, promoPurchaseExecutor) => {
-        try {
-          const entitlements = await promoPurchaseExecutor(productId);
-          console.log('Promo purchase completed. Entitlements: ', entitlements);
-          outerClassRef.handleEntitlements(entitlements);
-        } catch (e) {
-          console.log('Promo purchase failed.');
-        }
-      },
-    });
-    Qonversion.getSharedInstance().checkEntitlements().then(entitlements => {
-      this.handleEntitlements(entitlements);
-    });
-  }
-
-  handleEntitlements(entitlements) {
-    let checkActiveEntitlementsButtonHidden = this.state.checkEntitlementsHidden;
-    if (entitlements.size > 0) {
-      const entitlementsValues = Array.from(entitlements.values());
-      checkActiveEntitlementsButtonHidden = !entitlementsValues.some(item => item.isActive === true);
-    }
-    Qonversion.getSharedInstance().products().then(products => {
-      let inAppTitle = this.state.inAppButtonTitle;
-      let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
-
-      const inApp: Product = products.get('in_app');
-      if (inApp) {
-        inAppTitle = 'Buy for ' + inApp.prettyPrice;
-        const entitlement = entitlements.get('Test Entitlement');
-        if (entitlement) {
-          inAppTitle = entitlement.isActive ? 'Purchased' : inAppTitle;
-        }
-      }
-
-      const main: Product = products.get('main');
-      if (main) {
-        subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + prettyDuration[main.duration];
-        const entitlement = entitlements.get('plus');
-        if (entitlement) {
-          subscriptionButtonTitle = entitlement.isActive ? 'Purchased' : subscriptionButtonTitle;
-        }
-      }
-
-      this.setState({
-        loading: false,
-        inAppButtonTitle: inAppTitle,
-        subscriptionButtonTitle: subscriptionButtonTitle,
-        checkEntitlementsHidden: checkActiveEntitlementsButtonHidden,
-      });
-    });
   }
 
   render() {
@@ -146,22 +62,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             style={styles.subscriptionButton}
             onPress={() => {
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase('main').then(() => {
-                this.setState({loading: false, subscriptionButtonTitle: 'Purchased'});
-              }).catch(error => {
-                this.setState({loading: false});
-
-                if (!error.userCanceled) {
-                  Alert.alert(
-                    'Error',
-                    error.message,
-                    [
-                      {text: 'OK'},
-                    ],
-                    {cancelable: true}
-                  );
-                }
-              });
+              // purchase subscription here
             }}
           >
             <Text style={styles.buttonTitle}>{this.state.subscriptionButtonTitle}</Text>
@@ -170,22 +71,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             style={styles.inAppButton}
             onPress={() => {
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase('in_app').then(() => {
-                this.setState({loading: false, inAppButtonTitle: 'Purchased'});
-              }).catch(error => {
-                this.setState({loading: false});
-
-                if (!error.userCanceled) {
-                  Alert.alert(
-                    'Error',
-                    error.message,
-                    [
-                      {text: 'OK'},
-                    ],
-                    {cancelable: true}
-                  );
-                }
-              });
+              // purchase consumable/nonconsumable in-app here
             }}
           >
             <Text style={styles.inAppButtonTitle}>{this.state.inAppButtonTitle}</Text>
@@ -194,72 +80,11 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             style={styles.additionalButton}
             onPress={() => {
               this.setState({loading: true});
-              Qonversion.getSharedInstance().restore().then(entitlements => {
-                this.setState({loading: false});
-
-                let checkActiveEntitlementsButtonHidden = this.state.checkEntitlementsHidden;
-                let inAppTitle = this.state.inAppButtonTitle;
-                let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
-                if (entitlements.size > 0) {
-                  const entitlementsValues = Array.from(entitlements.values());
-                  checkActiveEntitlementsButtonHidden = entitlementsValues.some(item => item.isActive === true);
-
-                  const standartEntitlement = entitlements.get('Test Entitlement');
-                  if (standartEntitlement && standartEntitlement.isActive) {
-                    inAppTitle = 'Restored';
-                  }
-
-                  const plusEntitlement = entitlements.get('plus');
-                  if (plusEntitlement && plusEntitlement.isActive) {
-                    subscriptionButtonTitle = 'Restored';
-                  }
-                } else {
-                  Alert.alert(
-                    'Error',
-                    'No purchases to restore',
-                    [
-                      {text: 'OK'},
-                    ],
-                    {cancelable: true}
-                  );
-                }
-
-                this.setState({
-                  loading: false,
-                  checkEntitlementsButtonHidden: checkActiveEntitlementsButtonHidden,
-                  inAppButtonTitle: inAppTitle,
-                  subscriptionButtonTitle: subscriptionButtonTitle,
-                });
-              });
+              // hanle restore here
             }}
           >
             <Text style={styles.additionalButtonsText}>Restore purchases</Text>
           </TouchableOpacity>
-          {!this.state.checkEntitlementsHidden && <TouchableOpacity
-            style={styles.additionalButton}
-            onPress={() => {
-              Qonversion.getSharedInstance().checkEntitlements().then(entitlements => {
-                let message = '';
-                const entitlementsValues = Array.from(entitlements.values());
-                entitlementsValues.map((entitlement: Entitlement) => {
-                  if (entitlement.isActive) {
-                    message = message + 'entitlementID: ' + entitlement.id + '\n' + 'productID: ' + entitlement.productId + '\n' + 'renewState: ' + entitlement.renewState + '\n\n';
-                  }
-                });
-                Alert.alert(
-                  'Active entitlements',
-                  message,
-                  [
-                    {text: 'OK'},
-                  ],
-                  {cancelable: true}
-                );
-              });
-            }}
-          >
-            <Text style={styles.additionalButtonsText}>Check active entitlements</Text>
-          </TouchableOpacity>
-          }
         </View>
       </View>
     );

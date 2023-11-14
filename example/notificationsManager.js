@@ -1,6 +1,5 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
-import {Automations} from 'react-native-qonversion';
 import {Platform} from 'react-native';
 
 const NotificationsManager = {
@@ -8,7 +7,6 @@ const NotificationsManager = {
     PushNotification.configure({
       onRegister: function (token) {
         console.log('Device token:', token);
-        Automations.getSharedInstance().setNotificationsToken(token.token);
       },
 
       onNotification: async function (notification) {
@@ -21,17 +19,7 @@ const NotificationsManager = {
           } else if (Platform.OS === 'android') {
             notificationData = JSON.parse(notification.data.notificationData);
           }
-          const isQonversionNotification =
-            await Automations.getSharedInstance().handleNotification(
-              notificationData,
-            );
-          console.log(
-            'Is notification handled by Qonversion: ',
-            isQonversionNotification,
-          );
-          if (!isQonversionNotification) {
-            // handle push notification yourself
-          }
+          // handle push notification
         }
 
         notification.finish(PushNotificationIOS.FetchResult.NoData);
