@@ -9,9 +9,6 @@
 
 import React, {Component} from 'react';
 import {Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert} from 'react-native';
-import NotificationsManager from './notificationsManager';
-
-NotificationsManager.init();
 
 type StateType = {
   inAppButtonTitle: string;
