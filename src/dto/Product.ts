@@ -2,10 +2,10 @@ import {ProductType, PurchaseUpdatePolicy} from "./enums";
 import SKProduct from "./storeProducts/SKProduct";
 import SkuDetails from "./storeProducts/SkuDetails";
 import ProductStoreDetails from "./storeProducts/ProductStoreDetails";
-import SubscriptionPeriod from './storeProducts/SubscriptionPeriod';
 import ProductOfferDetails from './storeProducts/ProductOfferDetails';
 import PurchaseModel from './PurchaseModel';
 import PurchaseUpdateModel from './PurchaseUpdateModel';
+import SubscriptionPeriod from './SubscriptionPeriod';
 
 class Product {
   qonversionID: string;

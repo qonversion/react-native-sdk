@@ -1,4 +1,4 @@
-import SubscriptionPeriod from "./SubscriptionPeriod";
+import SubscriptionPeriod from "../SubscriptionPeriod";
 import ProductPrice from "./ProductPrice";
 import {PricingPhaseRecurrenceMode, PricingPhaseType} from "../enums";
 

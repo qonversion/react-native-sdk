@@ -32,6 +32,7 @@ import User from '../dto/User';
 import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
 import Experiment from "../dto/Experiment";
 import ExperimentGroup from "../dto/ExperimentGroup";
+import SubscriptionPeriod from "../dto/SubscriptionPeriod";
 import RemoteConfig from "../dto/RemoteConfig";
 import UserProperties from '../dto/UserProperties';
 import UserProperty from '../dto/UserProperty';
@@ -41,7 +42,6 @@ import ProductOfferDetails from "../dto/storeProducts/ProductOfferDetails";
 import ProductInAppDetails from "../dto/storeProducts/ProductInAppDetails";
 import ProductPrice from "../dto/storeProducts/ProductPrice";
 import ProductPricingPhase from "../dto/storeProducts/ProductPricingPhase";
-import SubscriptionPeriod from "../dto/storeProducts/SubscriptionPeriod";
 
 type QProduct = {
   id: string;
