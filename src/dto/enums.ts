@@ -1,70 +1,85 @@
 export enum LaunchMode {
   ANALYTICS = 'Analytics',
-  SUBSCRIPTION_MANAGEMENT = 'SubscriptionManagement'
+  SUBSCRIPTION_MANAGEMENT = 'SubscriptionManagement',
 }
 
 export enum Environment {
   SANDBOX = "Sandbox",
-  PRODUCTION = "Production"
+  PRODUCTION = "Production",
 }
 
-export const ProductType = {
-  "0": "TRIAL",
-  "1": "DIRECT_SUBSCRIPTION",
-  "2": "ONE_TIME",
-} as const;
+export enum ProductType {
+  TRIAL = "Trial",
+  INTRO = "Intro",
+  SUBSCRIPTION = "Subscription",
+  IN_APP = "InApp",
+  UNKNOWN = "Unknown",
+}
 
-export type ProductTypes = typeof ProductType[keyof typeof ProductType];
-
-export const ProductDuration = {
-  0: "WEEKLY",
-  1: "MONTHLY",
-  2: "3_MONTHS",
-  3: "6_MONTHS",
-  4: "ANNUAL",
-  5: "LIFETIME",
-} as const;
-
-export enum ProductPeriodUnit {
+export enum SubscriptionPeriodUnit {
   DAY = "Day",
   WEEK = "Week",
   MONTH = "Month",
   YEAR = "Year",
-  UNKNOWN = "Unknown"
+  UNKNOWN = "Unknown",
 }
 
+/**
+ * Recurrence mode of the pricing phase.
+ */
 export enum PricingPhaseRecurrenceMode {
+  /**
+   * The billing plan payment recurs for infinite billing periods unless cancelled.
+   */
   INFINITE_RECURRING = "InfiniteRecurring",
+
+  /**
+   * The billing plan payment recurs for a fixed number of billing period
+   * set in [billingCycleCount].
+   */
   FINITE_RECURRING = "FiniteRecurring",
+
+  /**
+   * The billing plan payment is a one time charge that does not repeat.
+   */
   NON_RECURRING = "NonRecurring",
-  UNKNOWN = "Unknown"
+
+  /**
+   * Unknown recurrence mode.
+   */
+  UNKNOWN = "Unknown",
 }
 
+
+/**
+ * Type of the pricing phase.
+ */
 export enum PricingPhaseType {
+  /**
+   * Regular subscription without any discounts like trial or intro offers.
+   */
   REGULAR = "Regular",
+
+  /**
+   * A free phase.
+   */
   FREE_TRIAL = "FreeTrial",
+
+  /**
+   * A phase with a discounted payment for a single period.
+   */
   SINGLE_PAYMENT = "SinglePayment",
+
+  /**
+   * A phase with a discounted payment for several periods, described in [billingCycleCount].
+   */
   DISCOUNTED_RECURRING_PAYMENT = "DiscountedRecurringPayment",
-  UNKNOWN = "Unknown"
+
+  /**
+   * Unknown pricing phase type
+   */
+  UNKNOWN = "Unknown",
 }
-
-export type ProductDurations = typeof ProductDuration[keyof typeof ProductDuration];
-
-export const TrialDuration = {
-  "-1": "NOT_AVAILABLE",
-  "0": "UNKNOWN",
-  "1": "THREE_DAYS",
-  "2": "WEEK",
-  "3": "TWO_WEEKS",
-  "4": "MONTH",
-  "5": "TWO_MONTHS",
-  "6": "THREE_MONTHS",
-  "7": "SIX_MONTHS",
-  "8": "YEAR",
-  "9": "OTHER",
-} as const;
-
-export type TrialDurations = typeof TrialDuration[keyof typeof TrialDuration];
 
 export enum EntitlementRenewState {
   NON_RENEWABLE = 'non_renewable',
@@ -120,7 +135,7 @@ export enum EntitlementsCacheLifetime {
   THREE_MONTHS = "ThreeMonths",
   SIX_MONTHS = "SixMonths",
   YEAR = "Year",
-  UNLIMITED = "Unlimited"
+  UNLIMITED = "Unlimited",
 }
 
 export const SKPeriodUnit = {
@@ -228,5 +243,5 @@ export enum ScreenPresentationStyle {
    * Android only - screen will appear/disappear without any animation.
    * For iOS consider providing the {@link ScreenPresentationConfig.animated} flag.
    */
-  NO_ANIMATION = 'NoAnimation'
+  NO_ANIMATION = 'NoAnimation',
 }

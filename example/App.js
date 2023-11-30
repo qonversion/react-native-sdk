@@ -28,15 +28,6 @@ type StateType = {
   checkEntitlementsHidden: boolean;
 };
 
-const prettyDuration = {
-  'WEEKLY': 'weekly',
-  'MONTHLY': 'monthly',
-  '3_MONTHS': '3 months',
-  '6_MONTHS': '6 months',
-  'ANNUAL': 'annual',
-  'LIFETIME': 'lifetime',
-};
-
 export class QonversionSample extends React.PureComponent<{}, StateType> {
   constructor(props) {
     super(props);
@@ -99,9 +90,9 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         }
       }
 
-      const main: Product = products.get('main');
+      const main: Product = products.get('weekly');
       if (main) {
-        subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + prettyDuration[main.duration];
+        subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + main.subscriptionPeriod.unitCount + ' ' + main.subscriptionPeriod.unit;
         const entitlement = entitlements.get('plus');
         if (entitlement) {
           subscriptionButtonTitle = entitlement.isActive ? 'Purchased' : subscriptionButtonTitle;

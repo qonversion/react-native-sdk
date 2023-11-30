@@ -1,23 +1,46 @@
+/**
+ * Information about Google product's price.
+ */
 class ProductPrice {
-    currencySymbol: string | null;
-    formattedPrice: string;
-    isFree: boolean;
-    priceAmountMicros: number;
-    priceCurrencyCode: string;
+  /**
+   * Total amount of money in micro-units,
+   * where 1,000,000 micro-units equal one unit of the currency.
+   */
+  priceAmountMicros: number;
 
-    constructor(
-        formattedPrice: string,
-        isFree: boolean,
-        priceAmountMicros: number,
-        priceCurrencyCode: string,
-        currencySymbol: string | null = null
-    ) {
-        this.formattedPrice = formattedPrice;
-        this.isFree = isFree;
-        this.priceAmountMicros = priceAmountMicros;
-        this.priceCurrencyCode = priceCurrencyCode;
-        this.currencySymbol = currencySymbol;
-    }
+  /**
+   * ISO 4217 currency code for price.
+   */
+  priceCurrencyCode: string;
+
+  /**
+   * Formatted price for the payment, including its currency sign.
+   */
+  formattedPrice: string;
+
+  /**
+   * True, if the price is zero. False otherwise.
+   */
+  isFree: boolean;
+
+  /**
+   * Price currency symbol. Null if failed to parse.
+   */
+  currencySymbol: string | null;
+
+  constructor(
+    priceAmountMicros: number,
+    priceCurrencyCode: string,
+    formattedPrice: string,
+    isFree: boolean,
+    currencySymbol: string | null = null
+  ) {
+    this.priceAmountMicros = priceAmountMicros;
+    this.priceCurrencyCode = priceCurrencyCode;
+    this.formattedPrice = formattedPrice;
+    this.isFree = isFree;
+    this.currencySymbol = currencySymbol;
+  }
 }
 
 export default ProductPrice;

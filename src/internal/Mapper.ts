@@ -5,19 +5,15 @@ import {
   ExperimentGroupType,
   IntroEligibilityStatus,
   OfferingTag,
-  PricingPhaseRecurrenceMode, PricingPhaseType,
-  ProductDuration,
-  ProductDurations,
-  ProductPeriodUnit,
+  PricingPhaseRecurrenceMode,
+  PricingPhaseType,
+  SubscriptionPeriodUnit,
   ProductType,
-  ProductTypes,
   RemoteConfigurationAssignmentType,
   RemoteConfigurationSourceType,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
-  TrialDuration,
-  TrialDurations,
   UserPropertyKey,
 } from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
@@ -45,76 +41,81 @@ import ProductOfferDetails from "../dto/ProductOfferDetails";
 import ProductInAppDetails from "../dto/ProductInAppDetails";
 import ProductPrice from "../dto/ProductPrice";
 import ProductPricingPhase from "../dto/ProductPricingPhase";
-import ProductPeriod from "../dto/ProductPeriod";
+import SubscriptionPeriod from "../dto/SubscriptionPeriod";
 
 type QProduct = {
   id: string;
   storeId: string;
-  type: keyof typeof ProductType;
-  duration: keyof typeof ProductDuration;
+  basePlanId?: string | null;
+  type: string;
+  subscriptionPeriod?: QSubscriptionPeriod | null;
+  trialPeriod?: QSubscriptionPeriod | null;
   skuDetails?: QSkuDetails | null; // android
-  productDetails?: QProductStoreDetails // android
+  storeDetails?: QProductStoreDetails // android
   skProduct?: QSKProduct | null // iOS
-  prettyPrice?: string;
-  trialDuration: keyof typeof TrialDuration | null;
-  offeringId: string | null;
+  prettyPrice?: string | null;
+  offeringId?: string | null;
 };
 
 type QProductStoreDetails = {
-  basePlanId: string | null,
-  defaultOfferDetails: QProductOfferDetails | null,
-  description: string,
-  hasIntroOffer: boolean,
-  hasTrialOffer: boolean,
-  hasTrialOrIntroOffer: boolean,
-  inAppOfferDetails: QProductInAppDetails | null,
-  name: string,
+  basePlanId?: string | null,
   productId: string,
-  productType: keyof typeof ProductType,
-  subscriptionOfferDetails: QProductOfferDetails[] | null,
+  name: string,
   title: string
+  description: string,
+  subscriptionOfferDetails?: QProductOfferDetails[] | null,
+  defaultSubscriptionOfferDetails?: QProductOfferDetails | null,
+  basePlanSubscriptionOfferDetails?: QProductOfferDetails | null,
+  inAppOfferDetails?: QProductInAppDetails | null,
+  hasTrialOffer: boolean,
+  hasIntroOffer: boolean,
+  hasTrialOrIntroOffer: boolean,
+  productType: string,
+  isInApp: boolean,
+  isSubscription: boolean,
 }
 
-type QProductPeriod = {
-  count: number,
+type QSubscriptionPeriod = {
+  unitCount: number,
+  unit: string,
   iso: string,
-  unit: string
 }
 
 type QProductPricingPhase = {
-  billingCycleCount: number,
-  billingPeriod: QProductPeriod,
-  isBasePlan: boolean,
-  isIntro: boolean,
-  isTrial: boolean,
   price: QProductPrice,
+  billingPeriod: QSubscriptionPeriod,
+  billingCycleCount: number,
   recurrenceMode: string,
   type: string
+  isTrial: boolean,
+  isIntro: boolean,
+  isBasePlan: boolean,
 }
 
 type QProductOfferDetails = {
   basePlanId: string,
-  hasIntro: boolean,
-  hasTrial: boolean,
-  hasTrialOrIntro: boolean,
-  introPhase: QProductPricingPhase | null,
-  pricingPhases: QProductPricingPhase[],
-  offerId: string | null,
+  offerId?: string | null,
   offerToken: string,
   tags: string[],
-  trialPhase: QProductPricingPhase | null
+  pricingPhases: QProductPricingPhase[],
+  basePlan?: QProductPricingPhase | null,
+  trialPhase?: QProductPricingPhase | null,
+  introPhase: QProductPricingPhase | null,
+  hasTrial: boolean,
+  hasIntro: boolean,
+  hasTrialOrIntro: boolean,
 }
 
 type QProductPrice = {
-  currencySymbol: string,
+  priceAmountMicros: number,
+  priceCurrencyCode: string,
   formattedPrice: string,
   isFree: boolean,
-  priceAmountMicros: number,
-  priceCurrencyCode: string
+  currencySymbol: string,
 }
 
 type QProductInAppDetails = {
-  price: QProductPrice
+  price: QProductPrice,
 }
 
 type QSkuDetails = {
@@ -140,7 +141,7 @@ type QSkuDetails = {
 };
 
 type QSKProduct = {
-  subscriptionPeriod: null | QSubscriptionPeriod;
+  subscriptionPeriod: null | QSKSubscriptionPeriod;
   introductoryPrice: QProductDiscount | null;
   discounts: Array<QProductDiscount> | null;
   localizedDescription: string | undefined;
@@ -156,13 +157,13 @@ type QSKProduct = {
   isFamilyShareable: boolean | undefined;
 };
 
-type QSubscriptionPeriod = {
+type QSKSubscriptionPeriod = {
   numberOfUnits: number;
   unit: keyof typeof SKPeriodUnit;
 };
 
 type QProductDiscount = {
-  subscriptionPeriod: null | QSubscriptionPeriod;
+  subscriptionPeriod: null | QSKSubscriptionPeriod;
   price: string;
   numberOfPeriods: number;
   paymentMode: keyof typeof SKProductDiscountPaymentMode;
@@ -242,7 +243,7 @@ type QUserProperties = {
   properties: QUserProperty[];
 };
 
-const skuDetailsPriceRatio = 1000000;
+const priceMicrosRatio = 1000000;
 
 class Mapper {
   static convertEntitlements(
@@ -358,14 +359,14 @@ class Mapper {
   }
 
   static convertProduct(product: QProduct): Product {
-    const productType: ProductTypes = ProductType[product.type];
-    const productDuration: ProductDurations = ProductDuration[product.duration];
-    const trialDuration: TrialDurations | undefined = product.trialDuration == null ? undefined : TrialDuration[product.trialDuration];
-    const offeringId: string | null = product.offeringId;
+    const productType = Mapper.convertProductType(product.type);
+    const subscriptionPeriod: SubscriptionPeriod | null = Mapper.convertSubscriptionPeriod(product.subscriptionPeriod);
+    const trialPeriod: SubscriptionPeriod | null = Mapper.convertSubscriptionPeriod(product.trialPeriod);
+    const offeringId: string | null = product.offeringId ?? null;
 
     let skProduct: SKProduct | null = null;
     let skuDetails: SkuDetails | null = null;
-    let productDetails: ProductStoreDetails | null = null;
+    let storeDetails: ProductStoreDetails | null = null;
     let price: number | undefined;
     let currencyCode: string | undefined;
     let storeTitle: string | undefined;
@@ -383,39 +384,52 @@ class Mapper {
         prettyIntroductoryPrice = skProduct.productDiscount.currencySymbol + skProduct.productDiscount.price;
       }
     } else {
+      let priceMicros = null
       if (!!product.skuDetails) {
-        skuDetails = Mapper.convertSkuDetails (product.skuDetails as QSkuDetails);
-        price = skuDetails.priceAmountMicros / skuDetailsPriceRatio;
-        currencyCode = skuDetails.priceCurrencyCode;
+        skuDetails = Mapper.convertSkuDetails(product.skuDetails as QSkuDetails);
         storeTitle = skuDetails.title;
         storeDescription = skuDetails.description;
 
+        priceMicros = skuDetails.priceAmountMicros;
+        currencyCode = skuDetails.priceCurrencyCode;
         if (skuDetails.introductoryPrice.length > 0) {
           prettyIntroductoryPrice = skuDetails.introductoryPrice;
         }
       }
 
-      if (!!product.productDetails) {
-        productDetails = Mapper.convertProductStoreDetails(product.productDetails);
+      if (!!product.storeDetails) {
+        storeDetails = Mapper.convertProductStoreDetails(product.storeDetails);
+        storeTitle = storeDetails.title;
+        storeDescription = storeDetails.description;
+
+        const defaultOffer = storeDetails.defaultSubscriptionOfferDetails;
+        if (defaultOffer) {
+          priceMicros = defaultOffer?.basePlan?.price?.priceAmountMicros;
+          currencyCode = defaultOffer?.basePlan?.price?.priceCurrencyCode;
+          prettyIntroductoryPrice = defaultOffer?.introPhase?.price?.formattedPrice;
+        }
       }
+
+      price = priceMicros ? priceMicros / priceMicrosRatio : undefined;
     }
 
     const mappedProduct = new Product(
       product.id,
       product.storeId,
-      productType,
-      productDuration,
+      product.basePlanId ?? null,
       skuDetails,
-      productDetails,
+      storeDetails,
       skProduct,
-      product.prettyPrice,
-      trialDuration,
+      offeringId,
+      subscriptionPeriod,
+      trialPeriod,
+      productType,
+      product.prettyPrice ?? null,
       price,
       currencyCode,
       storeTitle,
       storeDescription,
       prettyIntroductoryPrice,
-      offeringId
     );
 
     return mappedProduct;
@@ -486,115 +500,138 @@ class Mapper {
     );
   }
 
-  static convertProductPeriod(productPeriod: QProductPeriod): ProductPeriod {
-    let unit: ProductPeriodUnit = ProductPeriodUnit.UNKNOWN;
-    switch (productPeriod.unit) {
-      case ProductPeriodUnit.DAY:
-        unit = ProductPeriodUnit.DAY;
+  static convertProductType(productType: string): ProductType {
+    let type = ProductType.UNKNOWN
+    switch (productType) {
+      case ProductType.TRIAL:
+        type = ProductType.TRIAL;
         break;
-      case ProductPeriodUnit.WEEK:
-        unit = ProductPeriodUnit.WEEK;
+      case ProductType.SUBSCRIPTION:
+        type = ProductType.SUBSCRIPTION;
         break;
-      case ProductPeriodUnit.MONTH:
-        unit = ProductPeriodUnit.MONTH;
-        break;
-      case ProductPeriodUnit.YEAR:
-        unit = ProductPeriodUnit.YEAR;
+      case ProductType.IN_APP:
+        type = ProductType.IN_APP;
         break;
     }
 
-    return new ProductPeriod(
-        productPeriod.count,
-        productPeriod.iso,
-        unit)
+    return type;
   }
 
-  static convertProductPricingPhase(pricingPhase: QProductPricingPhase): ProductPricingPhase {
-    let price: ProductPrice = this.convertProductPrice(pricingPhase.price);
-    let billingPeriod = this.convertProductPeriod(pricingPhase.billingPeriod);
-    let recurrenceMode: PricingPhaseRecurrenceMode = PricingPhaseRecurrenceMode.UNKNOWN;
-    switch (pricingPhase.recurrenceMode) {
-      case PricingPhaseRecurrenceMode.INFINITE_RECURRING:
-        recurrenceMode = PricingPhaseRecurrenceMode.INFINITE_RECURRING;
+  static convertSubscriptionPeriod(productPeriod: QSubscriptionPeriod | null | undefined): SubscriptionPeriod | null {
+    if (!productPeriod) {
+      return null;
+    }
+
+    const unit = Mapper.convertSubscriptionPeriodUnit(productPeriod.unit);
+
+    return new SubscriptionPeriod(
+      productPeriod.unitCount,
+      unit,
+      productPeriod.iso,
+    )
+  }
+
+  static convertSubscriptionPeriodUnit(unit: string): SubscriptionPeriodUnit {
+    let result: SubscriptionPeriodUnit = SubscriptionPeriodUnit.UNKNOWN;
+    switch (unit) {
+      case SubscriptionPeriodUnit.DAY:
+        result = SubscriptionPeriodUnit.DAY;
         break;
-      case PricingPhaseRecurrenceMode.FINITE_RECURRING:
-        recurrenceMode = PricingPhaseRecurrenceMode.FINITE_RECURRING;
+      case SubscriptionPeriodUnit.WEEK:
+        result = SubscriptionPeriodUnit.WEEK;
         break;
-      case PricingPhaseRecurrenceMode.NON_RECURRING:
-        recurrenceMode = PricingPhaseRecurrenceMode.NON_RECURRING;
+      case SubscriptionPeriodUnit.MONTH:
+        result = SubscriptionPeriodUnit.MONTH;
+        break;
+      case SubscriptionPeriodUnit.YEAR:
+        result = SubscriptionPeriodUnit.YEAR;
         break;
     }
 
-    let type: PricingPhaseType = PricingPhaseType.UNKNOWN
-    switch (pricingPhase.type) {
-      case PricingPhaseType.REGULAR:
-        type = PricingPhaseType.REGULAR;
-        break;
-      case PricingPhaseType.FREE_TRIAL:
-        type = PricingPhaseType.FREE_TRIAL;
-        break;
-      case PricingPhaseType.SINGLE_PAYMENT:
-        type = PricingPhaseType.SINGLE_PAYMENT;
-        break;
-      case PricingPhaseType.DISCOUNTED_RECURRING_PAYMENT:
-        type = PricingPhaseType.DISCOUNTED_RECURRING_PAYMENT;
-        break;
+    return result;
+  }
 
+  static convertProductPricingPhase(pricingPhase: QProductPricingPhase | null | undefined): ProductPricingPhase | null {
+    if (!pricingPhase) {
+      return null;
     }
+
+    const price: ProductPrice = Mapper.convertProductPrice(pricingPhase.price);
+    const billingPeriod = Mapper.convertSubscriptionPeriod(pricingPhase.billingPeriod)!!;
+    const recurrenceMode = Mapper.convertPrisingPhaseRecurrenceMode(pricingPhase.recurrenceMode);
+    const type = Mapper.convertPrisingPhaseType(pricingPhase.type);
 
     return new ProductPricingPhase(
-        pricingPhase.billingCycleCount,
-        billingPeriod,
-        pricingPhase.isBasePlan,
-        pricingPhase.isIntro,
-        pricingPhase.isTrial,
-        price,
-        recurrenceMode,
-        type);
-  }
-
-  static convertProductPricingPhases(pricingPhaces: QProductPricingPhase[]): ProductPricingPhase[] {
-    return pricingPhaces.map((pricingPhace) => {
-      return this.convertProductPricingPhase(pricingPhace);
-    });
-  }
-
-  static convertProductOfferDetail(defaultOfferDetail: QProductOfferDetails): ProductOfferDetails {
-    let introPhase: ProductPricingPhase | null = null;
-    if (defaultOfferDetail.introPhase != null) {
-      introPhase = this.convertProductPricingPhase(
-          defaultOfferDetail.introPhase
-      );
-    }
-
-    let pricingPhases: ProductPricingPhase[] = this.convertProductPricingPhases(
-        defaultOfferDetail.pricingPhases
+      price,
+      billingPeriod,
+      pricingPhase.billingCycleCount,
+      recurrenceMode,
+      type,
+      pricingPhase.isTrial,
+      pricingPhase.isIntro,
+      pricingPhase.isBasePlan,
     );
+  }
 
-    let trialPhase: ProductPricingPhase | null = null;
-    if (defaultOfferDetail.trialPhase != null) {
-      trialPhase = this.convertProductPricingPhase(
-          defaultOfferDetail.trialPhase
-      );
+  static convertPrisingPhaseRecurrenceMode(recurrenceMode: string): PricingPhaseRecurrenceMode {
+    let mode: PricingPhaseRecurrenceMode = PricingPhaseRecurrenceMode.UNKNOWN;
+    switch (recurrenceMode) {
+      case PricingPhaseRecurrenceMode.INFINITE_RECURRING:
+        mode = PricingPhaseRecurrenceMode.INFINITE_RECURRING;
+        break;
+      case PricingPhaseRecurrenceMode.FINITE_RECURRING:
+        mode = PricingPhaseRecurrenceMode.FINITE_RECURRING;
+        break;
+      case PricingPhaseRecurrenceMode.NON_RECURRING:
+        mode = PricingPhaseRecurrenceMode.NON_RECURRING;
+        break;
     }
+
+    return mode;
+  }
+
+  static convertPrisingPhaseType(type: string): PricingPhaseType {
+    let result: PricingPhaseType = PricingPhaseType.UNKNOWN
+    switch (type) {
+      case PricingPhaseType.REGULAR:
+        result = PricingPhaseType.REGULAR;
+        break;
+      case PricingPhaseType.FREE_TRIAL:
+        result = PricingPhaseType.FREE_TRIAL;
+        break;
+      case PricingPhaseType.SINGLE_PAYMENT:
+        result = PricingPhaseType.SINGLE_PAYMENT;
+        break;
+      case PricingPhaseType.DISCOUNTED_RECURRING_PAYMENT:
+        result = PricingPhaseType.DISCOUNTED_RECURRING_PAYMENT;
+        break;
+    }
+
+    return result;
+  }
+
+  static convertProductOfferDetails(defaultOfferDetail: QProductOfferDetails): ProductOfferDetails {
+    let basePlan = Mapper.convertProductPricingPhase(defaultOfferDetail.basePlan);
+    let trialPhase = Mapper.convertProductPricingPhase(defaultOfferDetail.trialPhase);
+    let introPhase = Mapper.convertProductPricingPhase(defaultOfferDetail.introPhase);
+
+    let pricingPhases = defaultOfferDetail.pricingPhases.map(
+      pricingPhase => Mapper.convertProductPricingPhase(pricingPhase)
+    ).filter(Boolean) as ProductPricingPhase[];
 
     return new ProductOfferDetails(
-        defaultOfferDetail.basePlanId,
-        defaultOfferDetail.hasIntro,
-        defaultOfferDetail.hasTrial,
-        defaultOfferDetail.hasTrialOrIntro,
-        introPhase,
-        pricingPhases,
-        defaultOfferDetail.offerId,
-        defaultOfferDetail.offerToken,
-        defaultOfferDetail.tags,
-        trialPhase);
-  }
-
-  static convertProductOfferDetails(defaultOfferDetails: QProductOfferDetails[]): ProductOfferDetails[] {
-    return defaultOfferDetails.map((defaultOfferDetail) => {
-      return this.convertProductOfferDetail(defaultOfferDetail);
-    });
+      defaultOfferDetail.basePlanId,
+      defaultOfferDetail.offerId ?? null,
+      defaultOfferDetail.offerToken,
+      defaultOfferDetail.tags,
+      pricingPhases,
+      basePlan,
+      introPhase,
+      trialPhase,
+      defaultOfferDetail.hasTrial,
+      defaultOfferDetail.hasIntro,
+      defaultOfferDetail.hasTrialOrIntro,
+    );
   }
 
   static convertInAppOfferDetails(inAppOfferDetails: QProductInAppDetails): ProductInAppDetails {
@@ -605,56 +642,63 @@ class Mapper {
 
   static convertProductPrice(productPrice: QProductPrice): ProductPrice {
     return new ProductPrice(
-        productPrice.formattedPrice,
-        productPrice.isFree,
-        productPrice.priceAmountMicros,
-        productPrice.priceCurrencyCode,
-        productPrice.currencySymbol)
+      productPrice.priceAmountMicros,
+      productPrice.priceCurrencyCode,
+      productPrice.formattedPrice,
+      productPrice.isFree,
+      productPrice.currencySymbol,
+    )
   }
 
   static convertProductStoreDetails(productStoreDetails: QProductStoreDetails): ProductStoreDetails {
-    let defaultOfferDetails: ProductOfferDetails | null = null;
-    if (productStoreDetails.defaultOfferDetails != null) {
-      defaultOfferDetails = this.convertProductOfferDetail(
-          productStoreDetails.defaultOfferDetails
+    let defaultSubscriptionOfferDetails: ProductOfferDetails | null = null;
+    if (productStoreDetails.defaultSubscriptionOfferDetails != null) {
+      defaultSubscriptionOfferDetails = this.convertProductOfferDetails(
+        productStoreDetails.defaultSubscriptionOfferDetails
       );
     }
 
-    const productType: ProductTypes = ProductType[productStoreDetails.productType];
+    let basePlanSubscriptionOfferDetails: ProductOfferDetails | null = null;
+    if (productStoreDetails.basePlanSubscriptionOfferDetails != null) {
+      basePlanSubscriptionOfferDetails = this.convertProductOfferDetails(
+        productStoreDetails.basePlanSubscriptionOfferDetails
+      );
+    }
+
     let inAppOfferDetails: ProductInAppDetails | null = null;
     if (productStoreDetails.inAppOfferDetails != null) {
-      inAppOfferDetails = this.convertInAppOfferDetails(
-          productStoreDetails.inAppOfferDetails
-      );
+      inAppOfferDetails = this.convertInAppOfferDetails(productStoreDetails.inAppOfferDetails);
     }
 
     let subscriptionOfferDetails: ProductOfferDetails[] | null = null;
     if (productStoreDetails.subscriptionOfferDetails != null) {
-      subscriptionOfferDetails = this.convertProductOfferDetails(
-          productStoreDetails.subscriptionOfferDetails
-      );
+      subscriptionOfferDetails = productStoreDetails.subscriptionOfferDetails.map(
+        defaultOfferDetail => this.convertProductOfferDetails(defaultOfferDetail));
     }
 
+    const productType: ProductType = Mapper.convertProductType(productStoreDetails.productType);
+
     return new ProductStoreDetails(
-        productStoreDetails.basePlanId,
-        defaultOfferDetails,
-        productStoreDetails.description,
-        productStoreDetails.hasIntroOffer,
-        productStoreDetails.hasTrialOffer,
-        productStoreDetails.hasTrialOrIntroOffer,
-        inAppOfferDetails,
-        productStoreDetails.name,
-        productStoreDetails.productId,
-        productType,
-        subscriptionOfferDetails,
-        productStoreDetails.title
+      productStoreDetails.basePlanId ?? null,
+      productStoreDetails.productId,
+      productStoreDetails.name,
+      productStoreDetails.title,
+      productStoreDetails.description,
+      subscriptionOfferDetails,
+      defaultSubscriptionOfferDetails,
+      basePlanSubscriptionOfferDetails,
+      inAppOfferDetails,
+      productStoreDetails.hasTrialOffer,
+      productStoreDetails.hasIntroOffer,
+      productStoreDetails.hasTrialOrIntroOffer,
+      productType,
     );
   }
 
   static convertSKProduct(skProduct: QSKProduct): SKProduct {
     let subscriptionPeriod: SKSubscriptionPeriod | undefined;
     if (skProduct.subscriptionPeriod != null) {
-      subscriptionPeriod = this.convertSubscriptionPeriod(
+      subscriptionPeriod = this.convertSKSubscriptionPeriod(
         skProduct.subscriptionPeriod
       );
     }
@@ -687,8 +731,8 @@ class Mapper {
     );
   }
 
-  static convertSubscriptionPeriod(
-    subscriptionPeriod: QSubscriptionPeriod
+  static convertSKSubscriptionPeriod(
+    subscriptionPeriod: QSKSubscriptionPeriod
   ): SKSubscriptionPeriod {
     return new SKSubscriptionPeriod(
       subscriptionPeriod.numberOfUnits,
@@ -699,7 +743,7 @@ class Mapper {
   static convertProductDiscount(discount: QProductDiscount): SKProductDiscount {
     let subscriptionPeriod: SKSubscriptionPeriod | undefined = undefined;
     if (discount.subscriptionPeriod != null) {
-      subscriptionPeriod = this.convertSubscriptionPeriod(
+      subscriptionPeriod = this.convertSKSubscriptionPeriod(
         discount.subscriptionPeriod
       );
     }
@@ -803,8 +847,8 @@ class Mapper {
       experiment = new Experiment(remoteConfig.experiment.id, remoteConfig.experiment.name, group);
     }
 
-    const sourceType = this.convertRemoteConfigurationSourceType (remoteConfig.source.type);
-    const assignmentType = this.convertRemoteConfigurationAssignmentType (remoteConfig.source.assignmentType);
+    const sourceType = this.convertRemoteConfigurationSourceType(remoteConfig.source.type);
+    const assignmentType = this.convertRemoteConfigurationAssignmentType(remoteConfig.source.assignmentType);
 
     const source = new RemoteConfigurationSource(remoteConfig.source.id, remoteConfig.source.name, sourceType, assignmentType)
 
