@@ -1,8 +1,11 @@
-import {ProductType} from "./enums";
+import {ProductType, PurchaseUpdatePolicy} from "./enums";
 import SKProduct from "./storeProducts/SKProduct";
 import SkuDetails from "./storeProducts/SkuDetails";
 import ProductStoreDetails from "./ProductStoreDetails";
 import SubscriptionPeriod from './SubscriptionPeriod';
+import ProductOfferDetails from './ProductOfferDetails';
+import PurchaseModel from './PurchaseModel';
+import PurchaseUpdateModel from './PurchaseUpdateModel';
 
 class Product {
   qonversionID: string;
@@ -104,6 +107,53 @@ class Product {
     this.storeTitle = storeTitle;
     this.storeDescription = storeDescription;
     this.prettyIntroductoryPrice = prettyIntroductoryPrice;
+  }
+
+  /**
+   * Converts this product to purchase model to pass to {@link Qonversion.purchase}.
+   * @param offerId concrete Android offer identifier if necessary.
+   *                If the products' base plan id is specified, but offer id is not provided for
+   *                purchase, then default offer will be used.
+   *                Ignored if base plan id is not specified.
+   *                Ignored for iOS.
+   * To know how we choose the default offer, see {@link ProductStoreDetails.defaultSubscriptionOfferDetails}.
+   * @returns purchase model to pass to the purchase method.
+   */
+  toPurchaseModel(offerId: string | null = null): PurchaseModel {
+    return new PurchaseModel(this.qonversionID, offerId);
+  }
+
+  /**
+   * Converts this product to purchase model to pass to {@link Qonversion.purchase}.
+   * @param offer concrete Android offer which you'd like to purchase.
+   * @return purchase model to pass to the purchase method.
+   */
+  toPurchaseModelWithOffer(offer: ProductOfferDetails): PurchaseModel {
+    const model = this.toPurchaseModel(offer?.offerId);
+    // Remove offer for the case when provided offer details are for bare base plan.
+    if (offer.offerId == null) {
+      model.removeOffer();
+    }
+
+    return model;
+  }
+
+
+  /**
+   * Android only.
+   *
+   * Converts this product to purchase update (upgrade/downgrade) model
+   * to pass to [Qonversion.updatePurchase].
+   * @param oldProductId Qonversion product identifier from which the upgrade/downgrade
+   *                     will be initialized.
+   * @param updatePolicy purchase update policy.
+   * @return purchase model to pass to the update purchase method.
+   */
+  toPurchaseUpdateModel(
+    oldProductId: string,
+    updatePolicy: PurchaseUpdatePolicy | null = null
+  ): PurchaseUpdateModel {
+    return new PurchaseUpdateModel(this.qonversionID, oldProductId, updatePolicy);
   }
 }
 

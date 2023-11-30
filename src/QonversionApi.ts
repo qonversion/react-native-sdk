@@ -1,6 +1,6 @@
 import Entitlement from './dto/Entitlement';
 import Product from './dto/Product';
-import {UserPropertyKey, ProrationMode, AttributionProvider} from './dto/enums';
+import {UserPropertyKey, AttributionProvider} from './dto/enums';
 import Offerings from './dto/Offerings';
 import IntroEligibility from './dto/IntroEligibility';
 import User from './dto/User';
@@ -8,6 +8,8 @@ import {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from './dto/PromoPurchasesListener';
 import RemoteConfig from "./dto/RemoteConfig";
 import UserProperties from './dto/UserProperties';
+import PurchaseModel from './dto/PurchaseModel';
+import PurchaseUpdateModel from './dto/PurchaseUpdateModel';
 
 interface QonversionApi {
 
@@ -25,61 +27,25 @@ interface QonversionApi {
 
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend
-   *
-   * @param productId Qonversion product identifier for purchase
+   * @param purchaseModel necessary information for purchase
    * @returns the promise with the user entitlements including the ones obtained by the purchase
-   */
-  purchase(productId: string): Promise<Map<string, Entitlement>>;
-
-  /**
-   * Make a purchase and validate it through server-to-server using Qonversion's Backend
    *
-   * @param product - Qonversion's {@link Product} object
-   * @returns the promise with the user entitlements including the ones obtained by the purchase
+   * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */
-  purchaseProduct(product: Product): Promise<Map<string, Entitlement>>;
+  purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>>;
 
   /**
    * Android only. Returns `null` if called on iOS.
    *
    * Update (upgrade/downgrade) subscription on Google Play Store and validate it through server-to-server using Qonversion's Backend
    *
-   * @param productId Qonversion product identifier for purchase
-   * @param oldProductId Qonversion product identifier from which the upgrade/downgrade will be initialized
-   * @param prorationMode proration mode
+   * @param purchaseUpdateModel necessary information for purchase update
    * @returns the promise with the user entitlements including updated ones.
    *
-   * @see [Google Play Documentation](https://developer.android.com/google/play/billing/subscriptions#upgrade-downgrade)
-   * for more details.
-   * @see [Proration mode](https://developer.android.com/google/play/billing/subscriptions#proration)
-   * @see [Product Center](https://qonversion.io/docs/product-center)
+   * @see [Update policy](https://developer.android.com/google/play/billing/subscriptions#replacement-modes)
+   * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */
-  updatePurchase(
-    productId: string,
-    oldProductId: string,
-    prorationMode: ProrationMode | undefined
-  ): Promise<Map<string, Entitlement> | null>;
-
-  /**
-   * Android only. Returns `null` if called on iOS.
-   *
-   * Update (upgrade/downgrade) subscription on Google Play Store and validate it through server-to-server using Qonversion's Backend
-   *
-   * @param product Qonversion product for purchase
-   * @param oldProductId Qonversion product identifier from which the upgrade/downgrade will be initialized
-   * @param prorationMode proration mode
-   * @returns the promise with the user entitlements including updated ones
-   *
-   * @see [Google Play Documentation](https://developer.android.com/google/play/billing/subscriptions#upgrade-downgrade)
-   * for more details.
-   * @see [Proration mode](https://developer.android.com/google/play/billing/subscriptions#proration)
-   * @see [Product Center](https://qonversion.io/docs/product-center)
-   */
-  updatePurchaseWithProduct(
-    product: Product,
-    oldProductId: String,
-    prorationMode: ProrationMode | undefined
-  ): Promise<Map<string, Entitlement> | null>;
+  updatePurchase(purchaseUpdateModel: PurchaseUpdateModel): Promise<Map<string, Entitlement> | null>;
 
   /**
    * Returns Qonversion products in association with Apple and Google Play Store Products.

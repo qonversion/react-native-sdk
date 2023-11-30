@@ -15,6 +15,8 @@ export { default as Offering } from './dto/Offering';
 export { default as Offerings } from './dto/Offerings';
 export { default as Entitlement } from './dto/Entitlement';
 export { default as Product } from './dto/Product';
+export { default as PurchaseModel } from './dto/PurchaseModel';
+export { default as PurchaseUpdateModel } from './dto/PurchaseUpdateModel';
 export { PromoPurchasesListener } from './dto/PromoPurchasesListener';
 export { ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
 export { default as QonversionError } from './dto/QonversionError';

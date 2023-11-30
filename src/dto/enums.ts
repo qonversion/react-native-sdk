@@ -119,12 +119,47 @@ export enum AttributionProvider {
   APPLE_AD_SERVICES = "AppleAdServices", // ios only
 }
 
-export enum ProrationMode {
-  UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY = 0,
-  IMMEDIATE_WITH_TIME_PRORATION = 1,
-  IMMEDIATE_AND_CHARGE_PRORATED_PRICE = 2,
-  IMMEDIATE_WITHOUT_PRORATION = 3,
-  DEFERRED = 4,
+/**
+ * A policy used for purchase updates on Android, which describes
+ * how to migrate from purchased plan to a new one.
+ *
+ * Used in {@link PurchaseUpdateModel} class for purchase updates.
+ */
+export enum PurchaseUpdatePolicy {
+  /**
+   * The new plan takes effect immediately, and the user is charged full price of new plan
+   * and is given a full billing cycle of subscription, plus remaining prorated time
+   * from the old plan.
+   */
+  CHARGE_FULL_PRICE = 'ChargeFullPrice',
+
+  /**
+   * The new plan takes effect immediately, and the billing cycle remains the same.
+   */
+  CHARGE_PRORATED_PRICE = 'ChargeProratedPrice',
+
+  /**
+   * The new plan takes effect immediately, and the remaining time will be prorated
+   * and credited to the user.
+   */
+  WITH_TIME_PRORATION = 'WithTimeProration',
+
+  /**
+   * The new purchase takes effect immediately, the new plan will take effect
+   * when the old item expires.
+   */
+  DEFERRED = 'Deferred',
+
+  /**
+   * The new plan takes effect immediately, and the new price will be charged
+   * on next recurrence time.
+   */
+  WITHOUT_PRORATION = 'WithoutProration',
+
+  /**
+   * Unknown police.
+   */
+  UNKNOWN = 'Unknown',
 }
 
 export enum EntitlementsCacheLifetime {

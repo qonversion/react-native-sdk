@@ -16,6 +16,7 @@ import Qonversion, {
   Environment,
   Entitlement,
   EntitlementsCacheLifetime,
+  PurchaseModel,
 } from 'react-native-qonversion';
 import NotificationsManager from './notificationsManager';
 
@@ -27,6 +28,9 @@ type StateType = {
   loading: boolean;
   checkEntitlementsHidden: boolean;
 };
+
+const InAppProductId = 'in_app';
+const SubscriptionProductId = 'annual';
 
 export class QonversionSample extends React.PureComponent<{}, StateType> {
   constructor(props) {
@@ -81,18 +85,25 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
       let inAppTitle = this.state.inAppButtonTitle;
       let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
 
-      const inApp: Product = products.get('in_app');
+      const inApp: Product = products.get(InAppProductId);
       if (inApp) {
         inAppTitle = 'Buy for ' + inApp.prettyPrice;
+
         const entitlement = entitlements.get('Test Entitlement');
         if (entitlement) {
           inAppTitle = entitlement.isActive ? 'Purchased' : inAppTitle;
         }
       }
 
-      const main: Product = products.get('weekly');
-      if (main) {
-        subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + main.subscriptionPeriod.unitCount + ' ' + main.subscriptionPeriod.unit;
+      const subscription: Product = products.get(SubscriptionProductId);
+      if (subscription) {
+        subscriptionButtonTitle = 'Subscribe for '
+          + subscription.prettyPrice
+          + ' / '
+          + subscription.subscriptionPeriod.unitCount
+          + ' '
+          + subscription.subscriptionPeriod.unit;
+
         const entitlement = entitlements.get('plus');
         if (entitlement) {
           subscriptionButtonTitle = entitlement.isActive ? 'Purchased' : subscriptionButtonTitle;
@@ -137,7 +148,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             style={styles.subscriptionButton}
             onPress={() => {
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase('main').then(() => {
+              Qonversion.getSharedInstance().purchase(new PurchaseModel(SubscriptionProductId)).then(() => {
                 this.setState({loading: false, subscriptionButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});
@@ -161,7 +172,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             style={styles.inAppButton}
             onPress={() => {
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase('in_app').then(() => {
+              Qonversion.getSharedInstance().purchase(new PurchaseModel(InAppProductId)).then(() => {
                 this.setState({loading: false, inAppButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});
