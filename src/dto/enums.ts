@@ -35,7 +35,7 @@ export enum PricingPhaseRecurrenceMode {
 
   /**
    * The billing plan payment recurs for a fixed number of billing period
-   * set in [billingCycleCount].
+   * set in {@link ProductPricingPhase.billingCycleCount}.
    */
   FINITE_RECURRING = "FiniteRecurring",
 
@@ -49,7 +49,6 @@ export enum PricingPhaseRecurrenceMode {
    */
   UNKNOWN = "Unknown",
 }
-
 
 /**
  * Type of the pricing phase.
@@ -71,7 +70,7 @@ export enum PricingPhaseType {
   SINGLE_PAYMENT = "SinglePayment",
 
   /**
-   * A phase with a discounted payment for several periods, described in [billingCycleCount].
+   * A phase with a discounted payment for several periods, described in {@link ProductPricingPhase.billingCycleCount}.
    */
   DISCOUNTED_RECURRING_PAYMENT = "DiscountedRecurringPayment",
 
