@@ -9,7 +9,7 @@ import SubscriptionPeriod from './SubscriptionPeriod';
 
 class Product {
   qonversionID: string;
-  storeID: string;
+  storeID: string | null;
 
   /**
    * Identifier of the base plan for Google product.
