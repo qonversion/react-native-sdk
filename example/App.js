@@ -30,7 +30,7 @@ type StateType = {
 };
 
 const InAppProductId = 'in_app';
-const SubscriptionProductId = 'annual';
+const SubscriptionProductId = 'weekly';
 
 export class QonversionSample extends React.PureComponent<{}, StateType> {
   constructor(props) {
