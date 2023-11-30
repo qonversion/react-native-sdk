@@ -1,6 +1,6 @@
 import SubscriptionPeriod from "./SubscriptionPeriod";
 import ProductPrice from "./ProductPrice";
-import {PricingPhaseRecurrenceMode, PricingPhaseType} from "./enums";
+import {PricingPhaseRecurrenceMode, PricingPhaseType} from "../enums";
 
 /**
  * This class represents a pricing phase, describing how a user pays at a point in time.

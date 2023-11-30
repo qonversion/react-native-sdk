@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 class SkuDetails {
   description: string;
   freeTrialPeriod: string;

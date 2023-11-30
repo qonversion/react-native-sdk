@@ -1,4 +1,4 @@
-import {ProductType} from "./enums";
+import {ProductType} from "../enums";
 import ProductOfferDetails from "./ProductOfferDetails";
 import ProductInAppDetails from "./ProductInAppDetails";
 

@@ -1,4 +1,4 @@
-import {SubscriptionPeriodUnit} from "./enums";
+import {SubscriptionPeriodUnit} from "../enums";
 
 /**
  * A class describing a subscription period

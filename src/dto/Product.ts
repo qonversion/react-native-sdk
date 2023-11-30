@@ -1,9 +1,9 @@
 import {ProductType, PurchaseUpdatePolicy} from "./enums";
 import SKProduct from "./storeProducts/SKProduct";
 import SkuDetails from "./storeProducts/SkuDetails";
-import ProductStoreDetails from "./ProductStoreDetails";
-import SubscriptionPeriod from './SubscriptionPeriod';
-import ProductOfferDetails from './ProductOfferDetails';
+import ProductStoreDetails from "./storeProducts/ProductStoreDetails";
+import SubscriptionPeriod from './storeProducts/SubscriptionPeriod';
+import ProductOfferDetails from './storeProducts/ProductOfferDetails';
 import PurchaseModel from './PurchaseModel';
 import PurchaseUpdateModel from './PurchaseUpdateModel';
 
