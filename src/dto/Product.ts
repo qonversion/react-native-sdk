@@ -129,7 +129,7 @@ class Product {
    * @return purchase model to pass to the purchase method.
    */
   toPurchaseModelWithOffer(offer: ProductOfferDetails): PurchaseModel {
-    const model = this.toPurchaseModel(offer?.offerId);
+    const model = this.toPurchaseModel(offer.offerId);
     // Remove offer for the case when provided offer details are for bare base plan.
     if (offer.offerId == null) {
       model.removeOffer();
