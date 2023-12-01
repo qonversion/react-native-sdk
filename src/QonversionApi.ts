@@ -51,8 +51,6 @@ interface QonversionApi {
    * Returns Qonversion products in association with Apple and Google Play Store Products.
    *
    * @returns the promise with Qonversion products
-   *
-   * @see [Product Center](https://qonversion.io/docs/product-center)
    */
   products(): Promise<Map<string, Product>>;
 
@@ -67,7 +65,6 @@ interface QonversionApi {
    * @returns the promise with Qonversion offerings
    *
    * @see [Offerings](https://qonversion.io/docs/offerings) for more details
-   * @see [Product Center](https://qonversion.io/docs/product-center) for more details
    */
   offerings(): Promise<Offerings | null>;
 
