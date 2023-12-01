@@ -143,7 +143,7 @@ class Product {
    * Android only.
    *
    * Converts this product to purchase update (upgrade/downgrade) model
-   * to pass to [Qonversion.updatePurchase].
+   * to pass to {@link Qonversion.updatePurchase}.
    * @param oldProductId Qonversion product identifier from which the upgrade/downgrade
    *                     will be initialized.
    * @param updatePolicy purchase update policy.
