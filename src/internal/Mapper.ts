@@ -404,9 +404,9 @@ class Mapper {
 
         const defaultOffer = storeDetails.defaultSubscriptionOfferDetails;
         if (defaultOffer) {
-          priceMicros = defaultOffer?.basePlan?.price?.priceAmountMicros;
-          currencyCode = defaultOffer?.basePlan?.price?.priceCurrencyCode;
-          prettyIntroductoryPrice = defaultOffer?.introPhase?.price?.formattedPrice;
+          priceMicros = defaultOffer.basePlan?.price?.priceAmountMicros;
+          currencyCode = defaultOffer.basePlan?.price?.priceCurrencyCode;
+          prettyIntroductoryPrice = defaultOffer.introPhase?.price?.formattedPrice;
         }
       }
 
