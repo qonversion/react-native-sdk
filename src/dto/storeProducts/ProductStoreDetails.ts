@@ -87,6 +87,16 @@ class ProductStoreDetails {
    */
   productType: ProductType;
 
+  /**
+   * True if the product type is InApp.
+   */
+  isInApp: boolean;
+
+  /**
+   * True if the product type is Subscription.
+   */
+  isSubscription: boolean;
+
   constructor(
     basePlanId: string | null,
     productId: string,
@@ -101,6 +111,8 @@ class ProductStoreDetails {
     hasIntroOffer: boolean,
     hasTrialOrIntroOffer: boolean,
     productType: ProductType,
+    isInApp: boolean,
+    isSubscription: boolean,
   ) {
     this.basePlanId = basePlanId;
     this.productId = productId;
@@ -115,6 +127,8 @@ class ProductStoreDetails {
     this.hasIntroOffer = hasIntroOffer;
     this.hasTrialOrIntroOffer = hasTrialOrIntroOffer;
     this.productType = productType;
+    this.isInApp = isInApp;
+    this.isSubscription = isSubscription;
   }
 }
 

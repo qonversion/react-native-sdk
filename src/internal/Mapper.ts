@@ -692,6 +692,8 @@ class Mapper {
       productStoreDetails.hasIntroOffer,
       productStoreDetails.hasTrialOrIntroOffer,
       productType,
+      productStoreDetails.isInApp,
+      productStoreDetails.isSubscription,
     );
   }
 
