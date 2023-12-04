@@ -138,7 +138,6 @@ class Product {
     return model;
   }
 
-
   /**
    * Android only.
    *
