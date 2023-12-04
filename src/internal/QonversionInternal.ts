@@ -75,7 +75,7 @@ export default class QonversionInternal implements QonversionApi {
     }
 
     try {
-      let entitlements = await RNQonversion.updatePurchase(
+      const entitlements = await RNQonversion.updatePurchase(
         purchaseUpdateModel.productId,
         purchaseUpdateModel.offerId,
         purchaseUpdateModel.applyOffer,
