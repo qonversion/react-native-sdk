@@ -75,7 +75,7 @@ export enum PricingPhaseType {
   DISCOUNTED_RECURRING_PAYMENT = "DiscountedRecurringPayment",
 
   /**
-   * Unknown pricing phase type
+   * Unknown pricing phase type.
    */
   UNKNOWN = "Unknown",
 }
