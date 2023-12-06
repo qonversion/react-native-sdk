@@ -178,7 +178,7 @@ type QLocale = {
   localeIdentifier: string;
 };
 
-type QEntitlement = {
+export type QEntitlement = {
   id: string;
   productId: string;
   active: boolean;

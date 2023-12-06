@@ -1,7 +1,7 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
 import {AttributionProvider, UserPropertyKey} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
-import Mapper from "./Mapper";
+import Mapper, {QEntitlement} from "./Mapper";
 import Offerings from "../dto/Offerings";
 import Entitlement from "../dto/Entitlement";
 import Product from "../dto/Product";
@@ -53,11 +53,17 @@ export default class QonversionInternal implements QonversionApi {
 
   async purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>> {
     try {
-      const entitlements = await RNQonversion.purchase(
-        purchaseModel.productId,
-        purchaseModel.offerId,
-        purchaseModel.applyOffer,
-      );
+      let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      if (isIos()) {
+        purchasePromise = RNQonversion.purchase(purchaseModel.productId);
+      } else {
+        purchasePromise = RNQonversion.purchase(
+          purchaseModel.productId,
+          purchaseModel.offerId,
+          purchaseModel.applyOffer,
+        );
+      }
+      const entitlements = await purchasePromise;
 
       // noinspection UnnecessaryLocalVariableJS
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
