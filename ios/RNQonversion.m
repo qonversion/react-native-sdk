@@ -52,12 +52,6 @@ RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBl
     }];
 }
 
-RCT_EXPORT_METHOD(purchaseProduct:(NSString *)productId offeringId:(NSString *)offeringId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    [_qonversionSandwich purchaseProduct:productId offeringId:offeringId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-        [self handlePurchaseResult:result error:error completion:completion rejecter:reject];
-    }];
-}
-
 RCT_EXPORT_METHOD(setDefinedProperty:(NSString *)property value:(NSString *)value) {
     [_qonversionSandwich setDefinedProperty:property value:value];
 }
