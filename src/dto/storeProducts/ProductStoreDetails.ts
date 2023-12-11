@@ -14,28 +14,28 @@ class ProductStoreDetails {
   basePlanId: string | null;
 
   /**
-   * Identifier of a subscription or an in-app product.
+   * Identifier of the subscription or the in-app product.
    */
   productId: string;
 
   /**
-   * Name of a subscription or an in-app product.
+   * Name of the subscription or the in-app product.
    */
   name: string;
 
   /**
-   * Title of a subscription or an in-app product.
+   * Title of the subscription or the in-app product.
    * The title includes the name of the app.
    */
   title: string;
 
   /**
-   * Description of a subscription or an in-app product.
+   * Description of the subscription or the in-app product.
    */
   description: string;
 
   /**
-   * Offer details for a subscription.
+   * Offer details for the subscription.
    * Offer details contain all the available variations of purchase offers,
    * including both base plan and eligible base plan + offer combinations
    * from Google Play Console for current {@link basePlanId}.
@@ -56,7 +56,7 @@ class ProductStoreDetails {
   basePlanSubscriptionOfferDetails: ProductOfferDetails | null;
 
   /**
-   * Offer details for an in-app product.
+   * Offer details for the in-app product.
    * Null for subscriptions.
    */
   inAppOfferDetails: ProductInAppDetails | null;

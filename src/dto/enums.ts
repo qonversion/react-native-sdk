@@ -10,7 +10,7 @@ export enum Environment {
 
 export enum ProductType {
   TRIAL = "Trial",
-  INTRO = "Intro",
+  INTRO = "Intro", /** Currently works for Android only. iOS support will be added soon. */
   SUBSCRIPTION = "Subscription",
   IN_APP = "InApp",
   UNKNOWN = "Unknown",

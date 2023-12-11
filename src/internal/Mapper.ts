@@ -403,10 +403,15 @@ class Mapper {
         storeDescription = storeDetails.description;
 
         const defaultOffer = storeDetails.defaultSubscriptionOfferDetails;
+        const inAppOffer = storeDetails.inAppOfferDetails;
         if (defaultOffer) {
           priceMicros = defaultOffer.basePlan?.price?.priceAmountMicros;
           currencyCode = defaultOffer.basePlan?.price?.priceCurrencyCode;
           prettyIntroductoryPrice = defaultOffer.introPhase?.price?.formattedPrice;
+        } else if (inAppOffer) {
+          priceMicros = inAppOffer.price.priceAmountMicros;
+          currencyCode = inAppOffer.price.priceCurrencyCode;
+          prettyIntroductoryPrice = undefined;
         }
       }
 
