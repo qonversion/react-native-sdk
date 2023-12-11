@@ -1,7 +1,7 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {AttributionProvider, ProrationMode, UserPropertyKey} from "../dto/enums";
+import {AttributionProvider, UserPropertyKey} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
-import Mapper from "./Mapper";
+import Mapper, {QEntitlement} from "./Mapper";
 import Offerings from "../dto/Offerings";
 import Entitlement from "../dto/Entitlement";
 import Product from "../dto/Product";
@@ -13,6 +13,8 @@ import QonversionApi from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
 import RemoteConfig from "../dto/RemoteConfig";
 import UserProperties from '../dto/UserProperties';
+import PurchaseModel from '../dto/PurchaseModel';
+import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 
 const {RNQonversion} = NativeModules;
 
@@ -49,21 +51,18 @@ export default class QonversionInternal implements QonversionApi {
     }
   }
 
-  async purchase(productId: string): Promise<Map<string, Entitlement>> {
-    return QonversionInternal.purchaseProxy(productId);
-  }
-
-  async purchaseProduct(product: Product): Promise<Map<string, Entitlement>> {
-    return QonversionInternal.purchaseProxy(product.qonversionID, product.offeringId);
-  }
-
-  private static async purchaseProxy(productId: string, offeringId: string | null = null): Promise<Map<string, Entitlement>> {
+  async purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>> {
     try {
-      const purchasePromise = !!offeringId ?
-          RNQonversion.purchaseProduct(productId, offeringId)
-          :
-          RNQonversion.purchase(productId);
-
+      let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      if (isIos()) {
+        purchasePromise = RNQonversion.purchase(purchaseModel.productId);
+      } else {
+        purchasePromise = RNQonversion.purchase(
+          purchaseModel.productId,
+          purchaseModel.offerId,
+          purchaseModel.applyOffer,
+        );
+      }
       const entitlements = await purchasePromise;
 
       // noinspection UnnecessaryLocalVariableJS
@@ -76,58 +75,19 @@ export default class QonversionInternal implements QonversionApi {
     }
   }
 
-  async updatePurchase(
-    productId: string,
-    oldProductId: string,
-    prorationMode: ProrationMode | undefined
-  ): Promise<Map<string, Entitlement> | null> {
+  async updatePurchase(purchaseUpdateModel: PurchaseUpdateModel): Promise<Map<string, Entitlement> | null> {
     if (!isAndroid()) {
       return null;
     }
 
     try {
-      let entitlements;
-      if (!prorationMode) {
-        entitlements = await RNQonversion.updatePurchase(productId, oldProductId);
-      } else {
-        entitlements = await RNQonversion.updatePurchaseWithProrationMode(
-          productId,
-          oldProductId,
-          prorationMode
-        );
-      }
-
-      // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
-
-      return mappedPermissions;
-    } catch (e) {
-      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
-      throw e;
-    }
-  }
-
-  async updatePurchaseWithProduct(
-    product: Product,
-    oldProductId: String,
-    prorationMode: ProrationMode | undefined
-  ): Promise<Map<string, Entitlement> | null> {
-    if (!isAndroid()) {
-      return null;
-    }
-
-    try {
-      let entitlements;
-      if (!prorationMode) {
-        entitlements = await RNQonversion.updateProductWithId(product.qonversionID, product.offeringId, oldProductId);
-      } else {
-        entitlements = await RNQonversion.updateProductWithIdAndProrationMode(
-          product.qonversionID,
-          product.offeringId,
-          oldProductId,
-          prorationMode
-        );
-      }
+      const entitlements = await RNQonversion.updatePurchase(
+        purchaseUpdateModel.productId,
+        purchaseUpdateModel.offerId,
+        purchaseUpdateModel.applyOffer,
+        purchaseUpdateModel.oldProductId,
+        purchaseUpdateModel.updatePolicy,
+      );
 
       // noinspection UnnecessaryLocalVariableJS
       const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
