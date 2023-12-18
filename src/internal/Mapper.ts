@@ -73,6 +73,7 @@ type QProductStoreDetails = {
   productType: string,
   isInApp: boolean,
   isSubscription: boolean,
+  isPrepaid: boolean,
 }
 
 type QSubscriptionPeriod = {
@@ -699,6 +700,7 @@ class Mapper {
       productType,
       productStoreDetails.isInApp,
       productStoreDetails.isSubscription,
+      productStoreDetails.isPrepaid,
     );
   }
 
