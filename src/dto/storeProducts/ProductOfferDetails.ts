@@ -2,7 +2,7 @@ import ProductPricingPhase from "./ProductPricingPhase";
 
 /**
  * This class contains all the information about the Google subscription offer details.
- * It might be either a plain base plan details or a base plan with a concrete offer details.
+ * It might be either a plain base plan details or a base plan with the concrete offer details.
  */
 class ProductOfferDetails {
   /**
@@ -27,7 +27,7 @@ class ProductOfferDetails {
   tags: string[];
 
   /**
-   * A time ordered list of pricing phases for the current offer.
+   * A time-ordered list of pricing phases for the current offer.
    */
   pricingPhases: ProductPricingPhase[];
 
@@ -43,24 +43,24 @@ class ProductOfferDetails {
 
   /**
    * An intro phase details, if exists.
-   * Intro phase is one of single or recurrent discounted payments.
+   * The intro phase is one of single or recurrent discounted payments.
    */
   trialPhase: ProductPricingPhase | null;
 
   /**
-   * True if there is a trial phase in the current offer. False otherwise.
+   * True, if there is a trial phase in the current offer. False otherwise.
    */
   hasTrial: boolean;
 
   /**
-   * True if there is any intro phase in the current offer. False otherwise.
-   * Intro phase is one of single or recurrent discounted payments.
+   * True, if there is any intro phase in the current offer. False otherwise.
+   * The intro phase is one of single or recurrent discounted payments.
    */
   hasIntro: boolean;
 
   /**
-   * True if there is any trial or intro phase in the current offer. False otherwise.
-   * Intro phase is one of single or recurrent discounted payments.
+   * True, if there is any trial or intro phase in the current offer. False otherwise.
+   * The intro phase is one of single or recurrent discounted payments.
    */
   hasTrialOrIntro: boolean;
 

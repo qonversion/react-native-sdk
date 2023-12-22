@@ -1,5 +1,5 @@
 /**
- * Information about Google product's price.
+ * Information about the Google product's price.
  */
 class ProductPrice {
   /**
