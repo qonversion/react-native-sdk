@@ -12,7 +12,7 @@ class ProductPricingPhase {
   price: ProductPrice;
 
   /**
-   * Billing period for which the given price applies.
+   * The billing period for which the given price applies.
    */
   billingPeriod: SubscriptionPeriod;
 
@@ -32,18 +32,18 @@ class ProductPricingPhase {
   type: PricingPhaseType;
 
   /**
-   * True if the current phase is a trial period. False otherwise.
+   * True, if the current phase is a trial period. False otherwise.
    */
   isTrial: boolean;
 
   /**
-   * True if the current phase is an intro period. False otherwise.
-   * Intro phase is one of single or recurrent discounted payments.
+   * True, if the current phase is an intro period. False otherwise.
+   * The intro phase is one of single or recurrent discounted payments.
    */
   isIntro: boolean;
 
   /**
-   * True if the current phase represents the base plan. False otherwise.
+   * True, if the current phase represents the base plan. False otherwise.
    */
   isBasePlan: boolean;
 

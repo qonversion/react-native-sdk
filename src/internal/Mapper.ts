@@ -512,6 +512,9 @@ class Mapper {
       case ProductType.TRIAL:
         type = ProductType.TRIAL;
         break;
+      case ProductType.INTRO:
+        type = ProductType.INTRO;
+        break;
       case ProductType.SUBSCRIPTION:
         type = ProductType.SUBSCRIPTION;
         break;

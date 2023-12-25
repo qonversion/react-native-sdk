@@ -29,18 +29,18 @@ export enum SubscriptionPeriodUnit {
  */
 export enum PricingPhaseRecurrenceMode {
   /**
-   * The billing plan payment recurs for infinite billing periods unless cancelled.
+   * The billing plan payment recurs for infinite billing periods unless canceled.
    */
   INFINITE_RECURRING = "InfiniteRecurring",
 
   /**
-   * The billing plan payment recurs for a fixed number of billing period
+   * The billing plan payment recurs for a fixed number of billing periods
    * set in {@link ProductPricingPhase.billingCycleCount}.
    */
   FINITE_RECURRING = "FiniteRecurring",
 
   /**
-   * The billing plan payment is a one time charge that does not repeat.
+   * The billing plan payment is a one-time charge that does not repeat.
    */
   NON_RECURRING = "NonRecurring",
 
