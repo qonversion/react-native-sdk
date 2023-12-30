@@ -1,5 +1,5 @@
 import {
-  AutomationsEventType,
+  AutomationsEventType, EntitlementGrantType,
   EntitlementRenewState,
   EntitlementSource,
   ExperimentGroupType,
@@ -13,7 +13,7 @@ import {
   RemoteConfigurationSourceType,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
-  SKProductDiscountType,
+  SKProductDiscountType, TransactionEnvironment, TransactionOwnershipType, TransactionType,
   TrialDuration,
   TrialDurations,
   UserPropertyKey,
@@ -38,6 +38,7 @@ import RemoteConfig from "../dto/RemoteConfig";
 import UserProperties from '../dto/UserProperties';
 import UserProperty from '../dto/UserProperty';
 import RemoteConfigurationSource from "../dto/RemoteConfigurationSource";
+import Transaction from "../dto/Transaction";
 
 type QProduct = {
   id: string;
@@ -119,7 +120,27 @@ type QEntitlement = {
   source: string;
   startedTimestamp: number;
   expirationTimestamp: number;
+  renewsCount: number;
+  trialStartTimestamp: number;
+  firstPurchaseTimestamp: number;
+  lastPurchaseTimestamp: number;
+  lastActivatedOfferCode: string;
+  grantType: string;
+  autoRenewDisableTimestamp: number;
+  transactions: Array<QTransaction>;
 };
+
+type QTransaction = {
+  originalTransactionId: string;
+  transactionId: string;
+  offerCode: string;
+  transactionTimestamp: number;
+  expirationTimestamp: number;
+  transactionRevocationTimestamp: number;
+  environment: string;
+  ownershipType: string;
+  type: string;
+}
 
 type QOfferings = {
   availableOfferings?: Array<QOffering>;
@@ -184,10 +205,12 @@ class Mapper {
   ): Map<string, Entitlement> {
     let mappedPermissions = new Map();
 
+    // console.log('LOOOOOOOG');
+    // console.log(entitlements);
+    // console.log('11111LOOOOOOOG');
     if (!entitlements) {
       return mappedPermissions;
     }
-
     for (const [key, entitlement] of Object.entries(entitlements)) {
       let renewState: EntitlementRenewState;
       switch (entitlement.renewState) {
@@ -209,20 +232,101 @@ class Mapper {
       }
 
       const entitlementSource = this.convertEntitlementSource(entitlement.source);
+      const entitlementGrantType = this.convertEntitlementGrantType(entitlement.grantType);
+      const transactions: Array<Transaction> = [];
+
+      console.log('11111LOOOOOOOG');
+      console.log(entitlement.transactions);
+      console.log('11111LOOOOOOOG');
+      entitlement.transactions.forEach((transaction) => {
+        const mappedTransaction = this.convertTransaction(transaction);
+
+        transactions.push(mappedTransaction);
+      });
 
       const mappedPermission = new Entitlement(
-        entitlement.id,
-        entitlement.productId,
-        entitlement.active,
-        renewState,
-        entitlementSource,
-        entitlement.startedTimestamp,
-        entitlement.expirationTimestamp
+          entitlement.id,
+          entitlement.productId,
+          entitlement.active,
+          renewState,
+          entitlementSource,
+          entitlement.startedTimestamp,
+          entitlement.renewsCount,
+          entitlementGrantType,
+          transactions,
+          entitlement.expirationTimestamp,
+          entitlement.trialStartTimestamp,
+          entitlement.firstPurchaseTimestamp,
+          entitlement.lastPurchaseTimestamp,
+          entitlement.autoRenewDisableTimestamp,
+          entitlement.lastActivatedOfferCode,
       );
       mappedPermissions.set(key, mappedPermission);
     }
 
     return mappedPermissions;
+  }
+
+  static convertTransaction(transaction: QTransaction): Transaction {
+    const environment = this.convertTransactionEnvironment(transaction.environment);
+    const ownershipType = this.convertTransactionOwnershipType(transaction.ownershipType);
+    const type = this.convertTransactionType(transaction.type);
+
+    console.log('TRANSACTION!!!');
+    console.log(transaction);
+
+    return new Transaction(
+        transaction.originalTransactionId,
+        transaction.transactionId,
+        transaction.transactionTimestamp,
+        environment,
+        ownershipType,
+        type,
+        transaction.expirationTimestamp,
+        transaction.transactionRevocationTimestamp,
+        transaction.offerCode,
+    );
+  }
+
+  static convertTransactionType(typeKey: string): TransactionType {
+    switch (typeKey) {
+      case "SubscriptionStarted":
+        return TransactionType.SubscriptionStarted;
+      case "SubscriptionRenewed":
+        return TransactionType.SubscriptionRenewed;
+      case "TrialStarted":
+        return TransactionType.TrialStarted;
+      case "IntroStarted":
+        return TransactionType.IntroStarted;
+      case "IntroRenewed":
+        return TransactionType.IntroRenewed;
+      case "NonConsumablePurchase":
+        return TransactionType.NonConsumablePurchase;
+    }
+
+    return TransactionType.Unknown;
+  }
+
+  static convertTransactionOwnershipType(ownershipTypeKey: string): TransactionOwnershipType {
+    switch (ownershipTypeKey) {
+      case "Owner":
+        return TransactionOwnershipType.OWNER;
+      case "FamilySharing":
+        return TransactionOwnershipType.FAMILY_SHARING;
+    }
+
+    return TransactionOwnershipType.OWNER;
+  }
+
+  static convertTransactionEnvironment(envKey: string): TransactionEnvironment {
+    switch (envKey) {
+      case "Production":
+        return TransactionEnvironment.PRODUCTION;
+      case "Sandbox":
+        return TransactionEnvironment.SANDBOX;
+    }
+
+    return TransactionEnvironment.PRODUCTION;
   }
 
   static convertEntitlementSource(sourceKey: string): EntitlementSource {
@@ -240,6 +344,21 @@ class Mapper {
     }
 
     return EntitlementSource.UNKNOWN;
+  }
+
+  static convertEntitlementGrantType(typeKey: string): EntitlementGrantType {
+    switch (typeKey) {
+      case "Purchase":
+        return EntitlementGrantType.PURCHASE;
+      case "FamilySharing":
+        return EntitlementGrantType.FAMILY_SHARING;
+      case "OfferCode":
+        return EntitlementGrantType.OFFER_CODE;
+      case "Manual":
+        return EntitlementGrantType.MANUAL;
+    }
+
+    return EntitlementGrantType.PURCHASE;
   }
 
   static convertDefinedUserPropertyKey(sourceKey: string): UserPropertyKey {
@@ -563,7 +682,7 @@ class Mapper {
       const group = new ExperimentGroup(remoteConfig.experiment.group.id, remoteConfig.experiment.group.name, groupType);
       experiment = new Experiment(remoteConfig.experiment.id, remoteConfig.experiment.name, group);
     }
-    
+
     const sourceType = this.convertRemoteConfigurationSourceType (remoteConfig.source.type);
     const assignmentType = this.convertRemoteConfigurationAssignmentType (remoteConfig.source.assignmentType);
 

@@ -59,6 +59,33 @@ export enum EntitlementSource {
   MANUAL = "Manual",
 }
 
+export enum TransactionEnvironment {
+  PRODUCTION = "Production",
+  SANDBOX = "Sandbox"
+}
+
+export enum TransactionOwnershipType {
+  OWNER = "Owner",
+  FAMILY_SHARING = "FamilySharing"
+}
+
+export enum EntitlementGrantType {
+  PURCHASE = "Purchase",
+  FAMILY_SHARING = "FamilySharing",
+  OFFER_CODE = "OfferCode",
+  MANUAL = "Manual",
+}
+
+export enum TransactionType {
+  Unknown = "Unknown",
+  SubscriptionStarted = "SubscriptionStarted",
+  SubscriptionRenewed = "SubscriptionRenewed",
+  TrialStarted = "TrialStarted",
+  IntroStarted = "IntroStarted",
+  IntroRenewed = "IntroRenewed",
+  NonConsumablePurchase = "NonConsumablePurchase"
+}
+
 export enum UserPropertyKey {
   EMAIL = "Email",
   NAME = "Name",
