@@ -20,7 +20,7 @@ class Transaction {
         type: TransactionType,
         expirationDate: number | undefined,
         transactionRevocationDate: number | undefined,
-        offerCode?: string,
+        offerCode?: string | undefined,
     ) {
         this.originalTransactionId = originalTransactionId;
         this.transactionId = transactionId;

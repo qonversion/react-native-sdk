@@ -127,7 +127,7 @@ type QEntitlement = {
   lastActivatedOfferCode: string;
   grantType: string;
   autoRenewDisableTimestamp: number;
-  transactions: Array<QTransaction>;
+  transactions?: Array<QTransaction>;
 };
 
 type QTransaction = {
@@ -205,9 +205,6 @@ class Mapper {
   ): Map<string, Entitlement> {
     let mappedPermissions = new Map();
 
-    // console.log('LOOOOOOOG');
-    // console.log(entitlements);
-    // console.log('11111LOOOOOOOG');
     if (!entitlements) {
       return mappedPermissions;
     }
@@ -235,14 +232,13 @@ class Mapper {
       const entitlementGrantType = this.convertEntitlementGrantType(entitlement.grantType);
       const transactions: Array<Transaction> = [];
 
-      console.log('11111LOOOOOOOG');
-      console.log(entitlement.transactions);
-      console.log('11111LOOOOOOOG');
-      entitlement.transactions.forEach((transaction) => {
-        const mappedTransaction = this.convertTransaction(transaction);
+      if (Array.isArray(entitlement.transactions) && entitlement.transactions.length > 0) {
+        entitlement.transactions.forEach((transaction) => {
+          const mappedTransaction = this.convertTransaction(transaction);
 
-        transactions.push(mappedTransaction);
-      });
+          transactions.push(mappedTransaction);
+        });
+      }
 
       const mappedPermission = new Entitlement(
           entitlement.id,
@@ -271,9 +267,6 @@ class Mapper {
     const environment = this.convertTransactionEnvironment(transaction.environment);
     const ownershipType = this.convertTransactionOwnershipType(transaction.ownershipType);
     const type = this.convertTransactionType(transaction.type);
-
-    console.log('TRANSACTION!!!');
-    console.log(transaction);
 
     return new Transaction(
         transaction.originalTransactionId,
