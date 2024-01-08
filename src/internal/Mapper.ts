@@ -608,8 +608,8 @@ class Mapper {
       case PricingPhaseType.FREE_TRIAL:
         result = PricingPhaseType.FREE_TRIAL;
         break;
-      case PricingPhaseType.SINGLE_PAYMENT:
-        result = PricingPhaseType.SINGLE_PAYMENT;
+      case PricingPhaseType.DISCOUNTED_SINGLE_PAYMENT:
+        result = PricingPhaseType.DISCOUNTED_SINGLE_PAYMENT;
         break;
       case PricingPhaseType.DISCOUNTED_RECURRING_PAYMENT:
         result = PricingPhaseType.DISCOUNTED_RECURRING_PAYMENT;
