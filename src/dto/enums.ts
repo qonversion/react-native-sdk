@@ -67,7 +67,7 @@ export enum PricingPhaseType {
   /**
    * A phase with a discounted payment for a single period.
    */
-  SINGLE_PAYMENT = "SinglePayment",
+  DISCOUNTED_SINGLE_PAYMENT = "DiscountedSinglePayment",
 
   /**
    * A phase with a discounted payment for several periods, described in {@link ProductPricingPhase.billingCycleCount}.
