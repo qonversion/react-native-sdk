@@ -24,7 +24,7 @@ class Entitlement {
     isActive: boolean,
     renewState: EntitlementRenewState,
     source: EntitlementSource,
-    startedDate: number,
+    startedTimestamp: number,
     renewsCount: number,
     grantType: EntitlementGrantType,
     transactions: Array<Transaction>,
@@ -40,7 +40,7 @@ class Entitlement {
     this.isActive = isActive;
     this.renewState = renewState;
     this.source = source;
-    this.startedDate = new Date(startedDate);
+    this.startedDate = new Date(startedTimestamp);
     this.expirationDate = expirationTimestamp ? new Date(expirationTimestamp) : undefined;
     this.renewsCount = renewsCount;
     this.grantType = grantType;
