@@ -99,7 +99,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         }
       }
 
-      const main: Product = products.get('main');
+      const main: Product = products.get('weekly');
       if (main) {
         subscriptionButtonTitle = 'Subscribe for ' + main.prettyPrice + ' / ' + prettyDuration[main.duration];
         const entitlement = entitlements.get('plus');
@@ -146,7 +146,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             style={styles.subscriptionButton}
             onPress={() => {
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase('main').then(() => {
+              Qonversion.getSharedInstance().purchase('weekly').then(() => {
                 this.setState({loading: false, subscriptionButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});
