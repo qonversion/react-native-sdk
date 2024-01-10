@@ -1,5 +1,6 @@
 import {
-  AutomationsEventType, EntitlementGrantType,
+  AutomationsEventType,
+  EntitlementGrantType,
   EntitlementRenewState,
   EntitlementSource,
   ExperimentGroupType,
@@ -13,7 +14,10 @@ import {
   RemoteConfigurationSourceType,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
-  SKProductDiscountType, TransactionEnvironment, TransactionOwnershipType, TransactionType,
+  SKProductDiscountType,
+  TransactionEnvironment,
+  TransactionOwnershipType,
+  TransactionType,
   TrialDuration,
   TrialDurations,
   UserPropertyKey,
@@ -232,7 +236,7 @@ class Mapper {
       const entitlementGrantType = this.convertEntitlementGrantType(entitlement.grantType);
       const transactions: Array<Transaction> = [];
 
-      if (Array.isArray(entitlement.transactions) && entitlement.transactions.length > 0) {
+      if (Array.isArray(entitlement.transactions)) {
         entitlement.transactions.forEach((transaction) => {
           const mappedTransaction = this.convertTransaction(transaction);
 
@@ -284,20 +288,20 @@ class Mapper {
   static convertTransactionType(typeKey: string): TransactionType {
     switch (typeKey) {
       case "SubscriptionStarted":
-        return TransactionType.SubscriptionStarted;
+        return TransactionType.SUBSCRIPTION_STARTED;
       case "SubscriptionRenewed":
-        return TransactionType.SubscriptionRenewed;
+        return TransactionType.SUBSCRIPTION_RENEWED;
       case "TrialStarted":
-        return TransactionType.TrialStarted;
+        return TransactionType.TRIAL_STARTED;
       case "IntroStarted":
-        return TransactionType.IntroStarted;
+        return TransactionType.INTRO_STARTED;
       case "IntroRenewed":
-        return TransactionType.IntroRenewed;
+        return TransactionType.INTRO_RENEWED;
       case "NonConsumablePurchase":
-        return TransactionType.NonConsumablePurchase;
+        return TransactionType.NON_CONSUMABLE_PURCHASE;
     }
 
-    return TransactionType.Unknown;
+    return TransactionType.UNKNOWN;
   }
 
   static convertTransactionOwnershipType(ownershipTypeKey: string): TransactionOwnershipType {

@@ -28,11 +28,11 @@ class Entitlement {
     renewsCount: number,
     grantType: EntitlementGrantType,
     transactions: Array<Transaction>,
-    expirationDate: number | undefined,
-    trialStartDate: number | undefined,
-    firstPurchaseDate: number | undefined,
-    lastPurchaseDate: number | undefined,
-    autoRenewDisableDate: number | undefined,
+    expirationTimestamp: number | undefined,
+    trialStartTimestamp: number | undefined,
+    firstPurchaseTimestamp: number | undefined,
+    lastPurchaseTimestamp: number | undefined,
+    autoRenewDisableTimestamp: number | undefined,
     lastActivatedOfferCode: string | undefined,
   ) {
     this.id = id;
@@ -41,15 +41,15 @@ class Entitlement {
     this.renewState = renewState;
     this.source = source;
     this.startedDate = new Date(startedDate);
-    this.expirationDate = expirationDate ? new Date(expirationDate) : undefined;
+    this.expirationDate = expirationTimestamp ? new Date(expirationTimestamp) : undefined;
     this.renewsCount = renewsCount;
     this.grantType = grantType;
     this.transactions = transactions;
-    this.expirationDate = expirationDate ? new Date(expirationDate) : undefined;
-    this.trialStartDate = trialStartDate ? new Date(trialStartDate) : undefined;
-    this.firstPurchaseDate = firstPurchaseDate ? new Date(firstPurchaseDate) : undefined;
-    this.lastPurchaseDate = lastPurchaseDate ? new Date(lastPurchaseDate) : undefined;
-    this.autoRenewDisableDate = autoRenewDisableDate ? new Date(autoRenewDisableDate) : undefined;
+    this.expirationDate = expirationTimestamp ? new Date(expirationTimestamp) : undefined;
+    this.trialStartDate = trialStartTimestamp ? new Date(trialStartTimestamp) : undefined;
+    this.firstPurchaseDate = firstPurchaseTimestamp ? new Date(firstPurchaseTimestamp) : undefined;
+    this.lastPurchaseDate = lastPurchaseTimestamp ? new Date(lastPurchaseTimestamp) : undefined;
+    this.autoRenewDisableDate = autoRenewDisableTimestamp ? new Date(autoRenewDisableTimestamp) : undefined;
     this.lastActivatedOfferCode = lastActivatedOfferCode;
   }
 }

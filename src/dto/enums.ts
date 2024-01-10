@@ -77,13 +77,13 @@ export enum EntitlementGrantType {
 }
 
 export enum TransactionType {
-  Unknown = "Unknown",
-  SubscriptionStarted = "SubscriptionStarted",
-  SubscriptionRenewed = "SubscriptionRenewed",
-  TrialStarted = "TrialStarted",
-  IntroStarted = "IntroStarted",
-  IntroRenewed = "IntroRenewed",
-  NonConsumablePurchase = "NonConsumablePurchase"
+  UNKNOWN = "UNKNOWN",
+  SUBSCRIPTION_STARTED = "SUBSCRIPTION_STARTED",
+  SUBSCRIPTION_RENEWED = "SUBSCRIPTION_RENEWED",
+  TRIAL_STARTED = "TRIAL_STARTED",
+  INTRO_STARTED = "INTRO_STARTED",
+  INTRO_RENEWED = "INTRO_RENEWED",
+  NON_CONSUMABLE_PURCHASE = "NON_CONSUMABLE_PURCHASE"
 }
 
 export enum UserPropertyKey {
