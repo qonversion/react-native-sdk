@@ -84,50 +84,27 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void purchaseProduct(String productId, String offeringId, final Promise promise) {
-        qonversionSandwich.purchaseProduct(productId, offeringId, getPurchaseResultListener(promise));
+    public void purchase(String productId, @Nullable String offerId, @Nullable Boolean applyOffer, final Promise promise) {
+        qonversionSandwich.purchase(productId, offerId, applyOffer, getPurchaseResultListener(promise));
     }
 
     @ReactMethod
-    public void purchase(String productId, final Promise promise) {
-        qonversionSandwich.purchase(productId, getPurchaseResultListener(promise));
-    }
-
-    @ReactMethod
-    public void updateProductWithId(
-            final String productId,
-            @Nullable final String offeringId,
-            final String oldProductId,
+    public void updatePurchase(
+            String productId,
+            @Nullable String offerId,
+            @Nullable Boolean applyOffer,
+            String oldProductId,
+            @Nullable String updatePolicyKey,
             final Promise promise
     ) {
-        updateProductWithIdAndProrationMode(productId, offeringId, oldProductId, null, promise);
-    }
-
-    @ReactMethod
-    public void updateProductWithIdAndProrationMode(
-            final String productId,
-            @Nullable final String offeringId,
-            final String oldProductId,
-            @Nullable final Integer prorationMode,
-            final Promise promise
-    ) {
-        qonversionSandwich.updatePurchaseWithProduct(
+        qonversionSandwich.updatePurchase(
                 productId,
-                offeringId,
+                offerId,
+                applyOffer,
                 oldProductId,
-                prorationMode,
+                updatePolicyKey,
                 getPurchaseResultListener(promise)
         );
-    }
-
-    @ReactMethod
-    public void updatePurchase(String productId, String oldProductId, final Promise promise) {
-        updatePurchaseWithProrationMode(productId, oldProductId, null, promise);
-    }
-
-    @ReactMethod
-    public void updatePurchaseWithProrationMode(String productId, String oldProductId, Integer prorationMode, final Promise promise) {
-        qonversionSandwich.updatePurchase(productId, oldProductId, prorationMode, getPurchaseResultListener(promise));
     }
 
     @ReactMethod
