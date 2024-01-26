@@ -448,6 +448,14 @@ class Mapper {
         return UserPropertyKey.APP_SET_ID;
       case '_q_advertising_id':
         return UserPropertyKey.ADVERTISING_ID;
+      case "_q_appmetrica_device_id":
+        return UserPropertyKey.APP_METRICA_DEVICE_ID;
+      case "_q_appmetrica_user_profile_id":
+        return UserPropertyKey.APP_METRICA_USER_PROFILE_ID;
+      case "_q_pushwoosh_hwid":
+        return UserPropertyKey.PUSH_WOOSH_HW_ID;
+      case "_q_pushwoosh_user_id":
+        return UserPropertyKey.PUSH_WOOSH_USER_ID;
     }
 
     return UserPropertyKey.CUSTOM;
