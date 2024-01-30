@@ -134,6 +134,10 @@ export enum UserPropertyKey {
   FIREBASE_APP_INSTANCE_ID = "FirebaseAppInstanceId",
   APP_SET_ID = "AppSetId", // Android only
   ADVERTISING_ID = "AdvertisingId", // iOS only
+  APP_METRICA_DEVICE_ID = "AppMetricaDeviceId",
+  APP_METRICA_USER_PROFILE_ID = "AppMetricaUserProfileId",
+  PUSH_WOOSH_HW_ID = "PushWooshHwId",
+  PUSH_WOOSH_USER_ID = "PushWooshUserId",
   CUSTOM = "Custom",
 }
 
