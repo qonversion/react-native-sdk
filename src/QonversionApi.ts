@@ -225,11 +225,11 @@ interface QonversionApi {
   presentCodeRedemptionSheet(): void;
 
   /**
-   * Returns Qonversion remote config object
+   * Returns Qonversion remote config object by {@link contextKey} or default one if the key is not specified.
    * Use this function to get the remote config with specific payload and experiment info.
    * @returns the promise with the remote config.
    */
-  remoteConfig(): Promise<RemoteConfig>
+  remoteConfig(contextKey: string | undefined): Promise<RemoteConfig>
 
   /**
    * This function should be used for the test purposes only. Do not forget to delete the usage of this function before the release.

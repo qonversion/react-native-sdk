@@ -246,6 +246,7 @@ type QRemoteConfigurationSource = {
   name: string;
   type: string;
   assignmentType: string;
+  contextKey: string | null;
 };
 
 type QExperiment = {
@@ -986,7 +987,13 @@ class Mapper {
     const sourceType = this.convertRemoteConfigurationSourceType(remoteConfig.source.type);
     const assignmentType = this.convertRemoteConfigurationAssignmentType(remoteConfig.source.assignmentType);
 
-    const source = new RemoteConfigurationSource(remoteConfig.source.id, remoteConfig.source.name, sourceType, assignmentType)
+    const source = new RemoteConfigurationSource(
+      remoteConfig.source.id,
+      remoteConfig.source.name,
+      sourceType,
+      assignmentType,
+      remoteConfig.source.contextKey,
+    )
 
     return new RemoteConfig(remoteConfig.payload, experiment, source);
   }

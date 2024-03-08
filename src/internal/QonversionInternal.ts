@@ -241,8 +241,8 @@ export default class QonversionInternal implements QonversionApi {
     }
   }
 
-  async remoteConfig(): Promise<RemoteConfig> {
-    const remoteConfig = await RNQonversion.remoteConfig();
+  async remoteConfig(contextKey: string | undefined): Promise<RemoteConfig> {
+    const remoteConfig = await RNQonversion.remoteConfig(contextKey);
     const mappedRemoteConfig: RemoteConfig = Mapper.convertRemoteConfig(remoteConfig);
 
     return mappedRemoteConfig;
