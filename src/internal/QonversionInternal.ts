@@ -18,7 +18,7 @@ import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "7.1.0";
+const sdkVersion = "7.2.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
