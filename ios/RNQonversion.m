@@ -115,7 +115,7 @@ RCT_EXPORT_METHOD(userInfo:(RCTResponseSenderBlock)completion rejecter:(RCTPromi
 }
 
 RCT_EXPORT_METHOD(remoteConfig:(NSString *)contextKey completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-  [_qonversionSandwich remoteConfig:contextKey completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+  [_qonversionSandwich remoteConfig:contextKey :^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
     [self handleResult:result error:error completion:completion rejecter:reject];
   }];
 }
