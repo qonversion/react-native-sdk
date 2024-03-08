@@ -246,7 +246,7 @@ type QRemoteConfigurationSource = {
   name: string;
   type: string;
   assignmentType: string;
-  contextKey: string | null;
+  contextKey: string | null | undefined;
 };
 
 type QExperiment = {
@@ -992,7 +992,7 @@ class Mapper {
       remoteConfig.source.name,
       sourceType,
       assignmentType,
-      remoteConfig.source.contextKey,
+      remoteConfig.source.contextKey ?? null,
     )
 
     return new RemoteConfig(remoteConfig.payload, experiment, source);

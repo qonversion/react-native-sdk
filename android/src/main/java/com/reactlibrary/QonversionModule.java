@@ -179,7 +179,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void remoteConfig(final String contextKey, final Promise promise) {
+    public void remoteConfig(@Nullable final String contextKey, final Promise promise) {
         qonversionSandwich.remoteConfig(contextKey, Utils.getResultListener(promise));
     }
 
