@@ -246,7 +246,7 @@ interface QonversionApi {
    * @param includeEmptyContextKey set to true if you want to include remote config with empty context key to the result
    * @returns the promise with the remote config list.
    */
-  remoteConfigListForContextKeys(contextKeys: Array<string>, includeEmptyContextKey: boolean): Promise<RemoteConfigList>
+  remoteConfigListForContextKeys(contextKeys: string[], includeEmptyContextKey: boolean): Promise<RemoteConfigList>
 
   /**
    * This function should be used for the test purposes only. Do not forget to delete the usage of this function before the release.

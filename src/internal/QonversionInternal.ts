@@ -256,7 +256,7 @@ export default class QonversionInternal implements QonversionApi {
     return mappedRemoteConfigList;
   }
 
-  async remoteConfigListForContextKeys(contextKeys: Array<string>, includeEmptyContextKey: boolean): Promise<RemoteConfigList> {
+  async remoteConfigListForContextKeys(contextKeys: string[], includeEmptyContextKey: boolean): Promise<RemoteConfigList> {
     const remoteConfigList = await RNQonversion.remoteConfigListForContextKeys(contextKeys, includeEmptyContextKey);
     const mappedRemoteConfigList: RemoteConfigList = Mapper.convertRemoteConfigList(remoteConfigList);
 
