@@ -18,6 +18,8 @@ export { default as Product } from './dto/Product';
 export { default as PurchaseModel } from './dto/PurchaseModel';
 export { default as PurchaseUpdateModel } from './dto/PurchaseUpdateModel';
 export { PromoPurchasesListener } from './dto/PromoPurchasesListener';
+export { default as RemoteConfig } from './dto/RemoteConfig';
+export { default as RemoteConfigList } from './dto/RemoteConfigList';
 export { ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
 export { default as SubscriptionPeriod } from './dto/SubscriptionPeriod';
 export { default as QonversionError } from './dto/QonversionError';

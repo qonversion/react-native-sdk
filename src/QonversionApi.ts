@@ -7,6 +7,7 @@ import User from './dto/User';
 import {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from './dto/PromoPurchasesListener';
 import RemoteConfig from "./dto/RemoteConfig";
+import RemoteConfigList from "./dto/RemoteConfigList";
 import UserProperties from './dto/UserProperties';
 import PurchaseModel from './dto/PurchaseModel';
 import PurchaseUpdateModel from './dto/PurchaseUpdateModel';
@@ -230,6 +231,22 @@ interface QonversionApi {
    * @returns the promise with the remote config.
    */
   remoteConfig(contextKey: string | undefined): Promise<RemoteConfig>
+
+  /**
+   * Returns Qonversion remote config objects for all existing context key (including empty one).
+   * Use this function to get the remote config with specific payload and experiment info.
+   * @returns the promise with the remote config list.
+   */
+  remoteConfigList(): Promise<RemoteConfigList>
+
+  /**
+   * Returns Qonversion remote config objects by a list of {@link contextKeys}.
+   * Use this function to get the remote config with specific payload and experiment info.
+   * @param contextKeys list of context keys to load remote configs for
+   * @param includeEmptyContextKey set to true if you want to include remote config with empty context key to the result
+   * @returns the promise with the remote config list.
+   */
+  remoteConfigListForContextKeys(contextKeys: string[], includeEmptyContextKey: boolean): Promise<RemoteConfigList>
 
   /**
    * This function should be used for the test purposes only. Do not forget to delete the usage of this function before the release.

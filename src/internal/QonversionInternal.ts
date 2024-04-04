@@ -15,10 +15,11 @@ import RemoteConfig from "../dto/RemoteConfig";
 import UserProperties from '../dto/UserProperties';
 import PurchaseModel from '../dto/PurchaseModel';
 import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
+import {RemoteConfigList} from '../index';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "7.2.0";
+const sdkVersion = "7.3.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -246,6 +247,20 @@ export default class QonversionInternal implements QonversionApi {
     const mappedRemoteConfig: RemoteConfig = Mapper.convertRemoteConfig(remoteConfig);
 
     return mappedRemoteConfig;
+  }
+
+  async remoteConfigList(): Promise<RemoteConfigList> {
+    const remoteConfigList = await RNQonversion.remoteConfigList();
+    const mappedRemoteConfigList: RemoteConfigList = Mapper.convertRemoteConfigList(remoteConfigList);
+
+    return mappedRemoteConfigList;
+  }
+
+  async remoteConfigListForContextKeys(contextKeys: string[], includeEmptyContextKey: boolean): Promise<RemoteConfigList> {
+    const remoteConfigList = await RNQonversion.remoteConfigListForContextKeys(contextKeys, includeEmptyContextKey);
+    const mappedRemoteConfigList: RemoteConfigList = Mapper.convertRemoteConfigList(remoteConfigList);
+
+    return mappedRemoteConfigList;
   }
 
   async attachUserToExperiment(experimentId: string, groupId: string): Promise<void> {
