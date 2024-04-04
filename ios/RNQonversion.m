@@ -120,6 +120,18 @@ RCT_EXPORT_METHOD(remoteConfig:(NSString *)contextKey completion:(RCTResponseSen
   }];
 }
 
+RCT_EXPORT_METHOD(remoteConfigList:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+  [_qonversionSandwich remoteConfigList:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+    [self handleResult:result error:error completion:completion rejecter:reject];
+  }];
+}
+
+RCT_EXPORT_METHOD(remoteConfigListForContextKeys:(NSArray<NSString *> *)contextKeys includeEmptyContextKey:(BOOL)includeEmptyContextKey completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+  [_qonversionSandwich remoteConfigList:contextKeys includeEmptyContextKey:includeEmptyContextKey :^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+    [self handleResult:result error:error completion:completion rejecter:reject];
+  }];
+}
+
 RCT_EXPORT_METHOD(attachUserToExperiment:(NSString *)experimentId groupId:(NSString *)groupId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich attachUserToExperimentWith:experimentId groupId:groupId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];

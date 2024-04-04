@@ -184,6 +184,17 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
+    public void remoteConfigList(final Promise promise) {
+        qonversionSandwich.remoteConfigList(Utils.getResultListener(promise));
+    }
+
+    @ReactMethod
+    public void remoteConfigListForContextKeys(final ReadableArray contextKeys, final boolean includeEmptyContextKey, final Promise promise) {
+        final List<String> keysList = EntitiesConverter.convertArrayToStringList(contextKeys);
+        qonversionSandwich.remoteConfigList(keysList, includeEmptyContextKey, Utils.getResultListener(promise));
+    }
+
+    @ReactMethod
     public void attachUserToExperiment(final String experimentId, final String groupId, final Promise promise) {
         qonversionSandwich.attachUserToExperiment(experimentId, groupId, Utils.getResultListener(promise));
     }
