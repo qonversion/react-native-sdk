@@ -38,6 +38,7 @@ import Experiment from "../dto/Experiment";
 import ExperimentGroup from "../dto/ExperimentGroup";
 import SubscriptionPeriod from "../dto/SubscriptionPeriod";
 import RemoteConfig from "../dto/RemoteConfig";
+import RemoteConfigList from '../dto/RemoteConfigList';
 import UserProperties from '../dto/UserProperties';
 import UserProperty from '../dto/UserProperty';
 import RemoteConfigurationSource from "../dto/RemoteConfigurationSource";
@@ -240,6 +241,10 @@ type QRemoteConfig = {
   experiment?: QExperiment | null;
   source: QRemoteConfigurationSource;
 };
+
+type QRemoteConfigList = {
+  remoteConfigs: Array<QRemoteConfig>;
+}
 
 type QRemoteConfigurationSource = {
   id: string;
@@ -996,6 +1001,11 @@ class Mapper {
     )
 
     return new RemoteConfig(remoteConfig.payload, experiment, source);
+  }
+
+  static convertRemoteConfigList(remoteConfigList: QRemoteConfigList): RemoteConfigList {
+    const remoteConfigs = remoteConfigList.remoteConfigs.map(config => this.convertRemoteConfig(config));
+    return new RemoteConfigList(remoteConfigs);
   }
 
   static convertRemoteConfigurationSourceType(type: String): RemoteConfigurationSourceType {
