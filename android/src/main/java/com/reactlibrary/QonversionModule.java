@@ -164,8 +164,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void identify(String userID) {
-        qonversionSandwich.identify(userID);
+    public void identify(final String userID, final Promise promise) {
+        qonversionSandwich.identify(userID, Utils.getResultListener(promise));
     }
 
     @ReactMethod

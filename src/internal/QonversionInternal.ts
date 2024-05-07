@@ -19,7 +19,7 @@ import {RemoteConfigList} from '../index';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "7.3.1";
+const sdkVersion = "7.4.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -158,8 +158,11 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.syncPurchases();
   }
 
-  identify(userID: string) {
-    RNQonversion.identify(userID);
+  async identify(userID: string): Promise<User> {
+    const userInfo = await RNQonversion.identify(userID);
+    const mappedUserInfo: User = Mapper.convertUserInfo(userInfo);
+
+    return mappedUserInfo;
   }
 
   logout() {
