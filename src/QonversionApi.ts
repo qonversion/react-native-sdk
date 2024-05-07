@@ -117,8 +117,9 @@ interface QonversionApi {
    * Call this function to link a user to his unique ID in your system and share purchase data.
    *
    * @param userID unique user ID in your system
+   * @returns the promise with the information about the identified user.
    */
-  identify(userID: string): void;
+  identify(userID: string): Promise<User>;
 
   /**
    * Call this function to unlink a user from his unique ID in your system and his purchase data.

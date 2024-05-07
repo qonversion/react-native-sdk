@@ -100,8 +100,10 @@ RCT_EXPORT_METHOD(restore:(RCTResponseSenderBlock)completion rejecter:(RCTPromis
     }];
 }
 
-RCT_EXPORT_METHOD(identify:(NSString *)userId) {
-    [_qonversionSandwich identify:userId];
+RCT_EXPORT_METHOD(identify:(NSString *)userId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+    [_qonversionSandwich identify:userId :^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        [self handleResult:result error:error completion:completion rejecter:reject];
+    }];
 }
 
 RCT_EXPORT_METHOD(logout) {
@@ -109,15 +111,15 @@ RCT_EXPORT_METHOD(logout) {
 }
 
 RCT_EXPORT_METHOD(userInfo:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-  [_qonversionSandwich userInfo:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-    [self handleResult:result error:error completion:completion rejecter:reject];
-  }];
+    [_qonversionSandwich userInfo:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        [self handleResult:result error:error completion:completion rejecter:reject];
+    }];
 }
 
 RCT_EXPORT_METHOD(remoteConfig:(NSString *)contextKey completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-  [_qonversionSandwich remoteConfig:contextKey :^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-    [self handleResult:result error:error completion:completion rejecter:reject];
-  }];
+    [_qonversionSandwich remoteConfig:contextKey :^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        [self handleResult:result error:error completion:completion rejecter:reject];
+    }];
 }
 
 RCT_EXPORT_METHOD(remoteConfigList:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {

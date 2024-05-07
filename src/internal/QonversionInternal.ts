@@ -158,8 +158,11 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.syncPurchases();
   }
 
-  identify(userID: string) {
-    RNQonversion.identify(userID);
+  async identify(userID: string): Promise<User> {
+    const userInfo = await RNQonversion.identify(userID);
+    const mappedUserInfo: User = Mapper.convertUserInfo(userInfo);
+
+    return mappedUserInfo;
   }
 
   logout() {
