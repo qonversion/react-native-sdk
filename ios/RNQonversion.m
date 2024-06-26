@@ -48,7 +48,7 @@ RCT_EXPORT_METHOD(syncStoreKit2Purchases) {
 
 RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich purchase:productId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-        [self handlePurchaseResult:result error:error completion:completion rejecter:reject];
+        [self handleResult:result error:error completion:completion rejecter:reject];
     }];
 }
 
@@ -168,7 +168,7 @@ RCT_EXPORT_METHOD(collectAppleSearchAdsAttribution) {
 
 RCT_EXPORT_METHOD(promoPurchase:(NSString *)storeProductId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
     [_qonversionSandwich promoPurchase:storeProductId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
-        [self handlePurchaseResult:result error:error completion:completion rejecter:reject];
+        [self handleResult:result error:error completion:completion rejecter:reject];
     }];
 }
 
@@ -187,27 +187,6 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
     if (error) {
         reject(error.code, error.details, nil);
 
-        return;
-    }
-
-    if (result) {
-        completion(@[result]);
-    } else {
-        completion(@[]);
-    }
-}
-
-- (void)handlePurchaseResult:(NSDictionary *)result
-                       error:(SandwichError *)error
-                  completion:(RCTResponseSenderBlock)completion
-                    rejecter:(RCTPromiseRejectBlock)reject {
-    if (error) {
-        NSNumber *isCancelled = error.additionalInfo[@"isCancelled"];
-        if (isCancelled.boolValue == true) {
-          reject(errorCodePurchaseCancelledByUser, error.details, nil);
-        } else {
-          reject(error.code, error.details, nil);
-        }
         return;
     }
 

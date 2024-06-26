@@ -1,11 +1,13 @@
+import {QonversionErrorCode} from './enums';
+
 class QonversionError {
-  code: string;
+  code: QonversionErrorCode;
   domain?: string;
   description: string;
   additionalMessage: string;
 
   constructor(
-    code: string,
+    code: QonversionErrorCode,
     description: string,
     additionalMessage: string,
     domain?: string,
