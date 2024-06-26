@@ -103,6 +103,12 @@ class ProductStoreDetails {
    */
   isPrepaid: boolean;
 
+  /**
+   * True, if the subscription product is installment, which means that users commit
+   * to pay for a specified amount of periods every month.
+   */
+  isInstallment: boolean;
+
   constructor(
     basePlanId: string | null,
     productId: string,
@@ -120,6 +126,7 @@ class ProductStoreDetails {
     isInApp: boolean,
     isSubscription: boolean,
     isPrepaid: boolean,
+    isInstallment: boolean,
   ) {
     this.basePlanId = basePlanId;
     this.productId = productId;
@@ -137,6 +144,7 @@ class ProductStoreDetails {
     this.isInApp = isInApp;
     this.isSubscription = isSubscription;
     this.isPrepaid = isPrepaid;
+    this.isInstallment = isInstallment;
   }
 }
 

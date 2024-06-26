@@ -27,6 +27,7 @@ export { default as User } from './dto/User';
 export { default as UserProperty } from './dto/UserProperty';
 export { default as UserProperties } from './dto/UserProperties';
 export { default as ProductInAppDetails } from './dto/storeProducts/ProductInAppDetails';
+export { default as ProductInstallmentPlanDetails } from './dto/storeProducts/ProductInstallmentPlanDetails';
 export { default as ProductOfferDetails } from './dto/storeProducts/ProductOfferDetails';
 export { default as ProductPrice } from './dto/storeProducts/ProductPrice';
 export { default as ProductPricingPhase } from './dto/storeProducts/ProductPricingPhase';
