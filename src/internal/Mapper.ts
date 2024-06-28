@@ -49,6 +49,7 @@ import ProductOfferDetails from "../dto/storeProducts/ProductOfferDetails";
 import ProductInAppDetails from "../dto/storeProducts/ProductInAppDetails";
 import ProductPrice from "../dto/storeProducts/ProductPrice";
 import ProductPricingPhase from "../dto/storeProducts/ProductPricingPhase";
+import ProductInstallmentPlanDetails from '../dto/storeProducts/ProductInstallmentPlanDetails';
 
 type QProduct = {
   id: string;
@@ -81,6 +82,7 @@ type QProductStoreDetails = {
   isInApp: boolean,
   isSubscription: boolean,
   isPrepaid: boolean,
+  isInstallment: boolean,
 }
 
 type QSubscriptionPeriod = {
@@ -100,6 +102,11 @@ type QProductPricingPhase = {
   isBasePlan: boolean,
 }
 
+type QProductInstallmentPlanDetails = {
+  commitmentPaymentsCount: number;
+  subsequentCommitmentPaymentsCount: number;
+}
+
 type QProductOfferDetails = {
   basePlanId: string,
   offerId?: string | null,
@@ -107,6 +114,7 @@ type QProductOfferDetails = {
   tags: string[],
   pricingPhases: QProductPricingPhase[],
   basePlan?: QProductPricingPhase | null,
+  installmentPlanDetails?: QProductInstallmentPlanDetails | null,
   trialPhase?: QProductPricingPhase | null,
   introPhase: QProductPricingPhase | null,
   hasTrial: boolean,
@@ -750,27 +758,41 @@ class Mapper {
     return result;
   }
 
-  static convertProductOfferDetails(defaultOfferDetail: QProductOfferDetails): ProductOfferDetails {
-    let basePlan = Mapper.convertProductPricingPhase(defaultOfferDetail.basePlan);
-    let trialPhase = Mapper.convertProductPricingPhase(defaultOfferDetail.trialPhase);
-    let introPhase = Mapper.convertProductPricingPhase(defaultOfferDetail.introPhase);
+  static convertProductInstallmentPlanDetails(installmentPlanDetails: QProductInstallmentPlanDetails | null | undefined): ProductInstallmentPlanDetails | null {
+    if (!installmentPlanDetails) {
+      return null;
+    }
 
-    let pricingPhases = defaultOfferDetail.pricingPhases.map(
+    return new ProductInstallmentPlanDetails(
+      installmentPlanDetails.commitmentPaymentsCount,
+      installmentPlanDetails.subsequentCommitmentPaymentsCount,
+    );
+  }
+
+  static convertProductOfferDetails(offerDetails: QProductOfferDetails): ProductOfferDetails {
+    let basePlan = Mapper.convertProductPricingPhase(offerDetails.basePlan);
+    let trialPhase = Mapper.convertProductPricingPhase(offerDetails.trialPhase);
+    let introPhase = Mapper.convertProductPricingPhase(offerDetails.introPhase);
+
+    let installmentPlanDetails = Mapper.convertProductInstallmentPlanDetails(offerDetails.installmentPlanDetails);
+
+    let pricingPhases = offerDetails.pricingPhases.map(
       pricingPhase => Mapper.convertProductPricingPhase(pricingPhase)
     ).filter(Boolean) as ProductPricingPhase[];
 
     return new ProductOfferDetails(
-      defaultOfferDetail.basePlanId,
-      defaultOfferDetail.offerId ?? null,
-      defaultOfferDetail.offerToken,
-      defaultOfferDetail.tags,
+      offerDetails.basePlanId,
+      offerDetails.offerId ?? null,
+      offerDetails.offerToken,
+      offerDetails.tags,
       pricingPhases,
       basePlan,
+      installmentPlanDetails,
       introPhase,
       trialPhase,
-      defaultOfferDetail.hasTrial,
-      defaultOfferDetail.hasIntro,
-      defaultOfferDetail.hasTrialOrIntro,
+      offerDetails.hasTrial,
+      offerDetails.hasIntro,
+      offerDetails.hasTrialOrIntro,
     );
   }
 
@@ -835,6 +857,7 @@ class Mapper {
       productStoreDetails.isInApp,
       productStoreDetails.isSubscription,
       productStoreDetails.isPrepaid,
+      productStoreDetails.isInstallment,
     );
   }
 
