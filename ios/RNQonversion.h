@@ -9,8 +9,4 @@
           completion:(RCTResponseSenderBlock)completion
             rejecter:(RCTPromiseRejectBlock)reject;
 
-- (void)handlePurchaseResult:(NSDictionary *)result
-                       error:(SandwichError *)error
-                  completion:(RCTResponseSenderBlock)completion
-                    rejecter:(RCTPromiseRejectBlock)reject;
 @end

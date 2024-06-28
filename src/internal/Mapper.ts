@@ -8,13 +8,14 @@ import {
   OfferingTag,
   PricingPhaseRecurrenceMode,
   PricingPhaseType,
-  SubscriptionPeriodUnit,
   ProductType,
+  QonversionErrorCode,
   RemoteConfigurationAssignmentType,
   RemoteConfigurationSourceType,
   SKPeriodUnit,
   SKProductDiscountPaymentMode,
   SKProductDiscountType,
+  SubscriptionPeriodUnit,
   TransactionEnvironment,
   TransactionOwnershipType,
   TransactionType,
@@ -954,18 +955,21 @@ class Mapper {
       payload["type"],
       payload["value"],
       this.convertQonversionError(payload["error"])
-    )
+    );
   }
 
   static convertQonversionError(
     payload: Record<string, string> | undefined
   ): QonversionError | undefined {
-    return payload ? new QonversionError(
-      payload["code"],
+    if (!payload) return undefined;
+
+    const code = this.convertErrorCode(payload["code"]);
+    return new QonversionError(
+      code,
       payload["description"],
       payload["additionalMessage"],
       payload["domain"],
-    ) : undefined;
+    );
   }
 
   static convertAutomationsEvent(
@@ -974,7 +978,7 @@ class Mapper {
     return new AutomationsEvent(
       automationsEvent.type,
       automationsEvent.timestamp
-    )
+    );
   }
 
   static convertUserInfo(user: QUser): User {
@@ -1048,6 +1052,51 @@ class Mapper {
       presentationStyle: config.presentationStyle,
       animated: config.animated ? '1' : '0',
     };
+  }
+
+  static convertErrorCode(code: string): QonversionErrorCode {
+    switch (code) {
+      case QonversionErrorCode.UNKNOWN: return QonversionErrorCode.UNKNOWN;
+      case QonversionErrorCode.API_RATE_LIMIT_EXCEEDED: return QonversionErrorCode.API_RATE_LIMIT_EXCEEDED;
+      case QonversionErrorCode.APPLE_STORE_ERROR: return QonversionErrorCode.APPLE_STORE_ERROR;
+      case QonversionErrorCode.BACKEND_ERROR: return QonversionErrorCode.BACKEND_ERROR;
+      case QonversionErrorCode.BILLING_UNAVAILABLE: return QonversionErrorCode.BILLING_UNAVAILABLE;
+      case QonversionErrorCode.CLIENT_INVALID: return QonversionErrorCode.CLIENT_INVALID;
+      case QonversionErrorCode.CLOUD_SERVICE_NETWORK_CONNECTION_FAILED: return QonversionErrorCode.CLOUD_SERVICE_NETWORK_CONNECTION_FAILED;
+      case QonversionErrorCode.CLOUD_SERVICE_PERMISSION_DENIED: return QonversionErrorCode.CLOUD_SERVICE_PERMISSION_DENIED;
+      case QonversionErrorCode.CLOUD_SERVICE_REVOKED: return QonversionErrorCode.CLOUD_SERVICE_REVOKED;
+      case QonversionErrorCode.FAILED_TO_RECEIVE_DATA: return QonversionErrorCode.FAILED_TO_RECEIVE_DATA;
+      case QonversionErrorCode.FEATURE_NOT_SUPPORTED: return QonversionErrorCode.FEATURE_NOT_SUPPORTED;
+      case QonversionErrorCode.FRAUD_PURCHASE: return QonversionErrorCode.FRAUD_PURCHASE;
+      case QonversionErrorCode.INCORRECT_REQUEST: return QonversionErrorCode.INCORRECT_REQUEST;
+      case QonversionErrorCode.INTERNAL_ERROR: return QonversionErrorCode.INTERNAL_ERROR;
+      case QonversionErrorCode.INVALID_CLIENT_UID: return QonversionErrorCode.INVALID_CLIENT_UID;
+      case QonversionErrorCode.INVALID_CREDENTIALS: return QonversionErrorCode.INVALID_CREDENTIALS;
+      case QonversionErrorCode.INVALID_STORE_CREDENTIALS: return QonversionErrorCode.INVALID_STORE_CREDENTIALS;
+      case QonversionErrorCode.LAUNCH_ERROR: return QonversionErrorCode.LAUNCH_ERROR;
+      case QonversionErrorCode.NETWORK_CONNECTION_FAILED: return QonversionErrorCode.NETWORK_CONNECTION_FAILED;
+      case QonversionErrorCode.OFFERINGS_NOT_FOUND: return QonversionErrorCode.OFFERINGS_NOT_FOUND;
+      case QonversionErrorCode.PAYMENT_INVALID: return QonversionErrorCode.PAYMENT_INVALID;
+      case QonversionErrorCode.PAYMENT_NOT_ALLOWED: return QonversionErrorCode.PAYMENT_NOT_ALLOWED;
+      case QonversionErrorCode.PLAY_STORE_ERROR: return QonversionErrorCode.PLAY_STORE_ERROR;
+      case QonversionErrorCode.PRIVACY_ACKNOWLEDGEMENT_REQUIRED: return QonversionErrorCode.PRIVACY_ACKNOWLEDGEMENT_REQUIRED;
+      case QonversionErrorCode.PRODUCT_ALREADY_OWNED: return QonversionErrorCode.PRODUCT_ALREADY_OWNED;
+      case QonversionErrorCode.PRODUCT_NOT_FOUND: return QonversionErrorCode.PRODUCT_NOT_FOUND;
+      case QonversionErrorCode.PRODUCT_NOT_OWNED: return QonversionErrorCode.PRODUCT_NOT_OWNED;
+      case QonversionErrorCode.PROJECT_CONFIG_ERROR: return QonversionErrorCode.PROJECT_CONFIG_ERROR;
+      case QonversionErrorCode.PURCHASE_CANCELED: return QonversionErrorCode.PURCHASE_CANCELED;
+      case QonversionErrorCode.PURCHASE_INVALID: return QonversionErrorCode.PURCHASE_INVALID;
+      case QonversionErrorCode.PURCHASE_PENDING: return QonversionErrorCode.PURCHASE_PENDING;
+      case QonversionErrorCode.PURCHASE_UNSPECIFIED: return QonversionErrorCode.PURCHASE_UNSPECIFIED;
+      case QonversionErrorCode.RECEIPT_VALIDATION_ERROR: return QonversionErrorCode.RECEIPT_VALIDATION_ERROR;
+      case QonversionErrorCode.REMOTE_CONFIGURATION_NOT_AVAILABLE: return QonversionErrorCode.REMOTE_CONFIGURATION_NOT_AVAILABLE;
+      case QonversionErrorCode.RESPONSE_PARSING_FAILED: return QonversionErrorCode.RESPONSE_PARSING_FAILED;
+      case QonversionErrorCode.STORE_PRODUCT_NOT_AVAILABLE: return QonversionErrorCode.STORE_PRODUCT_NOT_AVAILABLE;
+      case QonversionErrorCode.UNAUTHORIZED_REQUEST_DATA: return QonversionErrorCode.UNAUTHORIZED_REQUEST_DATA;
+      case QonversionErrorCode.UNKNOWN_CLIENT_PLATFORM: return QonversionErrorCode.UNKNOWN_CLIENT_PLATFORM;
+    }
+
+    return QonversionErrorCode.UNKNOWN;
   }
 }
 
