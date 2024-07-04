@@ -23,6 +23,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     private final QonversionSandwich qonversionSandwich;
 
+    private static final String EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
+
     private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
 
     public QonversionModule(ReactApplicationContext reactContext) {
@@ -80,7 +82,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     @ReactMethod
     public void purchase(String productId, @Nullable String offerId, @Nullable Boolean applyOffer, final Promise promise) {
-        qonversionSandwich.purchase(productId, offerId, applyOffer, getResultListener(promise));
+        qonversionSandwich.purchase(productId, offerId, applyOffer, Utils.getResultListener(promise));
     }
 
     @ReactMethod
@@ -98,7 +100,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
                 applyOffer,
                 oldProductId,
                 updatePolicyKey,
-                getResultListener(promise)
+                Utils.getResultListener(promise)
         );
     }
 
