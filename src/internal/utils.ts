@@ -7,7 +7,3 @@ export const isIos = (): boolean => {
 export const isAndroid = (): boolean => {
     return Platform.OS === "android"
 };
-
-export enum DefinedNativeErrorCodes {
-    PURCHASE_CANCELLED_BY_USER = "PURCHASE_CANCELLED_BY_USER"
-}

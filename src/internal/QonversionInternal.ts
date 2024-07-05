@@ -1,11 +1,11 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {AttributionProvider, UserPropertyKey} from "../dto/enums";
+import {AttributionProvider, QonversionErrorCode, UserPropertyKey} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Mapper, {QEntitlement} from "./Mapper";
 import Offerings from "../dto/Offerings";
 import Entitlement from "../dto/Entitlement";
 import Product from "../dto/Product";
-import {DefinedNativeErrorCodes, isAndroid, isIos} from "./utils";
+import {isAndroid, isIos} from "./utils";
 import {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
@@ -71,7 +71,7 @@ export default class QonversionInternal implements QonversionApi {
 
       return mappedPermissions;
     } catch (e) {
-      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
   }
@@ -95,7 +95,7 @@ export default class QonversionInternal implements QonversionApi {
 
       return mappedPermissions;
     } catch (e) {
-      e.userCanceled = e.code === DefinedNativeErrorCodes.PURCHASE_CANCELLED_BY_USER;
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
   }

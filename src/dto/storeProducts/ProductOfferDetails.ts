@@ -1,4 +1,5 @@
 import ProductPricingPhase from "./ProductPricingPhase";
+import ProductInstallmentPlanDetails from './ProductInstallmentPlanDetails';
 
 /**
  * This class contains all the information about the Google subscription offer details.
@@ -37,6 +38,11 @@ class ProductOfferDetails {
   basePlan: ProductPricingPhase | null;
 
   /**
+   * Additional details of an installment plan, if exists.
+   */
+  installmentPlanDetails: ProductInstallmentPlanDetails | null;
+
+  /**
    * A trial phase details, if exists.
    */
   introPhase: ProductPricingPhase | null;
@@ -71,6 +77,7 @@ class ProductOfferDetails {
     tags: string[],
     pricingPhases: ProductPricingPhase[],
     basePlan: ProductPricingPhase | null,
+    installmentPlanDetails: ProductInstallmentPlanDetails | null,
     introPhase: ProductPricingPhase | null,
     trialPhase: ProductPricingPhase | null,
     hasTrial: boolean,
@@ -83,6 +90,7 @@ class ProductOfferDetails {
     this.tags = tags;
     this.pricingPhases = pricingPhases;
     this.basePlan = basePlan;
+    this.installmentPlanDetails = installmentPlanDetails;
     this.introPhase = introPhase;
     this.trialPhase = trialPhase;
     this.hasTrial = hasTrial;
