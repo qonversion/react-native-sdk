@@ -212,9 +212,9 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-        public void isFallbackFileAccessible(final Promise promise) {
-            qonversionSandwich.isFallbackFileAccessible(Utils.getResultListener(promise));
-        }
+    public void isFallbackFileAccessible(final Promise promise) {
+        qonversionSandwich.isFallbackFileAccessible(Utils.getResultListener(promise));
+    }
 
     @Override
     public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
