@@ -33,6 +33,7 @@ target 'example' do
 
   pod 'RCT-Folly', :podspec => '../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec', :modular_headers => false
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
+  pod 'fmt', :modular_headers => false
 
   post_install do |installer|
     react_native_post_install(
@@ -42,6 +43,19 @@ target 'example' do
       :mac_catalyst_enabled => false
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    
+    installer.pods_project.targets.each do |target|
+      if target.name == 'Flipper'
+        file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
+        contents = File.read(file_path)
+        unless contents.include?('#include <functional>')
+          File.open(file_path, 'w') do |file|
+            file.puts('#include <functional>')
+            file.puts(contents)
+          end
+        end
+      end
+    end
   end
 end
 

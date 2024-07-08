@@ -27,6 +27,12 @@ interface QonversionApi {
   syncStoreKit2Purchases(): void;
 
   /**
+   * Call this function to check if the fallback file is accessible.
+   * @returns the promise with the flag that indicates whether Qonversion was able to read data from the fallback file or not.
+   */
+  isFallbackFileAccessible(): Promise<Boolean>;
+
+  /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend
    * @param purchaseModel necessary information for purchase
    * @returns the promise with the user entitlements including the ones obtained by the purchase

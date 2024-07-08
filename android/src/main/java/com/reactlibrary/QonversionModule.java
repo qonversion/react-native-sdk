@@ -211,6 +211,11 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         qonversionSandwich.detachUserFromRemoteConfiguration(remoteConfigurationId, Utils.getResultListener(promise));
     }
 
+    @ReactMethod
+        public void isFallbackFileAccessible(final Promise promise) {
+            qonversionSandwich.isFallbackFileAccessible(Utils.getResultListener(promise));
+        }
+
     @Override
     public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
