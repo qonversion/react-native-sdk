@@ -15,7 +15,6 @@ import java.util.List;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import io.qonversion.sandwich.PurchaseResultListener;
 import io.qonversion.sandwich.QonversionEventsListener;
 import io.qonversion.sandwich.QonversionSandwich;
 import io.qonversion.sandwich.SandwichError;
@@ -25,8 +24,6 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     private final QonversionSandwich qonversionSandwich;
 
     private static final String EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
-
-    private static final String ERROR_CODE_PURCHASE_CANCELLED_BY_USER = "PURCHASE_CANCELLED_BY_USER";
 
     private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
 
@@ -85,7 +82,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     @ReactMethod
     public void purchase(String productId, @Nullable String offerId, @Nullable Boolean applyOffer, final Promise promise) {
-        qonversionSandwich.purchase(productId, offerId, applyOffer, getPurchaseResultListener(promise));
+        qonversionSandwich.purchase(productId, offerId, applyOffer, Utils.getResultListener(promise));
     }
 
     @ReactMethod
@@ -103,7 +100,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
                 applyOffer,
                 oldProductId,
                 updatePolicyKey,
-                getPurchaseResultListener(promise)
+                Utils.getResultListener(promise)
         );
     }
 
@@ -214,30 +211,16 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
         qonversionSandwich.detachUserFromRemoteConfiguration(remoteConfigurationId, Utils.getResultListener(promise));
     }
 
+    @ReactMethod
+    public void isFallbackFileAccessible(final Promise promise) {
+        qonversionSandwich.isFallbackFileAccessible(Utils.getResultListener(promise));
+    }
+
     @Override
     public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
         final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
         if (eventEmitter != null) {
             eventEmitter.emit(EVENT_ENTITLEMENTS_UPDATED, payload);
         }
-    }
-
-    private PurchaseResultListener getPurchaseResultListener(final Promise promise) {
-        return new PurchaseResultListener() {
-            @Override
-            public void onSuccess(@NonNull Map<String, ?> map) {
-                final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
-                promise.resolve(payload);
-            }
-
-            @Override
-            public void onError(@NonNull SandwichError error, boolean isCancelled) {
-                if (isCancelled) {
-                    Utils.rejectWithError(error, promise, ERROR_CODE_PURCHASE_CANCELLED_BY_USER);
-                } else {
-                    Utils.rejectWithError(error, promise);
-                }
-            }
-        };
     }
 }

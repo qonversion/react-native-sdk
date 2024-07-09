@@ -310,3 +310,44 @@ export enum ScreenPresentationStyle {
    */
   NO_ANIMATION = 'NoAnimation',
 }
+
+export enum QonversionErrorCode {
+  UNKNOWN = "Unknown", // Unknown error
+  API_RATE_LIMIT_EXCEEDED = "ApiRateLimitExceeded", // API requests rate limit exceeded
+  APPLE_STORE_ERROR = "AppleStoreError", // Apple Store error received
+  BACKEND_ERROR = "BackendError", // There was a backend error
+  BILLING_UNAVAILABLE = "BillingUnavailable", // The Billing service is unavailable on the device
+  CLIENT_INVALID = "ClientInvalid", // Client is not allowed to issue the request, etc
+  CLOUD_SERVICE_NETWORK_CONNECTION_FAILED = "CloudServiceNetworkConnectionFailed", // The device could not connect to the network
+  CLOUD_SERVICE_PERMISSION_DENIED = "CloudServicePermissionDenied", // User is not allowed to access cloud service information
+  CLOUD_SERVICE_REVOKED = "CloudServiceRevoked", // User has revoked permission to use this cloud service
+  FAILED_TO_RECEIVE_DATA = "FailedToReceiveData", // Could not receive data
+  FEATURE_NOT_SUPPORTED = "FeatureNotSupported", // The requested feature is not supported
+  FRAUD_PURCHASE = "FraudPurchase", // Fraud purchase was detected
+  INCORRECT_REQUEST = "IncorrectRequest", // Request failed
+  INTERNAL_ERROR = "InternalError", // Internal backend error
+  INVALID_CLIENT_UID = "InvalidClientUid", // Client Uid is invalid or not set
+  INVALID_CREDENTIALS = "InvalidCredentials", // Access token is invalid or not set
+  INVALID_STORE_CREDENTIALS = "InvalidStoreCredentials", // This account does not have access to the requested application
+  LAUNCH_ERROR = "LaunchError", // There was an error while launching Qonversion SDK
+  NETWORK_CONNECTION_FAILED = "NetworkConnectionFailed", // There was a network issue. Make sure that the Internet connection is available on the device
+  OFFERINGS_NOT_FOUND = "OfferingsNotFound", // No offerings found
+  PAYMENT_INVALID = "PaymentInvalid", // Purchase identifier was invalid, etc.
+  PAYMENT_NOT_ALLOWED = "PaymentNotAllowed", // This device is not allowed to make the payment
+  PLAY_STORE_ERROR = "PlayStoreError", // There was an issue with the Play Store service
+  PRIVACY_ACKNOWLEDGEMENT_REQUIRED = "PrivacyAcknowledgementRequired", // User needs to acknowledge Apple's privacy policy
+  PRODUCT_ALREADY_OWNED = "ProductAlreadyOwned", // Failed to purchase since item is already owned
+  PRODUCT_NOT_FOUND = "ProductNotFound", // Failed to purchase since the Qonversion product was not found
+  PRODUCT_NOT_OWNED = "ProductNotOwned", // Failed to consume purchase since item is not owned
+  PROJECT_CONFIG_ERROR = "ProjectConfigError", // The project is not configured or configured incorrectly in the Qonversion Dashboard
+  PURCHASE_CANCELED = "PurchaseCanceled", // User pressed back or canceled a dialog for purchase
+  PURCHASE_INVALID = "PurchaseInvalid", // Failure of purchase
+  PURCHASE_PENDING = "PurchasePending", // Purchase is pending
+  PURCHASE_UNSPECIFIED = "PurchaseUnspecified", // Unspecified state of the purchase
+  RECEIPT_VALIDATION_ERROR = "ReceiptValidationError", // Receipt validation error
+  REMOTE_CONFIGURATION_NOT_AVAILABLE = "RemoteConfigurationNotAvailable", // Remote configuration is not available for the current user or for the provided context key
+  RESPONSE_PARSING_FAILED = "ResponseParsingFailed", // A problem occurred while serializing or deserializing data
+  STORE_PRODUCT_NOT_AVAILABLE = "StoreProductNotAvailable", // Requested product is not available for purchase or its product id was not found
+  UNAUTHORIZED_REQUEST_DATA = "UnauthorizedRequestData", // App is attempting to use SKPayment's requestData property, but does not have the appropriate entitlement
+  UNKNOWN_CLIENT_PLATFORM = "UnknownClientPlatform", // The current platform is not supported
+}
