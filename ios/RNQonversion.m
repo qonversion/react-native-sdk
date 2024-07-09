@@ -158,6 +158,12 @@ RCT_EXPORT_METHOD(detachUserFromRemoteConfiguration:(NSString *)remoteConfigurat
     }];
 }
 
+RCT_EXPORT_METHOD(isFallbackFileAccessible:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+    [_qonversionSandwich isFallbackFileAccessibleWithCompletion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+        [self handleResult:result error:error completion:completion rejecter:reject];
+    }];
+}
+
 RCT_EXPORT_METHOD(collectAdvertisingID) {
     [_qonversionSandwich collectAdvertisingId];
 }
