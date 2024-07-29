@@ -4,20 +4,5 @@
     
     
     
-      
-      <testcase classname="fastlane.lanes" name="0: last_git_tag" time="0.151495">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="1: add_git_tag" time="0.061161">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="2: push_git_tags" time="2.56906">
-        
-      </testcase>
-    
   </testsuite>
 </testsuites>
