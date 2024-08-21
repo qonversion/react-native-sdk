@@ -9,6 +9,7 @@ import {isAndroid, isIos} from "./utils";
 import {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
+import PurchaseOptions from '../dto/PurchaseOptions'
 import QonversionApi from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
 import RemoteConfig from "../dto/RemoteConfig";
@@ -56,6 +57,33 @@ export default class QonversionInternal implements QonversionApi {
     const isAccessibleResult = await RNQonversion.isFallbackFileAccessible();
 
     return isAccessibleResult.success;
+  }
+
+  async purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>> {
+    try {
+      let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      if (isIos()) {
+        purchasePromise = RNQonversion.purchase(product.qonversionID, options.contextKeys, options.quantity);
+      } else {
+        purchasePromise = RNQonversion.purchase(
+            product.qonversionID,
+            options.offerId,
+            options.applyOffer,
+            options.oldProduct?.qonversionID,
+            options.updatePolicy,
+            options.contextKeys
+        );
+      }
+      const entitlements = await purchasePromise;
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions = Mapper.convertEntitlements(entitlements);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
+      throw e;
+    }
   }
 
   async purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>> {
