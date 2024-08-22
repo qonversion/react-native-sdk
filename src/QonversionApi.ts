@@ -11,6 +11,7 @@ import RemoteConfigList from "./dto/RemoteConfigList";
 import UserProperties from './dto/UserProperties';
 import PurchaseModel from './dto/PurchaseModel';
 import PurchaseUpdateModel from './dto/PurchaseUpdateModel';
+import PurchaseOptions from "./dto/PurchaseOptions";
 
 interface QonversionApi {
 
@@ -31,6 +32,26 @@ interface QonversionApi {
    * @returns the promise with the flag that indicates whether Qonversion was able to read data from the fallback file or not.
    */
   isFallbackFileAccessible(): Promise<Boolean>;
+
+  /**
+   * Make a purchase and validate it through server-to-server using Qonversion's Backend
+   * @param product product to purchase
+   * @param options additional options for the purchase process.
+   * @returns the promise with the user entitlements including the ones obtained by the purchase
+   *
+   * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
+   */
+  purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>>
+
+  /**
+   * Make a purchase and validate it through server-to-server using Qonversion's Backend
+   * @param product product to purchase
+   * @param options additional options for the purchase process.
+   * @returns the promise with the user entitlements including the ones obtained by the purchase
+   *
+   * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
+   */
+  updatePurchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement> | null>
 
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend

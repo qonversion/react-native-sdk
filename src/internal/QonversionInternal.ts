@@ -69,8 +69,6 @@ export default class QonversionInternal implements QonversionApi {
             product.qonversionID,
             options.offerId,
             options.applyOffer,
-            options.oldProduct?.qonversionID,
-            options.updatePolicy,
             options.contextKeys
         );
       }
@@ -90,12 +88,13 @@ export default class QonversionInternal implements QonversionApi {
     try {
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(purchaseModel.productId);
+        purchasePromise = RNQonversion.purchase(purchaseModel.productId, 1, null);
       } else {
         purchasePromise = RNQonversion.purchase(
           purchaseModel.productId,
           purchaseModel.offerId,
           purchaseModel.applyOffer,
+          null
         );
       }
       const entitlements = await purchasePromise;
@@ -122,6 +121,32 @@ export default class QonversionInternal implements QonversionApi {
         purchaseUpdateModel.applyOffer,
         purchaseUpdateModel.oldProductId,
         purchaseUpdateModel.updatePolicy,
+        null
+      );
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
+      throw e;
+    }
+  }
+
+  async updatePurchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement> | null> {
+    if (!isAndroid()) {
+      return null;
+    }
+
+    try {
+      const entitlements = await RNQonversion.updatePurchase(
+          product.qonversionID,
+          options.offerId,
+          options.applyOffer,
+          options.oldProduct?.qonversionID,
+          options.updatePolicy,
+          options.contextKeys
       );
 
       // noinspection UnnecessaryLocalVariableJS
