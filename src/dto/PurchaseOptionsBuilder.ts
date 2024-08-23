@@ -35,7 +35,7 @@ class PurchaseOptionsBuilder {
     /**
      * Set the offer Id to the purchase.
      * If [offerId] is not specified, then the default offer will be applied. To know how we choose
-     * the default offer, see [QProductStoreDetails.defaultSubscriptionOfferDetails].
+     * the default offer, see {@link QProductStoreDetails.defaultSubscriptionOfferDetails}.
      * @param offerId concrete offer Id which you'd like to purchase.
      * @return builder instance for chain calls.
      */
