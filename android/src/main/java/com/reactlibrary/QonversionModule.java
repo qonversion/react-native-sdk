@@ -81,12 +81,19 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
     }
 
     @ReactMethod
-    public void purchase(String productId, @Nullable String offerId, @Nullable Boolean applyOffer, @Nullable ReadableArray contextKeys, final Promise promise) {
+    public void purchase(
+            String productId,
+            @Nullable String offerId,
+            @Nullable Boolean applyOffer,
+            @Nullable String oldProductId,
+            @Nullable String updatePolicyKey,
+            @Nullable ReadableArray contextKeys,
+            final Promise promise) {
         List<String> contextKeysList = null;
         if (contextKeys != null) {
             contextKeysList = EntitiesConverter.convertArrayToStringList(contextKeys);
         }
-        qonversionSandwich.purchase(productId, offerId, applyOffer, contextKeysList, Utils.getResultListener(promise));
+        qonversionSandwich.purchase(productId, offerId, applyOffer, oldProductId, updatePolicyKey, contextKeysList, Utils.getResultListener(promise));
     }
 
     @ReactMethod
@@ -99,19 +106,7 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
             @Nullable ReadableArray contextKeys,
             final Promise promise
     ) {
-        List<String> contextKeysList = null;
-        if (contextKeys != null) {
-            contextKeysList = EntitiesConverter.convertArrayToStringList(contextKeys);
-        }
-        qonversionSandwich.updatePurchase(
-                productId,
-                offerId,
-                applyOffer,
-                oldProductId,
-                updatePolicyKey,
-                contextKeysList,
-                Utils.getResultListener(promise)
-        );
+        purchase(productId, offerId, applyOffer, oldProductId, updatePolicyKey, contextKeys, promise);
     }
 
     @ReactMethod

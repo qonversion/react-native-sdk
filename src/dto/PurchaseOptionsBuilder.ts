@@ -23,7 +23,10 @@ class PurchaseOptionsBuilder {
     }
 
     /**
+     * Android only.
      * Set offer for the purchase.
+     * If offer is not specified, then the default offer will be applied. To know how we choose
+     * the default offer, see {@link ProductStoreDetails.defaultSubscriptionOfferDetails}.
      * @param offer concrete offer which you'd like to purchase.
      * @return builder instance for chain calls.
      */
@@ -33,9 +36,10 @@ class PurchaseOptionsBuilder {
     }
 
     /**
+     * Android only.
      * Set the offer Id to the purchase.
-     * If [offerId] is not specified, then the default offer will be applied. To know how we choose
-     * the default offer, see {@link QProductStoreDetails.defaultSubscriptionOfferDetails}.
+     * If {@link offerId} is not specified, then the default offer will be applied. To know how we choose
+     * the default offer, see {@link ProductStoreDetails.defaultSubscriptionOfferDetails}.
      * @param offerId concrete offer Id which you'd like to purchase.
      * @return builder instance for chain calls.
      */
@@ -45,6 +49,7 @@ class PurchaseOptionsBuilder {
     }
 
     /**
+     * Android only.
      * Call this function to remove any intro/trial offer from the purchase (use only a bare base plan).
      * @return builder instance for chain calls.
      */
@@ -54,7 +59,8 @@ class PurchaseOptionsBuilder {
     }
 
     /**
-     * Set context keys associated with a purchase.
+     * Android only.
+     * Set Qonversion product from which the upgrade/downgrade will be initialized.
      *
      * @param oldProduct Qonversion product from which the upgrade/downgrade
      * will be initialized.
@@ -66,9 +72,10 @@ class PurchaseOptionsBuilder {
     }
 
     /**
+     * Android only.
      * Set the update policy for the purchase.
-     * If the [updatePolicy] is not provided, then default one
-     * will be selected - [QPurchaseUpdatePolicy.WithTimeProration].
+     * If the {@link updatePolicy} is not provided, then default one
+     * will be selected - {@link PurchaseUpdatePolicy.WITH_TIME_PRORATION}.
      * @param updatePolicy update policy for the purchase.
      * @return builder instance for chain calls.
      */
@@ -89,8 +96,8 @@ class PurchaseOptionsBuilder {
     }
 
     /**
-     * Generate [PurchaseOptions] instance with all the provided options.
-     * @return the complete [PurchaseOptions] instance.
+     * Generate {@link PurchaseOptions} instance with all the provided options.
+     * @return the complete {@link PurchaseOptions} instance.
      */
     build(): PurchaseOptions {
         return new PurchaseOptions(this.offerId, this.applyOffer, this.oldProduct, this.updatePolicy, this.contextKeys, this.quantity)

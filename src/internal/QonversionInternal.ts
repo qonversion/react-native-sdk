@@ -17,6 +17,7 @@ import UserProperties from '../dto/UserProperties';
 import PurchaseModel from '../dto/PurchaseModel';
 import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 import {RemoteConfigList} from '../index';
+import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 
 const {RNQonversion} = NativeModules;
 
@@ -63,12 +64,14 @@ export default class QonversionInternal implements QonversionApi {
     try {
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(product.qonversionID, options.contextKeys, options.quantity);
+        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys);
       } else {
         purchasePromise = RNQonversion.purchase(
             product.qonversionID,
             options.offerId,
             options.applyOffer,
+            options.oldProduct?.qonversionID,
+            options.updatePolicy,
             options.contextKeys
         );
       }
@@ -94,6 +97,8 @@ export default class QonversionInternal implements QonversionApi {
           purchaseModel.productId,
           purchaseModel.offerId,
           purchaseModel.applyOffer,
+          null,
+          null,
           null
         );
       }
@@ -122,31 +127,6 @@ export default class QonversionInternal implements QonversionApi {
         purchaseUpdateModel.oldProductId,
         purchaseUpdateModel.updatePolicy,
         null
-      );
-
-      // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
-
-      return mappedPermissions;
-    } catch (e) {
-      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
-      throw e;
-    }
-  }
-
-  async updatePurchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement> | null> {
-    if (!isAndroid()) {
-      return null;
-    }
-
-    try {
-      const entitlements = await RNQonversion.updatePurchase(
-          product.qonversionID,
-          options.offerId,
-          options.applyOffer,
-          options.oldProduct?.qonversionID,
-          options.updatePolicy,
-          options.contextKeys
       );
 
       // noinspection UnnecessaryLocalVariableJS
