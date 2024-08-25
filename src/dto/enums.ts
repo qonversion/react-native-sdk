@@ -153,7 +153,7 @@ export enum AttributionProvider {
  * A policy used for purchase updates on Android, which describes
  * how to migrate from purchased plan to a new one.
  *
- * Used in {@link PurchaseUpdateModel} class for purchase updates.
+ * Used in {@link PurchaseOptions} class for purchase updates.
  */
 export enum PurchaseUpdatePolicy {
   /**

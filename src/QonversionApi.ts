@@ -11,6 +11,7 @@ import RemoteConfigList from "./dto/RemoteConfigList";
 import UserProperties from './dto/UserProperties';
 import PurchaseModel from './dto/PurchaseModel';
 import PurchaseUpdateModel from './dto/PurchaseUpdateModel';
+import PurchaseOptions from "./dto/PurchaseOptions";
 
 interface QonversionApi {
 
@@ -34,9 +35,20 @@ interface QonversionApi {
 
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend
-   * @param purchaseModel necessary information for purchase
+   * @param product product to purchase
+   * @param options additional options for the purchase process.
    * @returns the promise with the user entitlements including the ones obtained by the purchase
    *
+   * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
+   */
+  purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>>
+
+  /**
+   * Make a purchase and validate it through server-to-server using Qonversion's Backend.
+   *
+   * @deprecated Use {@link purchaseProduct} function instead.
+   * @param purchaseModel necessary information for purchase
+   * @returns the promise with the user entitlements including the ones obtained by the purchase
    * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */
   purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>>;
@@ -44,11 +56,11 @@ interface QonversionApi {
   /**
    * Android only. Returns `null` if called on iOS.
    *
-   * Update (upgrade/downgrade) subscription on Google Play Store and validate it through server-to-server using Qonversion's Backend
+   * Update (upgrade/downgrade) subscription on Google Play Store and validate it through server-to-server using Qonversion's Backend.
    *
+   * @deprecated Use {@link purchaseProduct} function instead.
    * @param purchaseUpdateModel necessary information for purchase update
    * @returns the promise with the user entitlements including updated ones.
-   *
    * @see [Update policy](https://developer.android.com/google/play/billing/subscriptions#replacement-modes)
    * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */

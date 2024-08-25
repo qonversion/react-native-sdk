@@ -9,6 +9,7 @@ import {isAndroid, isIos} from "./utils";
 import {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
+import PurchaseOptions from '../dto/PurchaseOptions'
 import QonversionApi from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
 import RemoteConfig from "../dto/RemoteConfig";
@@ -16,10 +17,11 @@ import UserProperties from '../dto/UserProperties';
 import PurchaseModel from '../dto/PurchaseModel';
 import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 import {RemoteConfigList} from '../index';
+import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "8.0.1";
+const sdkVersion = "8.1.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -58,16 +60,46 @@ export default class QonversionInternal implements QonversionApi {
     return isAccessibleResult.success;
   }
 
+  async purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>> {
+    try {
+      let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      if (isIos()) {
+        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys);
+      } else {
+        purchasePromise = RNQonversion.purchase(
+            product.qonversionID,
+            options.offerId,
+            options.applyOffer,
+            options.oldProduct?.qonversionID,
+            options.updatePolicy,
+            options.contextKeys
+        );
+      }
+      const entitlements = await purchasePromise;
+
+      // noinspection UnnecessaryLocalVariableJS
+      const mappedPermissions = Mapper.convertEntitlements(entitlements);
+
+      return mappedPermissions;
+    } catch (e) {
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
+      throw e;
+    }
+  }
+
   async purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>> {
     try {
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(purchaseModel.productId);
+        purchasePromise = RNQonversion.purchase(purchaseModel.productId, 1, null);
       } else {
         purchasePromise = RNQonversion.purchase(
           purchaseModel.productId,
           purchaseModel.offerId,
           purchaseModel.applyOffer,
+          null,
+          null,
+          null
         );
       }
       const entitlements = await purchasePromise;
@@ -94,6 +126,7 @@ export default class QonversionInternal implements QonversionApi {
         purchaseUpdateModel.applyOffer,
         purchaseUpdateModel.oldProductId,
         purchaseUpdateModel.updatePolicy,
+        null
       );
 
       // noinspection UnnecessaryLocalVariableJS

@@ -46,8 +46,8 @@ RCT_EXPORT_METHOD(syncStoreKit2Purchases) {
     [_qonversionSandwich syncStoreKit2Purchases];
 }
 
-RCT_EXPORT_METHOD(purchase:(NSString *)productId completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
-    [_qonversionSandwich purchase:productId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
+RCT_EXPORT_METHOD(purchase:(NSString *)productId quantity:(NSInteger)quantity contextKeys:(NSArray *)contextKeys completion:(RCTResponseSenderBlock)completion rejecter:(RCTPromiseRejectBlock)reject) {
+    [_qonversionSandwich purchase:productId quantity:quantity contextKeys:contextKeys completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
         [self handleResult:result error:error completion:completion rejecter:reject];
     }];
 }

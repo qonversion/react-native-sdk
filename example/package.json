@@ -10,7 +10,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "clean": "rm -rf node_modules/ && cd .. && rm -rf node_modules/ && yarn install && cd example && yarn install",
+    "clean": "rm -rf node_modules/ && cd .. && rm -rf node_modules/ && yarn install && yarn prepare && cd example && yarn install",
     "cleanIos": "yarn clean && cd ios && pod install && cd .."
   },
   "dependencies": {
