@@ -36,3 +36,5 @@ export { default as SKProduct } from './dto/storeProducts/SKProduct';
 export { default as SKProductDiscount } from './dto/storeProducts/SKProductDiscount';
 export { default as SKSubscriptionPeriod } from './dto/storeProducts/SKSubscriptionPeriod';
 export { default as SkuDetails } from './dto/storeProducts/SkuDetails';
+export { default as PurchaseOptionsBuilder } from './dto/PurchaseOptionsBuilder';
+export { default as PurchaseOptions } from './dto/PurchaseOptionsBuilder';
