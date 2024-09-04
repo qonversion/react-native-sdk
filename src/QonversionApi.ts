@@ -41,7 +41,7 @@ interface QonversionApi {
    *
    * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */
-  purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>>
+  purchaseProduct(product: Product, options: PurchaseOptions | undefined): Promise<Map<string, Entitlement>>
 
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend.

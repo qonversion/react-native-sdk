@@ -27,6 +27,8 @@ type StateType = {
   subscriptionButtonTitle: string;
   loading: boolean;
   checkEntitlementsHidden: boolean;
+  subscriptionProduct: Product | null,
+  inAppProduct: Product | null,
 };
 
 const InAppProductId = 'in_app';
@@ -41,6 +43,8 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
       subscriptionButtonTitle: 'Loading...',
       loading: true,
       checkEntitlementsHidden: true,
+      subscriptionProduct: null,
+      inAppProduct: null,
     };
 
     // eslint-disable-next-line consistent-this
@@ -115,6 +119,8 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         inAppButtonTitle: inAppTitle,
         subscriptionButtonTitle: subscriptionButtonTitle,
         checkEntitlementsHidden: checkActiveEntitlementsButtonHidden,
+        subscriptionProduct: subscription,
+        inAppProduct: inApp,
       });
     });
   }
@@ -147,8 +153,19 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
           <TouchableOpacity
             style={styles.subscriptionButton}
             onPress={() => {
+              if (!this.state.subscriptionProduct) {
+                Alert.alert(
+                  'Error',
+                  'Purchasing product not found - id ' + SubscriptionProductId,
+                  [
+                    {text: 'OK'},
+                  ],
+                  {cancelable: true}
+                );
+                return;
+              }
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase(new PurchaseModel(SubscriptionProductId)).then(() => {
+              Qonversion.getSharedInstance().purchaseProduct(this.state.subscriptionProduct).then(() => {
                 this.setState({loading: false, subscriptionButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});
@@ -171,8 +188,19 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
           <TouchableOpacity
             style={styles.inAppButton}
             onPress={() => {
+              if (!this.state.inAppProduct) {
+                Alert.alert(
+                  'Error',
+                  'Purchasing product not found - id ' + InAppProductId,
+                  [
+                    {text: 'OK'},
+                  ],
+                  {cancelable: true}
+                );
+                return;
+              }
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchase(new PurchaseModel(InAppProductId)).then(() => {
+              Qonversion.getSharedInstance().purchaseProduct(this.state.inAppProduct).then(() => {
                 this.setState({loading: false, inAppButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});

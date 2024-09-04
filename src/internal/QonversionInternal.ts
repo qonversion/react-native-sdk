@@ -60,8 +60,12 @@ export default class QonversionInternal implements QonversionApi {
     return isAccessibleResult.success;
   }
 
-  async purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>> {
+  async purchaseProduct(product: Product, options: PurchaseOptions | undefined): Promise<Map<string, Entitlement>> {
     try {
+      if (!options) {
+        options = new PurchaseOptionsBuilder().build();
+      }
+
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
       if (isIos()) {
         purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys);
