@@ -21,7 +21,7 @@ import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "8.1.1";
+const sdkVersion = "8.1.2";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -60,8 +60,12 @@ export default class QonversionInternal implements QonversionApi {
     return isAccessibleResult.success;
   }
 
-  async purchaseProduct(product: Product, options: PurchaseOptions): Promise<Map<string, Entitlement>> {
+  async purchaseProduct(product: Product, options: PurchaseOptions | undefined): Promise<Map<string, Entitlement>> {
     try {
+      if (!options) {
+        options = new PurchaseOptionsBuilder().build();
+      }
+
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
       if (isIos()) {
         purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys);
