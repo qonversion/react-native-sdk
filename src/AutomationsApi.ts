@@ -13,6 +13,7 @@ interface AutomationsApi {
   /**
    * Set push token to Qonversion to enable Qonversion push notifications
    *
+   * @deprecated Consider removing this method calls. Qonversion is not working with push notifications anymore.
    * @param token Firebase device token for Android. APNs device token for iOS.
    */
   setNotificationsToken(token: string): void;
@@ -20,6 +21,7 @@ interface AutomationsApi {
   /**
    * Call to handle push notifications sent by Qonversion Automations.
    *
+   * @deprecated Consider removing this method calls. Qonversion is not working with push notifications anymore.
    * @param notificationData notification payload data
    * @returns true when a push notification was received from Qonversion. Otherwise, returns false, so you need to handle the notification yourself
    *
@@ -31,6 +33,7 @@ interface AutomationsApi {
   /**
    * Get parsed custom payload, which you added to the notification in the dashboard
    *
+   @deprecated Consider removing this method calls. Qonversion is not working with push notifications anymore.
    * @param notificationData notification payload data
    * @returns a map with custom payload from the notification or null if it's not provided.
    */
