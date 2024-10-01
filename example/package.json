@@ -18,7 +18,6 @@
     "babel-preset-react-native": "2.1.0",
     "react": "18.1.0",
     "react-native": "0.70.7",
-    "react-native-push-notification": "^8.1.1",
     "react-native-qonversion": "file:../"
   },
   "devDependencies": {
