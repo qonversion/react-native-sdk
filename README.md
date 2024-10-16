@@ -38,7 +38,7 @@ See the [quick start guide documentation](https://documentation.qonversion.io/do
 
 ## Analytics
 
-Qonversion provides advanced subscription analytics out-of-the-box. You can monitor real-time metrics from new users and trial-to-paid conversions to revenue, MRR, ARR, cohort retention and more. Understand your customers and make better decisions with precise subscription analytics.
+Qonversion provides advanced subscription analytics out of the box. You can monitor real-time metrics from new users and trial-to-paid conversions to revenue, MRR, ARR, cohort retention, and more. Understand your customers and make better decisions with precise subscription analytics.
 
 <p align="center">
      <a href="https://documentation.qonversion.io/docs/analytics"><img width="90%" src="https://files.readme.io/9a4fdf6-Analytics.png">
@@ -89,10 +89,10 @@ Send user-level subscription data to your favorite platforms.
 * **Track and increase your revenue.** Qonversion provides detailed real-time revenue analytics including cohort analysis, trial conversion rates, country segmentation, and much more.
 * **Integrations with the leading mobile platforms.** Qonversion allows sending data to platforms like AppsFlyer, Adjust, Branch, Tenjin, Facebook Ads, Amplitude, Mixpanel, and many others.
 * **Change promoted in-app products.** Change promoted in-app products anytime without app releases.
-* **A/B test** and identify winning in-app purchases, subscriptions or paywals.
+* **A/B test** and identify winning in-app purchases, subscriptions, or paywalls.
 * **Cross-device and cross-platform access management.** If you provide user authorization in your app, you can easily set Qonversion to provide premium access to authorized users across devices and operating systems.
-* **SDK caches the data.** Qonversion SDK caches purchase data including in-app products and entitlements, so the user experience is not affected even with the slow or interrupting network connection.
-* **Webhooks.** You can easily send all of the data to your server with Qonversion webhooks.
+* **SDK caches the data.** Qonversion SDK caches purchase data including in-app products and entitlements, so the user experience is not affected even with a slow or interrupted network connection.
+* **Webhooks.** You can easily send all the data to your server with Qonversion webhooks.
 * **Customer support.** You can always reach out to our customer support and get the help required.
 
 Convinced? Let's go!
@@ -111,7 +111,7 @@ Whether you’re a core user or trying it out for the first time, you can make a
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/SuperFeature`)
