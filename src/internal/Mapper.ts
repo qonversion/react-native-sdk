@@ -471,6 +471,8 @@ class Mapper {
         return UserPropertyKey.PUSH_WOOSH_HW_ID;
       case "_q_pushwoosh_user_id":
         return UserPropertyKey.PUSH_WOOSH_USER_ID;
+      case "_q_tenjin_aiid":
+        return UserPropertyKey.TENJIN_ANALYTICS_INSTALLATION_ID;
     }
 
     return UserPropertyKey.CUSTOM;
