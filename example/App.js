@@ -16,11 +16,7 @@ import Qonversion, {
   Environment,
   Entitlement,
   EntitlementsCacheLifetime,
-  PurchaseModel,
 } from 'react-native-qonversion';
-import NotificationsManager from './notificationsManager';
-
-NotificationsManager.init();
 
 type StateType = {
   inAppButtonTitle: string;
