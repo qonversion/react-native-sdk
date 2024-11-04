@@ -21,7 +21,7 @@ import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "8.1.4";
+const sdkVersion = "8.1.5";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
