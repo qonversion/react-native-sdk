@@ -10,6 +10,7 @@ class Transaction {
     expirationDate?: Date;
     transactionRevocationDate?: Date;
     offerCode?: string;
+    promoOfferId?: string;
 
     constructor(
         originalTransactionId: string,
@@ -21,6 +22,7 @@ class Transaction {
         expirationTimestamp: number | undefined,
         transactionRevocationTimestamp: number | undefined,
         offerCode: string | undefined,
+        promoOfferId: string | undefined,
     ) {
         this.originalTransactionId = originalTransactionId;
         this.transactionId = transactionId;
@@ -31,6 +33,7 @@ class Transaction {
         this.expirationDate = expirationTimestamp ? new Date(expirationTimestamp) : undefined;
         this.transactionRevocationDate = transactionRevocationTimestamp ? new Date(transactionRevocationTimestamp) : undefined;
         this.offerCode = offerCode;
+        this.promoOfferId = promoOfferId;
     }
 }
 

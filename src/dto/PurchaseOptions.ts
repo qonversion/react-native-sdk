@@ -1,5 +1,6 @@
 import Product from "./Product";
 import {PurchaseUpdatePolicy} from "./enums";
+import PromotionalOffer from './PromotionalOffer';
 
 class PurchaseOptions {
     public readonly offerId: string | null;
@@ -8,6 +9,7 @@ class PurchaseOptions {
     public readonly updatePolicy: PurchaseUpdatePolicy | null;
     public readonly contextKeys: string[] | null;
     public readonly quantity: number;
+    public readonly promotionalOffer: PromotionalOffer | null;
 
     constructor (
         offerId: string | null,
@@ -15,7 +17,8 @@ class PurchaseOptions {
         oldProduct: Product | null,
         updatePolicy: PurchaseUpdatePolicy | null,
         contextKeys: string[] | null,
-        quantity: number
+        quantity: number,
+        promotionalOffer: PromotionalOffer | null
     ) {
         this.offerId = offerId;
         this.applyOffer = applyOffer;
@@ -23,6 +26,7 @@ class PurchaseOptions {
         this.updatePolicy = updatePolicy;
         this.contextKeys = contextKeys;
         this.quantity = quantity;
+        this.promotionalOffer = promotionalOffer;
     }
 }
 
