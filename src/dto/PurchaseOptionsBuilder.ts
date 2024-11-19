@@ -97,6 +97,12 @@ class PurchaseOptionsBuilder {
         return this;
     }
 
+    /**
+     * Set the promotional offer details.
+     *
+     * @param promoOffer promotional offer details.
+     * @return builder instance for chain calls.
+     */
     setPromotionalOffer(promoOffer: PromotionalOffer): PurchaseOptionsBuilder {
         this.promoOffer = promoOffer;
         return this;
