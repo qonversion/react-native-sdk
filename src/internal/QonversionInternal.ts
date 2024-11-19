@@ -66,7 +66,7 @@ export default class QonversionInternal implements QonversionApi {
     if (isAndroid()) {
       return null;
     }
-    const promoOffer = RNQonversion.getPromotionalOffer(product.qonversionID, discount.identifier)
+    const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionID, discount.identifier);
     const mappedPromoOffer: PromotionalOffer = Mapper.convertPromoOffer(promoOffer);
 
     return mappedPromoOffer;
@@ -79,8 +79,16 @@ export default class QonversionInternal implements QonversionApi {
       }
 
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      const promoOffer = {
+        productDiscountId: options.promotionalOffer?.productDiscount.identifier,
+        keyIdentifier: options.promotionalOffer?.paymentDiscount.keyIdentifier,
+        nonce: options.promotionalOffer?.paymentDiscount.nonce,
+        signature: options.promotionalOffer?.paymentDiscount.signature,
+        timestamp: options.promotionalOffer?.paymentDiscount.timestamp
+      };
+
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys, options.promotionalOffer);
+        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys, promoOffer);
       } else {
         purchasePromise = RNQonversion.purchase(
             product.qonversionID,
