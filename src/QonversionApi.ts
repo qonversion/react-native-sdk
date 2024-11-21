@@ -12,6 +12,8 @@ import UserProperties from './dto/UserProperties';
 import PurchaseModel from './dto/PurchaseModel';
 import PurchaseUpdateModel from './dto/PurchaseUpdateModel';
 import PurchaseOptions from "./dto/PurchaseOptions";
+import SKProductDiscount from './dto/storeProducts/SKProductDiscount';
+import PromotionalOffer from './dto/PromotionalOffer';
 
 interface QonversionApi {
 
@@ -32,6 +34,19 @@ interface QonversionApi {
    * @returns the promise with the flag that indicates whether Qonversion was able to read data from the fallback file or not.
    */
   isFallbackFileAccessible(): Promise<Boolean>;
+
+  /**
+   * iOS only.
+   * Retrieve the promotional offer for the product if it exists.
+   * Make sure to call this function before displaying product details to the user.
+   * The generated signature for the promotional offer is valid for a single transaction.
+   * If the purchase fails, you need to call this function again to obtain a new promotional offer signature.
+   * Use this signature to complete the purchase through the purchase function, along with the purchase options object.
+   * @param product - product you want to purchase.
+   * @param discount - discount to create promotional offer signature.
+   * @returns the promise with the PromotionalOffer.
+   */
+  getPromotionalOffer(product: Product, discount: SKProductDiscount): Promise<PromotionalOffer | null>;
 
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend
