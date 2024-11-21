@@ -9,7 +9,8 @@ import {isAndroid, isIos} from "./utils";
 import {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
 import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
-import PurchaseOptions from '../dto/PurchaseOptions'
+import PurchaseOptions from '../dto/PurchaseOptions';
+import SKProductDiscount from '../dto/storeProducts/SKProductDiscount';
 import QonversionApi from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
 import RemoteConfig from "../dto/RemoteConfig";
@@ -18,10 +19,11 @@ import PurchaseModel from '../dto/PurchaseModel';
 import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 import {RemoteConfigList} from '../index';
 import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
+import PromotionalOffer from '../dto/PromotionalOffer';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "8.1.5";
+const sdkVersion = "8.2.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -60,6 +62,16 @@ export default class QonversionInternal implements QonversionApi {
     return isAccessibleResult.success;
   }
 
+  async getPromotionalOffer(product: Product, discount: SKProductDiscount): Promise<PromotionalOffer | null> {
+    if (isAndroid()) {
+      return null;
+    }
+    const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionID, discount.identifier);
+    const mappedPromoOffer: PromotionalOffer = Mapper.convertPromoOffer(promoOffer);
+
+    return mappedPromoOffer;
+  }
+
   async purchaseProduct(product: Product, options: PurchaseOptions | undefined): Promise<Map<string, Entitlement>> {
     try {
       if (!options) {
@@ -67,8 +79,16 @@ export default class QonversionInternal implements QonversionApi {
       }
 
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      const promoOffer = {
+        productDiscountId: options.promotionalOffer?.productDiscount.identifier,
+        keyIdentifier: options.promotionalOffer?.paymentDiscount.keyIdentifier,
+        nonce: options.promotionalOffer?.paymentDiscount.nonce,
+        signature: options.promotionalOffer?.paymentDiscount.signature,
+        timestamp: options.promotionalOffer?.paymentDiscount.timestamp
+      };
+
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys);
+        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys, promoOffer);
       } else {
         purchasePromise = RNQonversion.purchase(
             product.qonversionID,
@@ -95,7 +115,7 @@ export default class QonversionInternal implements QonversionApi {
     try {
       let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(purchaseModel.productId, 1, null);
+        purchasePromise = RNQonversion.purchase(purchaseModel.productId, 1, null, null);
       } else {
         purchasePromise = RNQonversion.purchase(
           purchaseModel.productId,

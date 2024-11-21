@@ -2,6 +2,7 @@ import Product from "./Product";
 import {PurchaseUpdatePolicy} from "./enums";
 import ProductOfferDetails from "./storeProducts/ProductOfferDetails";
 import PurchaseOptions from "./PurchaseOptions";
+import PromotionalOffer from "./PromotionalOffer";
 
 class PurchaseOptionsBuilder {
     private offerId: string | null = null;
@@ -10,6 +11,7 @@ class PurchaseOptionsBuilder {
     private updatePolicy: PurchaseUpdatePolicy | null = null;
     private contextKeys: string[] | null = null;
     private quantity: number = 1;
+    private promoOffer: PromotionalOffer | null = null;
 
     /**
      * iOS only.
@@ -96,11 +98,29 @@ class PurchaseOptionsBuilder {
     }
 
     /**
+     * Set the promotional offer details.
+     *
+     * @param promoOffer promotional offer details.
+     * @return builder instance for chain calls.
+     */
+    setPromotionalOffer(promoOffer: PromotionalOffer): PurchaseOptionsBuilder {
+        this.promoOffer = promoOffer;
+        return this;
+    }
+
+    /**
      * Generate {@link PurchaseOptions} instance with all the provided options.
      * @return the complete {@link PurchaseOptions} instance.
      */
     build(): PurchaseOptions {
-        return new PurchaseOptions(this.offerId, this.applyOffer, this.oldProduct, this.updatePolicy, this.contextKeys, this.quantity)
+        return new PurchaseOptions(
+            this.offerId,
+            this.applyOffer,
+            this.oldProduct,
+            this.updatePolicy,
+            this.contextKeys,
+            this.quantity,
+            this.promoOffer);
     }
 }
 
