@@ -67,7 +67,7 @@ export default class QonversionInternal implements QonversionApi {
       return null;
     }
     const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionID, discount.identifier);
-    const mappedPromoOffer: PromotionalOffer = Mapper.convertPromoOffer(promoOffer);
+    const mappedPromoOffer: PromotionalOffer | null = Mapper.convertPromoOffer(promoOffer);
 
     return mappedPromoOffer;
   }
