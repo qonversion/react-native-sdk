@@ -304,8 +304,12 @@ const priceMicrosRatio = 1000000;
 
 class Mapper {
   static convertPromoOffer(
-      promoOffer: QPromotionalOffer
-  ): PromotionalOffer {
+      promoOffer: QPromotionalOffer | null | undefined
+  ): PromotionalOffer | null {
+    if (!promoOffer) {
+      return null;
+    }
+
     const productDiscount = this.convertProductDiscount(promoOffer.productDiscount);
     const paymentDiscount = this.convertPaymentDiscount(promoOffer.paymentDiscount);
 
