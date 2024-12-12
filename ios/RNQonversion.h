@@ -6,7 +6,7 @@
 
 - (void)handleResult:(NSDictionary *)result
                error:(SandwichError *)error
-          completion:(RCTResponseSenderBlock)completion
+          completion:(RCTPromiseResolveBlock)completion
             rejecter:(RCTPromiseRejectBlock)reject;
 
 @end
