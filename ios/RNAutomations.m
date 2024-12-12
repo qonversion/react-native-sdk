@@ -43,7 +43,7 @@ RCT_EXPORT_METHOD(setNotificationsToken:(NSString *)token) {
 }
 
 RCT_EXPORT_METHOD(getNotificationCustomPayload:(NSDictionary *)notificationData
-                  completion:(RCTResponseSenderBlock)completion
+                  completion:(RCTPromiseResolveBlock)completion
                   rejecter:(RCTPromiseRejectBlock)reject) {
   if (![notificationData isKindOfClass:[NSDictionary class]]) {
       completion(nil);
@@ -55,7 +55,7 @@ RCT_EXPORT_METHOD(getNotificationCustomPayload:(NSDictionary *)notificationData
 }
 
 RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
-                  completion:(RCTResponseSenderBlock)completion
+                  completion:(RCTPromiseResolveBlock)completion
                   rejecter:(RCTPromiseRejectBlock)reject) {
   if (![notificationData isKindOfClass:[NSDictionary class]]) {
     completion(@[@(NO)]);
@@ -67,7 +67,7 @@ RCT_EXPORT_METHOD(handleNotification:(NSDictionary *)notificationData
 }
 
 RCT_EXPORT_METHOD(showScreen:(NSString *)screenId
-                  completion:(RCTResponseSenderBlock)completion
+                  completion:(RCTPromiseResolveBlock)completion
                   rejecter:(RCTPromiseRejectBlock)reject) {
   [_sandwich showScreen:screenId completion:^(NSDictionary<NSString *,id> * _Nullable result, SandwichError * _Nullable error) {
     if (error) {
