@@ -203,9 +203,9 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
     }
 
     if (result) {
-        completion(@[result]);
+        completion(result);
     } else {
-        completion(@[]);
+        completion(@{});
     }
 }
 
