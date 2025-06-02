@@ -20,19 +20,10 @@ import Qonversion, {
 import NoCodes from 'react-native-qonversion/src/NoCodes';
 import NoCodesConfig from 'react-native-qonversion/src/NoCodesConfig';
 
-type StateType = {
-  inAppButtonTitle: string;
-  subscriptionButtonTitle: string;
-  loading: boolean;
-  checkEntitlementsHidden: boolean;
-  subscriptionProduct: Product | null,
-  inAppProduct: Product | null,
-};
-
 const InAppProductId = 'in_app';
 const SubscriptionProductId = 'weekly';
 
-export class QonversionSample extends React.PureComponent<{}, StateType> {
+export class QonversionSample extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -92,7 +83,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
       let inAppTitle = this.state.inAppButtonTitle;
       let subscriptionButtonTitle = this.state.subscriptionButtonTitle;
 
-      const inApp: Product = products.get(InAppProductId);
+      const inApp = products.get(InAppProductId);
       if (inApp) {
         inAppTitle = 'Buy for ' + inApp.prettyPrice;
 
@@ -102,7 +93,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
         }
       }
 
-      const subscription: Product = products.get(SubscriptionProductId);
+      const subscription = products.get(SubscriptionProductId);
       if (subscription) {
         subscriptionButtonTitle = 'Subscribe for '
           + subscription.prettyPrice
@@ -139,7 +130,7 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
             resizeMode: 'contain',
             alignSelf: 'center',
           }}
-          source={require('./q_icon.png')}
+          source={require('./assets/q_icon.png')}
         />
         <Text style={{fontSize: 28, fontWeight: 'bold', alignSelf: 'center', marginTop: 42, textAlign: 'center'}}>
           {'Build in-app\nsubscriptions'}
@@ -257,11 +248,10 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                     {cancelable: true}
                   );
                 }
-
                 this.setState({
-                  checkEntitlementsHidden: checkActiveEntitlementsButtonHidden,
                   inAppButtonTitle: inAppTitle,
                   subscriptionButtonTitle: subscriptionButtonTitle,
+                  checkEntitlementsHidden: checkActiveEntitlementsButtonHidden,
                 });
               }).catch(error => {
                 this.setState({loading: false});
@@ -276,44 +266,54 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
               });
             }}
           >
-            <Text style={styles.additionalButtonTitle}>Restore Purchases</Text>
+            <Text style={styles.additionalButtonsText}>Restore purchases</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.additionalButton}
+            style={[styles.additionalButton, {opacity: this.state.checkEntitlementsHidden ? 0.5 : 1}]}
             onPress={() => {
-              NoCodes.getSharedInstance().showScreen('default')
-                .then(result => {
-                  console.log('Paywall result:', result);
-                })
-                .catch(error => {
-                  console.error('Paywall error:', error);
+              if (this.state.checkEntitlementsHidden) {
+                return;
+              }
+              this.setState({loading: true});
+              Qonversion.getSharedInstance().checkEntitlements().then(entitlements => {
+                this.setState({loading: false});
+                if (entitlements.size > 0) {
+                  const entitlementsValues = Array.from(entitlements.values());
+                  const activeEntitlements = entitlementsValues.filter(item => item.isActive === true);
+                  if (activeEntitlements.length > 0) {
+                    Alert.alert(
+                      'Active entitlements',
+                      activeEntitlements.map(item => item.entitlementId).join('\n'),
+                      [
+                        {text: 'OK'},
+                      ],
+                      {cancelable: true}
+                    );
+                  } else {
+                    Alert.alert(
+                      'Active entitlements',
+                      'No active entitlements',
+                      [
+                        {text: 'OK'},
+                      ],
+                      {cancelable: true}
+                    );
+                  }
+                } else {
                   Alert.alert(
-                    'Error',
-                    error.message,
+                    'Active entitlements',
+                    'No entitlements',
                     [
                       {text: 'OK'},
                     ],
                     {cancelable: true}
                   );
-                });
-            }}
-          >
-            <Text style={styles.additionalButtonTitle}>Present Paywall</Text>
-          </TouchableOpacity>
-          {!this.state.checkEntitlementsHidden && <TouchableOpacity
-            style={styles.additionalButton}
-            onPress={() => {
-              Qonversion.getSharedInstance().checkEntitlements().then(entitlements => {
-                let message = '';
-                const entitlementsValues = Array.from(entitlements.values());
-                entitlementsValues.map((entitlement: Entitlement) => {
-                  if (entitlement.isActive) {
-                    message = message + 'entitlementID: ' + entitlement.id + '\n' + 'productID: ' + entitlement.productId + '\n' + 'renewState: ' + entitlement.renewState + '\n\n';
-                  }
-                });
+                }
+              }).catch(error => {
+                this.setState({loading: false});
                 Alert.alert(
-                  'Active entitlements',
-                  message,
+                  'Error',
+                  error.message,
                   [
                     {text: 'OK'},
                   ],
@@ -330,55 +330,55 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
   }
 }
 
-
 const styles = StyleSheet.create({
-  additionalButtonsText: {
-    flex: 1,
-    textAlign: 'center',
-  },
-  additionalButton: {
-    flexDirection: 'row',
-    height: 40,
-    marginHorizontal: 32,
-    alignItems: 'center',
-  },
   subscriptionButton: {
-    flexDirection: 'row',
-    marginHorizontal: 32,
-    height: 54,
-    marginTop: 10,
-    backgroundColor: '#3E5AE1',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#3E5AE1',
+    backgroundColor: '#0f0f0f',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginTop: 16,
+    height: 56,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   inAppButton: {
-    flexDirection: 'row',
-    marginHorizontal: 32,
-    height: 54,
-    marginTop: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#3E5AE1',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginTop: 16,
+    height: 56,
+    justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#0f0f0f',
   },
-  inAppButtonTitle: {
-    flex: 1,
-    textAlign: 'center',
-    color: '#3E5AE1',
+  additionalButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginTop: 16,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#0f0f0f',
   },
   buttonTitle: {
-    flex: 1,
-    color: '#fff',
-    textAlign: 'center',
+    color: '#ffffff',
+    fontSize: 17,
+    fontWeight: '600',
   },
-  additionalButtonTitle: {
-    flex: 1,
-    textAlign: 'center',
-    color: '#3E5AE1',
+  inAppButtonTitle: {
+    color: '#0f0f0f',
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  additionalButtonsText: {
+    color: '#0f0f0f',
+    fontSize: 17,
+    fontWeight: '600',
   },
 });
+
 export default class App extends Component {
   render() {
     return (
