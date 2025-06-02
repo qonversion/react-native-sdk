@@ -17,6 +17,8 @@ import Qonversion, {
   Entitlement,
   EntitlementsCacheLifetime,
 } from 'react-native-qonversion';
+import NoCodes from 'react-native-qonversion/src/NoCodes';
+import NoCodesConfig from 'react-native-qonversion/src/NoCodesConfig';
 
 type StateType = {
   inAppButtonTitle: string;
@@ -59,6 +61,11 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
       })
       .build();
     Qonversion.initialize(config);
+    
+    // Initialize NoCodes
+    const noCodesConfig = new NoCodesConfig('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2');
+    NoCodes.initialize(noCodesConfig);
+    
     Qonversion.getSharedInstance().setPromoPurchasesDelegate({
       onPromoPurchaseReceived: async (productId, promoPurchaseExecutor) => {
         try {
@@ -196,7 +203,8 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                 return;
               }
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchaseProduct(this.state.inAppProduct).then(() => {
+              Qonversion.getSharedInstance().purchaseProduct(this.state.inAppProduct).then((ent) => {
+                console.log(ent);
                 this.setState({loading: false, inAppButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});
@@ -251,15 +259,46 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
                 }
 
                 this.setState({
-                  loading: false,
-                  checkEntitlementsButtonHidden: checkActiveEntitlementsButtonHidden,
+                  checkEntitlementsHidden: checkActiveEntitlementsButtonHidden,
                   inAppButtonTitle: inAppTitle,
                   subscriptionButtonTitle: subscriptionButtonTitle,
                 });
+              }).catch(error => {
+                this.setState({loading: false});
+                Alert.alert(
+                  'Error',
+                  error.message,
+                  [
+                    {text: 'OK'},
+                  ],
+                  {cancelable: true}
+                );
               });
             }}
           >
-            <Text style={styles.additionalButtonsText}>Restore purchases</Text>
+            <Text style={styles.additionalButtonTitle}>Restore Purchases</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.additionalButton}
+            onPress={() => {
+              NoCodes.getSharedInstance().showScreen('default')
+                .then(result => {
+                  console.log('Paywall result:', result);
+                })
+                .catch(error => {
+                  console.error('Paywall error:', error);
+                  Alert.alert(
+                    'Error',
+                    error.message,
+                    [
+                      {text: 'OK'},
+                    ],
+                    {cancelable: true}
+                  );
+                });
+            }}
+          >
+            <Text style={styles.additionalButtonTitle}>Present Paywall</Text>
           </TouchableOpacity>
           {!this.state.checkEntitlementsHidden && <TouchableOpacity
             style={styles.additionalButton}
@@ -285,7 +324,6 @@ export class QonversionSample extends React.PureComponent<{}, StateType> {
           >
             <Text style={styles.additionalButtonsText}>Check active entitlements</Text>
           </TouchableOpacity>
-          }
         </View>
       </View>
     );
@@ -334,6 +372,11 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#fff',
     textAlign: 'center',
+  },
+  additionalButtonTitle: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#3E5AE1',
   },
 });
 export default class App extends Component {

@@ -43,3 +43,7 @@ buck-out/
 
 # vscode
 .vscode
+
+# CocoaPods
+Pods/
+Podfile.lock

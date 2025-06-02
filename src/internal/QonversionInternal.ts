@@ -20,6 +20,7 @@ import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 import {RemoteConfigList} from '../index';
 import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 import PromotionalOffer from '../dto/PromotionalOffer';
+import QonversionError from '../dto/QonversionError';
 
 const {RNQonversion} = NativeModules;
 
@@ -106,7 +107,9 @@ export default class QonversionInternal implements QonversionApi {
 
       return mappedPermissions;
     } catch (e) {
-      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
+      if (e instanceof QonversionError) {
+        e.setUserCanceled(e.code === QonversionErrorCode.PURCHASE_CANCELED);
+      }
       throw e;
     }
   }
@@ -133,7 +136,9 @@ export default class QonversionInternal implements QonversionApi {
 
       return mappedPermissions;
     } catch (e) {
-      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
+      if (e instanceof QonversionError) {
+        e.setUserCanceled(e.code === QonversionErrorCode.PURCHASE_CANCELED);
+      }
       throw e;
     }
   }
@@ -158,7 +163,9 @@ export default class QonversionInternal implements QonversionApi {
 
       return mappedPermissions;
     } catch (e) {
-      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
+      if (e instanceof QonversionError) {
+        e.setUserCanceled(e.code === QonversionErrorCode.PURCHASE_CANCELED);
+      }
       throw e;
     }
   }

@@ -5,6 +5,7 @@ class QonversionError {
   domain?: string;
   description: string;
   additionalMessage: string;
+  private _userCanceled: boolean = false;
 
   constructor(
     code: QonversionErrorCode,
@@ -16,6 +17,14 @@ class QonversionError {
     this.domain = domain;
     this.description = description;
     this.additionalMessage = additionalMessage;
+  }
+
+  get userCanceled(): boolean {
+    return this._userCanceled;
+  }
+
+  setUserCanceled(value: boolean): void {
+    this._userCanceled = value;
   }
 }
 

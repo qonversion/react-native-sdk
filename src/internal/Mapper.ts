@@ -1,5 +1,4 @@
 import {
-  AutomationsEventType,
   EntitlementGrantType,
   EntitlementRenewState,
   EntitlementSource,
@@ -20,6 +19,7 @@ import {
   TransactionOwnershipType,
   TransactionType,
   UserPropertyKey,
+  NoCodesErrorCode,
 } from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Offering from "../dto/Offering";
@@ -30,9 +30,7 @@ import SKProduct from "../dto/storeProducts/SKProduct";
 import SKProductDiscount from "../dto/storeProducts/SKProductDiscount";
 import SKSubscriptionPeriod from "../dto/storeProducts/SKSubscriptionPeriod";
 import SkuDetails from "../dto/storeProducts/SkuDetails";
-import ActionResult from "../dto/ActionResult";
 import QonversionError from "../dto/QonversionError";
-import AutomationsEvent from "../dto/AutomationsEvent";
 import User from '../dto/User';
 import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
 import Experiment from "../dto/Experiment";
@@ -251,11 +249,6 @@ type QOffering = {
   products: Array<QProduct>;
 };
 
-type QAutomationsEvent = {
-  type: AutomationsEventType;
-  timestamp: number;
-};
-
 type QUser = {
   qonversionId: string;
   identityId?: string | null;
@@ -301,6 +294,15 @@ type QUserProperties = {
 };
 
 const priceMicrosRatio = 1000000;
+
+export interface QNoCodesResult {
+  success: boolean;
+  data?: Record<string, any>;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
 
 class Mapper {
   static convertPromoOffer(
@@ -1007,39 +1009,6 @@ class Mapper {
     }
   }
 
-  static convertActionResult(
-    payload: Record<string, any>
-  ): ActionResult {
-    return new ActionResult(
-      payload["type"],
-      payload["value"],
-      this.convertQonversionError(payload["error"])
-    );
-  }
-
-  static convertQonversionError(
-    payload: Record<string, string> | undefined
-  ): QonversionError | undefined {
-    if (!payload) return undefined;
-
-    const code = this.convertErrorCode(payload["code"]);
-    return new QonversionError(
-      code,
-      payload["description"],
-      payload["additionalMessage"],
-      payload["domain"],
-    );
-  }
-
-  static convertAutomationsEvent(
-    automationsEvent: QAutomationsEvent
-  ): AutomationsEvent {
-    return new AutomationsEvent(
-      automationsEvent.type,
-      automationsEvent.timestamp
-    );
-  }
-
   static convertUserInfo(user: QUser): User {
     return new User(user.qonversionId, user.identityId);
   }
@@ -1113,7 +1082,28 @@ class Mapper {
     };
   }
 
-  static convertErrorCode(code: string): QonversionErrorCode {
+  static convertErrorCode(code: string | undefined): QonversionErrorCode | NoCodesErrorCode {
+    if (!code) {
+      return QonversionErrorCode.UNKNOWN;
+    }
+
+    // Проверяем коды ошибок NoCodes
+    switch (code) {
+      case NoCodesErrorCode.UNKNOWN:
+        return NoCodesErrorCode.UNKNOWN;
+      case NoCodesErrorCode.INITIALIZATION_ERROR:
+        return NoCodesErrorCode.INITIALIZATION_ERROR;
+      case NoCodesErrorCode.NETWORK_ERROR:
+        return NoCodesErrorCode.NETWORK_ERROR;
+      case NoCodesErrorCode.INVALID_DATA:
+        return NoCodesErrorCode.INVALID_DATA;
+      case NoCodesErrorCode.SCREEN_NOT_FOUND:
+        return NoCodesErrorCode.SCREEN_NOT_FOUND;
+      case NoCodesErrorCode.SCREEN_ALREADY_SHOWN:
+        return NoCodesErrorCode.SCREEN_ALREADY_SHOWN;
+    }
+
+    // Проверяем коды ошибок Qonversion
     switch (code) {
       case QonversionErrorCode.UNKNOWN: return QonversionErrorCode.UNKNOWN;
       case QonversionErrorCode.API_RATE_LIMIT_EXCEEDED: return QonversionErrorCode.API_RATE_LIMIT_EXCEEDED;
@@ -1156,6 +1146,16 @@ class Mapper {
     }
 
     return QonversionErrorCode.UNKNOWN;
+  }
+
+  static convertResult(result: QNoCodesResult): Record<string, any> {
+    if (!result.success) {
+      throw {
+        code: this.convertErrorCode(result.error?.code),
+        message: result.error?.message
+      };
+    }
+    return result.data || {};
   }
 }
 

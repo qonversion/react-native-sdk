@@ -3,11 +3,6 @@ export { default as QonversionApi } from './QonversionApi';
 export { default as QonversionConfig } from './QonversionConfig';
 export { default as QonversionConfigBuilder } from './QonversionConfigBuilder';
 
-export { default as Automations } from './Automations';
-
-export { default as ActionResult } from './dto/ActionResult';
-export { AutomationsDelegate } from './dto/AutomationsDelegate';
-export { default as AutomationsEvent } from './dto/AutomationsEvent';
 export { EntitlementsUpdateListener } from './dto/EntitlementsUpdateListener';
 export * from './dto/enums';
 export { default as IntroEligibility } from './dto/IntroEligibility';

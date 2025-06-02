@@ -259,36 +259,6 @@ export enum RemoteConfigurationAssignmentType {
   MANUAL = "manual",
 }
 
-export enum ActionResultType {
-  UNKNOWN = "unknown",
-  URL = "url",
-  DEEPLINK = "deeplink",
-  NAVIGATION = "navigate",
-  PURCHASE = "purchase",
-  RESTORE = "restore",
-  CLOSE = "close",
-}
-
-export enum AutomationsEventType {
-  UNKNOWN = "unknown",
-  TRIAL_STARTED = "trial_started",
-  TRIAL_CONVERTED = "trial_converted",
-  TRIAL_CANCELED = "trial_canceled",
-  TRIAL_BILLING_RETRY = "trial_billing_retry_entered",
-  SUBSCRIPTION_STARTED = "subscription_started",
-  SUBSCRIPTION_RENEWED = "subscription_renewed",
-  SUBSCRIPTION_REFUNDED = "subscription_refunded",
-  SUBSCRIPTION_CANCELED = "subscription_canceled",
-  SUBSCRIPTION_BILLING_RETRY = "subscription_billing_retry_entered",
-  IN_APP_PURCHASE = "in_app_purchase",
-  SUBSCRIPTION_UPGRADED = "subscription_upgraded",
-  TRIAL_STILL_ACTIVE = "trial_still_active",
-  TRIAL_EXPIRED = "trial_expired",
-  SUBSCRIPTION_EXPIRED = "subscription_expired",
-  SUBSCRIPTION_DOWNGRADED = "subscription_downgraded",
-  SUBSCRIPTION_PRODUCT_CHANGED = "subscription_product_changed",
-}
-
 export enum ScreenPresentationStyle {
   /**
    * on Android - default screen transaction animation will be used.
@@ -351,4 +321,13 @@ export enum QonversionErrorCode {
   STORE_PRODUCT_NOT_AVAILABLE = "StoreProductNotAvailable", // Requested product is not available for purchase or its product id was not found
   UNAUTHORIZED_REQUEST_DATA = "UnauthorizedRequestData", // App is attempting to use SKPayment's requestData property, but does not have the appropriate entitlement
   UNKNOWN_CLIENT_PLATFORM = "UnknownClientPlatform", // The current platform is not supported
+}
+
+export enum NoCodesErrorCode {
+  UNKNOWN = "unknown",
+  INITIALIZATION_ERROR = "initialization_error",
+  NETWORK_ERROR = "network_error",
+  INVALID_DATA = "invalid_data",
+  SCREEN_NOT_FOUND = "screen_not_found",
+  SCREEN_ALREADY_SHOWN = "screen_already_shown"
 }
