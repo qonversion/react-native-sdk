@@ -92,14 +92,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    splits {
-        abi {
-            reset()
-            enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
-        }
-    }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
