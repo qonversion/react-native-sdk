@@ -28,7 +28,6 @@ RCT_EXPORT_METHOD(initialize:(NSString *)projectKey
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     [self.noCodesSandwich initializeWithProjectKey:projectKey];
-    resolve(nil);
 }
 
 RCT_EXPORT_METHOD(setScreenPresentationConfig:(NSDictionary *)configData
@@ -37,7 +36,6 @@ RCT_EXPORT_METHOD(setScreenPresentationConfig:(NSDictionary *)configData
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.noCodesSandwich setScreenPresentationConfig:configData forContextKey:contextKey];
-        resolve(nil);
     });
 }
 
@@ -46,7 +44,6 @@ RCT_EXPORT_METHOD(showScreen:(NSString *)contextKey
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.noCodesSandwich showScreen:contextKey];
-        resolve(nil);
     });
 }
 
@@ -54,7 +51,6 @@ RCT_EXPORT_METHOD(close:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.noCodesSandwich close];
-        resolve(nil);
     });
 }
 

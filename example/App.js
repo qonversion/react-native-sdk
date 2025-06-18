@@ -17,8 +17,7 @@ import Qonversion, {
   Entitlement,
   EntitlementsCacheLifetime,
 } from 'react-native-qonversion';
-import NoCodes from 'react-native-qonversion/src/NoCodes';
-import NoCodesConfig from 'react-native-qonversion/src/NoCodesConfig';
+import { NoCodes, NoCodesConfigBuilder } from 'react-native-qonversion';
 
 const InAppProductId = 'in_app';
 const SubscriptionProductId = 'weekly';
@@ -52,11 +51,35 @@ export class QonversionSample extends React.PureComponent {
       })
       .build();
     Qonversion.initialize(config);
-    
+
+    console.log('LAAAAAA');
+
     // Initialize NoCodes
-    const noCodesConfig = new NoCodesConfig('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2');
+    const noCodesConfig = new NoCodesConfigBuilder('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2')
+      .setNoCodesListener({
+        noCodesHasShownScreen: (id) => {
+          console.log('NoCodes screen shown:', id);
+        },
+        noCodesStartsExecuting: (action) => {
+          console.log('NoCodes starts executing action:', action);
+        },
+        noCodesFailedToExecute: (action, error) => {
+          console.log('NoCodes failed to execute action:', action, error);
+        },
+        noCodesFinishedExecuting: (action) => {
+          console.log('NoCodes finished executing action:', action);
+        },
+        noCodesFinished: () => {
+          console.log('NoCodes flow finished');
+        },
+        noCodesFailedToLoadScreen: (error) => {
+          console.log('NoCodes failed to load screen:', error);
+          NoCodes.getSharedInstance().close();
+        }
+      })
+      .build();
     NoCodes.initialize(noCodesConfig);
-    
+
     Qonversion.getSharedInstance().setPromoPurchasesDelegate({
       onPromoPurchaseReceived: async (productId, promoPurchaseExecutor) => {
         try {
@@ -323,6 +346,27 @@ export class QonversionSample extends React.PureComponent {
             }}
           >
             <Text style={styles.additionalButtonsText}>Check active entitlements</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.additionalButton}
+            onPress={() => {
+              this.setState({loading: true});
+              NoCodes.getSharedInstance().showScreen('kamo_tesst').then(() => {
+                this.setState({loading: false});
+              }).catch(error => {
+                this.setState({loading: false});
+                Alert.alert(
+                  'Error',
+                  error.message,
+                  [
+                    {text: 'OK'},
+                  ],
+                  {cancelable: true}
+                );
+              });
+            }}
+          >
+            <Text style={styles.additionalButtonsText}>Show NoCodes Screen</Text>
           </TouchableOpacity>
         </View>
       </View>

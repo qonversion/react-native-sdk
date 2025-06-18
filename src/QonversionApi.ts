@@ -46,6 +46,7 @@ interface QonversionApi {
    * @param discount - discount to create promotional offer signature.
    * @returns the promise with the PromotionalOffer.
    */
+
   getPromotionalOffer(product: Product, discount: SKProductDiscount): Promise<PromotionalOffer | null>;
 
   /**

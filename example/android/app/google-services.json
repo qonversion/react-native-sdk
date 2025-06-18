@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:202024918040:android:2d8bcc6554f277ba6c776d",
         "android_client_info": {
-          "package_name": "com.qonversion.sample"
+          "package_name": "io.qonversion.sampleapp"
         }
       },
       "oauth_client": [

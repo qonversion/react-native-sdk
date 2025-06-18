@@ -1190,7 +1190,7 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-qonversion (8.2.3):
     - QonversionSandwich (= 6.0.0)
-    - React-Core
+    - React
   - React-nativeconfig (0.77.0)
   - React-NativeModulesApple (0.77.0):
     - glog
@@ -1713,7 +1713,7 @@ SPEC CHECKSUMS:
   React-logger: 02e5802824aa9b15cb7df42e10a91abead83cd8d
   React-Mapbuffer: 99bd566147aaa78e872568be53ebca8a4449ddae
   React-microtasksnativemodule: a14c728d11137ac7c7f98a5462496f3fa4c548ae
-  react-native-qonversion: 2e79b83064023b796ca482f3fb45434e04d5b09f
+  react-native-qonversion: 4533824c6c63027ceb726cad61b2da48a501cf7f
   React-nativeconfig: cd0fbb40987a9658c24dab5812c14e5522a64929
   React-NativeModulesApple: 5e6103b48be73ab0b72e34395333a1a98f8394b8
   React-perflogger: 721172bda31a65ce7b7a0c3bf3de96f12ef6f45d

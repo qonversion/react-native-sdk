@@ -1,5 +1,5 @@
 import NoCodesApi from "./NoCodesApi";
-import NoCodesConfig from "./NoCodesConfig";
+import NoCodesConfig from "./dto/NoCodesConfig";
 import NoCodesInternal from "./internal/NoCodesInternal";
 
 export default class NoCodes {
@@ -34,4 +34,4 @@ export default class NoCodes {
     this.backingInstance = new NoCodesInternal(config);
     return this.backingInstance;
   }
-} 
+}
