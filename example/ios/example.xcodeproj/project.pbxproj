@@ -462,6 +462,7 @@
 					"$(PODS_ROOT)/React-Core/Default",
 					"$(PODS_CONFIGURATION_BUILD_DIR)/React-Core",
 					"$(PODS_ROOT)/React-Core",
+					"$(PODS_ROOT)/React-Fabric",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
