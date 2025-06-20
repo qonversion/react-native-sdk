@@ -223,9 +223,8 @@ public class QonversionModule extends ReactContextBaseJavaModule implements Qonv
 
     @Override
     public void onEntitlementsUpdated(@NonNull Map<String, ?> map) {
-        final WritableMap payload = EntitiesConverter.convertMapToWritableMap(map);
         if (eventEmitter != null) {
-            eventEmitter.emit(EVENT_ENTITLEMENTS_UPDATED, payload);
+            eventEmitter.emit(EVENT_ENTITLEMENTS_UPDATED, EntitiesConverter.convertMapToWritableMap(map));
         }
     }
 }

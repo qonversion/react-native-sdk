@@ -23,7 +23,7 @@ import PromotionalOffer from '../dto/PromotionalOffer';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "8.2.3";
+const sdkVersion = "9.0.0";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
@@ -105,7 +105,7 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
+    } catch (e: any) {
       e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
@@ -132,7 +132,7 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
+    } catch (e: any) {
       e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
@@ -157,7 +157,7 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
+    } catch (e: any) {
       e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }

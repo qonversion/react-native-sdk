@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Map;
+
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 
@@ -24,6 +26,12 @@ public class Utils {
                 rejectWithError(error, promise);
             }
         };
+    }
+
+    static void resolveWithSuccess(final Promise promise) {
+        WritableMap response = Arguments.createMap();
+        response.putBoolean("success", true);
+        promise.resolve(response);
     }
 
     static void rejectWithError(@NonNull SandwichError sandwichError, final Promise promise) {

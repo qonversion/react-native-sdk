@@ -9,18 +9,19 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   react-native-qonversion
                    DESC
-  s.homepage     = "https://github.com/github_account/react-native-qonversion"
+  s.homepage     = "https://github.com/qonversion/react-native-sdk"
   # brief license entry:
   s.license      = "MIT"
   # optional - use expanded license entry instead:
   # s.license    = { :type => "MIT", :file => "LICENSE" }
-  s.authors      = { "Your Name" => "yourname@email.com" }
-  s.platforms    = { :ios => "9.0" }
-  s.source       = { :git => "https://github.com/github_account/react-native-qonversion.git", :tag => "#{s.version}" }
+  s.authors      = { "Qonversion" => "hi@qonversion.io" }
+  s.platforms    = { :ios => "13.0" }
+  s.source       = { :git => "https://github.com/qonversion/react-native-sdk.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,swift}"
   s.requires_arc = true
 
   s.dependency "React"
-  s.dependency "QonversionSandwich", "5.2.0"
+  s.dependency "QonversionSandwich", "6.0.6"
+
 end

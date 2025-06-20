@@ -16,8 +16,8 @@ public class QonversionPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         return Arrays.asList(
-                new QonversionModule(reactContext),
-                new AutomationsModule(reactContext)
+                new NoCodesModule(reactContext),
+                new QonversionModule(reactContext)
         );
     }
 

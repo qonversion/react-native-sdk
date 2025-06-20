@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A26A7A427DB778300281166 /* RNAutomations.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A26A7A327DB778300281166 /* RNAutomations.m */; };
+		70A747D42DE4C691001A99AB /* RNNoCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A747D32DE4C691001A99AB /* RNNoCodes.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNQonversion.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNQonversion.m */; };
 /* End PBXBuildFile section */
 
@@ -25,8 +25,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libQonversion.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libQonversion.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		6A26A7A227DB778300281166 /* RNAutomations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNAutomations.h; sourceTree = "<group>"; };
-		6A26A7A327DB778300281166 /* RNAutomations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNAutomations.m; sourceTree = "<group>"; };
+		70A747D22DE4C691001A99AB /* RNNoCodes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNNoCodes.h; sourceTree = "<group>"; };
+		70A747D32DE4C691001A99AB /* RNNoCodes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNNoCodes.m; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNQonversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNQonversion.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNQonversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNQonversion.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -53,8 +53,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				6A26A7A227DB778300281166 /* RNAutomations.h */,
-				6A26A7A327DB778300281166 /* RNAutomations.m */,
+				70A747D22DE4C691001A99AB /* RNNoCodes.h */,
+				70A747D32DE4C691001A99AB /* RNNoCodes.m */,
 				B3E7B5881CC2AC0600A0062D /* RNQonversion.h */,
 				B3E7B5891CC2AC0600A0062D /* RNQonversion.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -119,7 +119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNQonversion.m in Sources */,
-				6A26A7A427DB778300281166 /* RNAutomations.m in Sources */,
+				70A747D42DE4C691001A99AB /* RNNoCodes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +228,13 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../../../node_modules/react-native/React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../../node_modules/react-native/React/CoreModules/**",
+					"$(SRCROOT)/../../react-native/React/CoreModules/**"
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Qonversion;
 				SKIP_INSTALL = YES;
@@ -244,7 +250,13 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../../../node_modules/react-native/React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../../node_modules/react-native/React/CoreModules/**",
+					"$(SRCROOT)/../../react-native/React/CoreModules/**"
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Qonversion;
 				SKIP_INSTALL = YES;
