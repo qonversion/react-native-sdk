@@ -1,49 +1,29 @@
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 
-use_modular_headers!
-platform :ios, '13.0'
+platform :ios, '16.0'
+prepare_react_native_project!
 
 target 'example' do
   config = use_native_modules!
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
   use_react_native!(
-    :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    # Upcoming versions of React Native may rely on get_default_flags(), but
-    # we make it explicit here to aid in the React Native upgrade process.
+    :path => "../node_modules/react-native",
     :hermes_enabled => false,
-    :fabric_enabled => flags[:fabric_enabled],
-    # Enables Flipper.
-    #
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
-    :flipper_configuration => FlipperConfiguration.enabled,
-    # An absolute path to your application root.
+    :fabric_enabled => false,
+    :new_arch_enabled => false,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'exampleTests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
-  pod 'RCT-Folly', :podspec => '../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec', :modular_headers => false
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
-  pod 'fmt', :modular_headers => false
 
   post_install do |installer|
     react_native_post_install(
       installer,
-      # Set `mac_catalyst_enabled` to `true` in order to apply patches
-      # necessary for Mac Catalyst builds
+      "../node_modules/react-native",
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
-    
+
     installer.pods_project.targets.each do |target|
       if target.name == 'Flipper'
         file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
@@ -55,15 +35,26 @@ target 'example' do
           end
         end
       end
+
+      target.build_configurations.each do |config|
+        # Общие настройки для всех таргетов
+        config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ObjC -lc++'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+
+        # Добавляем все библиотеки в пути поиска
+        config.build_settings['LIBRARY_SEARCH_PATHS'] = [
+          '$(inherited)',
+          '$(PODS_ROOT)/DoubleConversion',
+          '$(PODS_ROOT)/DoubleConversion/double-conversion',
+          '$(PODS_ROOT)/RCT-Folly',
+          '$(PODS_ROOT)/RCT-Folly/folly',
+          '$(PODS_ROOT)/RCTDeprecation',
+          '$(PODS_CONFIGURATION_BUILD_DIR)/DoubleConversion',
+          '$(PODS_CONFIGURATION_BUILD_DIR)/RCT-Folly',
+          '$(PODS_CONFIGURATION_BUILD_DIR)/RCTDeprecation'
+        ]
+      end
     end
-  end
-end
-
-target 'example-tvOS' do
-  # Pods for example-tvOS
-
-  target 'example-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
   end
 end

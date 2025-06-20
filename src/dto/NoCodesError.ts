@@ -1,24 +1,26 @@
-import {QonversionErrorCode} from './enums';
+import {NoCodesErrorCode} from './enums';
+import QonversionError from './QonversionError';
 
-class QonversionError {
-  code: QonversionErrorCode;
-  domain?: string | null;
+class NoCodesError {
+  code: NoCodesErrorCode;
   description?: string | null;
   additionalMessage?: string | null;
-  userCanceled: boolean = false;
+  domain?: string | null;
+  error?: QonversionError;
 
   constructor(
-    code: QonversionErrorCode,
+    code: NoCodesErrorCode,
     description?: string | null,
     additionalMessage?: string | null,
     domain?: string | null,
+    error?: QonversionError,
   ) {
     this.code = code;
     this.domain = domain;
     this.description = description;
     this.additionalMessage = additionalMessage;
-    this.userCanceled = code === QonversionErrorCode.PURCHASE_CANCELED;
+    this.error = error;
   }
 }
 
-export default QonversionError;
+export default NoCodesError;

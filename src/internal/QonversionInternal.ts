@@ -105,7 +105,7 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
+    } catch (e: any) {
       e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
@@ -132,7 +132,7 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
+    } catch (e: any) {
       e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
@@ -157,7 +157,7 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
+    } catch (e: any) {
       e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
