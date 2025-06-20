@@ -253,6 +253,48 @@ export enum RemoteConfigurationSourceType {
   REMOTE_CONFIGURATION = "remote_configuration",
 }
 
+export enum ActionType {
+  /**
+   * Unspecified action type
+   */
+  UNKNOWN = 'unknown',
+
+  /**
+   * URL action that opens the URL using SafariViewController
+   */
+  URL = 'url',
+
+  /**
+   * Deeplink action that opens if Application can open specified deeplink
+   */
+  DEEPLINK = 'deeplink',
+
+  /**
+   * Navigation to another No-Codes screen
+   */
+  NAVIGATION = 'navigation',
+
+  /**
+   * Purchase the product
+   */
+  PURCHASE = 'purchase',
+
+  /**
+   * Restore all purchases
+   */
+  RESTORE = 'restore',
+
+  /**
+   * Close current screen
+   */
+  CLOSE = 'close',
+
+  /**
+   * Close all No-Code screens
+   */
+  CLOSE_ALL = 'closeAll',
+}
+
 export enum RemoteConfigurationAssignmentType {
   UNKNOWN = "unknown",
   AUTO = "auto",
@@ -324,10 +366,24 @@ export enum QonversionErrorCode {
 }
 
 export enum NoCodesErrorCode {
-  UNKNOWN = "unknown",
-  INITIALIZATION_ERROR = "initialization_error",
-  NETWORK_ERROR = "network_error",
-  INVALID_DATA = "invalid_data",
-  SCREEN_NOT_FOUND = "screen_not_found",
-  SCREEN_ALREADY_SHOWN = "screen_already_shown"
+  UNKNOWN = "Unknown",
+  BAD_NETWORK_REQUEST = "BadNetworkRequest",
+  BAD_RESPONSE = "BadResponse",
+  ACTIVITY_START = "ActivityStart", // Android
+  NETWORK_REQUEST_EXECUTION = "NetworkRequestExecution", // Android
+  SERIALIZATION = "Serialization", // Android
+  DESERIALIZATION = "Deserialization", // Android
+  REQUEST_DENIED = "RequestDenied", // Android
+  MAPPING = "Mapping", // Android
+  BACKEND_ERROR = "BackendError", // Android
+  SCREEN_NOT_FOUND = "ScreenNotFound", // Android
+  QONVERSION_ERROR = "QonversionError",
+  INTERNAL = "Internal", // iOS
+  AUTHORIZATION_FAILED = "AuthorizationFailed", // iOS
+  CRITICAL = "Critical", // iOS
+  PRODUCT_NOT_FOUND = "ProductNotFound", // iOS
+  PRODUCTS_LOADING_FAILED = "ProductsLoadingFailed", // iOS
+  RATE_LIMIT_EXCEEDED = "RateLimitExceeded", // iOS
+  SCREEN_LOADING_FAILED = "ScreenLoadingFailed", // iOS
+  SDK_INITIALIZATION_ERROR = "SDKInitializationError" // iOS
 }

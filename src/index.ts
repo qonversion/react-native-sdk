@@ -40,4 +40,4 @@ export type { default as NoCodesApi } from './NoCodesApi';
 export { default as NoCodesConfig } from './dto/NoCodesConfig';
 export { default as NoCodesConfigBuilder } from './NoCodesConfigBuilder';
 export type { NoCodesListener } from './dto/NoCodesListener';
-export { NoCodesAction, NoCodesActionType } from './dto/NoCodesAction';
+export { default as NoCodesAction } from './dto/NoCodesAction';

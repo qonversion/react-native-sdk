@@ -10,17 +10,17 @@
 import React, {Component} from 'react';
 import {Image, TouchableOpacity, StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Alert} from 'react-native';
 import Qonversion, {
-  Product,
   QonversionConfigBuilder,
   LaunchMode,
   Environment,
-  Entitlement,
   EntitlementsCacheLifetime,
 } from 'react-native-qonversion';
 import { NoCodes, NoCodesConfigBuilder } from 'react-native-qonversion';
 
+const ProjectKey = 'PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2';
 const InAppProductId = 'in_app';
 const SubscriptionProductId = 'weekly';
+const NoCodeScreenContextKey = 'kamo_test';
 
 export class QonversionSample extends React.PureComponent {
   constructor(props) {
@@ -37,10 +37,7 @@ export class QonversionSample extends React.PureComponent {
 
     // eslint-disable-next-line consistent-this
     const outerClassRef = this; // necessary for anonymous classes to access this.
-    const config = new QonversionConfigBuilder(
-      'PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2',
-      LaunchMode.SUBSCRIPTION_MANAGEMENT
-    )
+    const config = new QonversionConfigBuilder(ProjectKey, LaunchMode.SUBSCRIPTION_MANAGEMENT)
       .setEnvironment(Environment.SANDBOX)
       .setEntitlementsCacheLifetime(EntitlementsCacheLifetime.MONTH)
       .setEntitlementsUpdateListener({
@@ -52,28 +49,26 @@ export class QonversionSample extends React.PureComponent {
       .build();
     Qonversion.initialize(config);
 
-    console.log('LAAAAAA');
-
     // Initialize NoCodes
-    const noCodesConfig = new NoCodesConfigBuilder('PV77YHL7qnGvsdmpTs7gimsxUvY-Znl2')
+    const noCodesConfig = new NoCodesConfigBuilder(ProjectKey)
       .setNoCodesListener({
-        noCodesHasShownScreen: (id) => {
-          console.log('NoCodes screen shown:', id);
+        onScreenShown: (id) => {
+          console.log('No-Codes screen shown:', id);
         },
-        noCodesStartsExecuting: (action) => {
-          console.log('NoCodes starts executing action:', action);
+        onActionStartedExecuting: (action) => {
+          console.log('No-Codes starts executing action:', action);
         },
-        noCodesFailedToExecute: (action, error) => {
-          console.log('NoCodes failed to execute action:', action, error);
+        onActionFailedToExecute: (action, error) => {
+          console.log('No-Codes failed to execute action:', action, error);
         },
-        noCodesFinishedExecuting: (action) => {
-          console.log('NoCodes finished executing action:', action);
+        onActionFinishedExecuting: (action) => {
+          console.log('No-Codes finished executing action:', action);
         },
-        noCodesFinished: () => {
-          console.log('NoCodes flow finished');
+        onFinished: () => {
+          console.log('No-Codes flow finished');
         },
-        noCodesFailedToLoadScreen: (error) => {
-          console.log('NoCodes failed to load screen:', error);
+        onScreenFailedToLoad: (error) => {
+          console.log('No-Codes failed to load screen:', error);
           NoCodes.getSharedInstance().close();
         }
       })
@@ -217,8 +212,7 @@ export class QonversionSample extends React.PureComponent {
                 return;
               }
               this.setState({loading: true});
-              Qonversion.getSharedInstance().purchaseProduct(this.state.inAppProduct).then((ent) => {
-                console.log(ent);
+              Qonversion.getSharedInstance().purchaseProduct(this.state.inAppProduct).then(() => {
                 this.setState({loading: false, inAppButtonTitle: 'Purchased'});
               }).catch(error => {
                 this.setState({loading: false});
@@ -351,7 +345,7 @@ export class QonversionSample extends React.PureComponent {
             style={styles.additionalButton}
             onPress={() => {
               this.setState({loading: true});
-              NoCodes.getSharedInstance().showScreen('kamo_tesst').then(() => {
+              NoCodes.getSharedInstance().showScreen(NoCodeScreenContextKey).then(() => {
                 this.setState({loading: false});
               }).catch(error => {
                 this.setState({loading: false});

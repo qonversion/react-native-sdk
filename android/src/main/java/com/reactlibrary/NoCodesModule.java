@@ -20,7 +20,6 @@ import java.util.Map;
 
 public class NoCodesModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
-    private static final String EVENT_NOCODES = "NoCodesEvent";
     private final NoCodesSandwich noCodesSandwich;
     private final NoCodesEventListener noCodesEventListener;
     private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter = null;
@@ -30,23 +29,20 @@ public class NoCodesModule extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
         this.noCodesSandwich = new NoCodesSandwich();
 
-        // Создаем делегат в конструкторе и сохраняем как поле класса
-        this.noCodesEventListener = new NoCodesEventListener() {
-            @Override
-            public void onNoCodesEvent(@NonNull Event event, @Nullable Map<String, ?> map) {
-                WritableMap params = Arguments.createMap();
-                params.putString("type", event.name());
-                if (map != null) {
-                    params.putMap("payload", EntitiesConverter.convertMapToWritableMap(map));
-                }
-                sendEvent(EVENT_NOCODES, params);
+        this.noCodesEventListener = (event, payload) -> {
+            WritableMap payloadMap = null;
+            if (payload != null) {
+                payloadMap = EntitiesConverter.convertMapToWritableMap(payload);
             }
+
+            sendEvent(event.getKey(), payloadMap);
         };
     }
 
     @Override
     public void initialize() {
         super.initialize();
+
         eventEmitter = getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
     }
 
@@ -68,17 +64,9 @@ public class NoCodesModule extends ReactContextBaseJavaModule {
         try {
             Map<String, Object> config = EntitiesConverter.convertReadableMapToHashMap(configData);
             noCodesSandwich.setScreenPresentationConfig(config, contextKey);
-            WritableMap response = Arguments.createMap();
-            response.putBoolean("success", true);
-            promise.resolve(response);
+            Utils.resolveWithSuccess(promise);
         } catch (Exception e) {
-            WritableMap response = Arguments.createMap();
-            response.putBoolean("success", false);
-            WritableMap errorMap = Arguments.createMap();
-            errorMap.putString("code", "UNKNOWN_ERROR");
-            errorMap.putString("message", e.getMessage());
-            response.putMap("error", errorMap);
-            promise.resolve(response);
+            promise.reject(e);
         }
     }
 
@@ -86,17 +74,9 @@ public class NoCodesModule extends ReactContextBaseJavaModule {
     public void showScreen(String contextKey, final Promise promise) {
         try {
             noCodesSandwich.showScreen(contextKey);
-            WritableMap response = Arguments.createMap();
-            response.putBoolean("success", true);
-            promise.resolve(response);
+            Utils.resolveWithSuccess(promise);
         } catch (Exception e) {
-            WritableMap response = Arguments.createMap();
-            response.putBoolean("success", false);
-            WritableMap errorMap = Arguments.createMap();
-            errorMap.putString("code", "UNKNOWN_ERROR");
-            errorMap.putString("message", e.getMessage());
-            response.putMap("error", errorMap);
-            promise.resolve(response);
+            promise.reject(e);
         }
     }
 
@@ -104,17 +84,9 @@ public class NoCodesModule extends ReactContextBaseJavaModule {
     public void close(final Promise promise) {
         try {
             noCodesSandwich.close();
-            WritableMap response = Arguments.createMap();
-            response.putBoolean("success", true);
-            promise.resolve(response);
+            Utils.resolveWithSuccess(promise);
         } catch (Exception e) {
-            WritableMap response = Arguments.createMap();
-            response.putBoolean("success", false);
-            WritableMap errorMap = Arguments.createMap();
-            errorMap.putString("code", "UNKNOWN_ERROR");
-            errorMap.putString("message", e.getMessage());
-            response.putMap("error", errorMap);
-            promise.resolve(response);
+            promise.reject(e);
         }
     }
 
@@ -123,4 +95,4 @@ public class NoCodesModule extends ReactContextBaseJavaModule {
             eventEmitter.emit(eventName, params);
         }
     }
-} 
+}

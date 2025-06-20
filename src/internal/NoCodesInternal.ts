@@ -1,26 +1,22 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
 import NoCodesApi from "../NoCodesApi";
 import NoCodesConfig from "../dto/NoCodesConfig";
-import Mapper, { QNoCodesResult } from "./Mapper";
+import Mapper from "./Mapper";
 import {NoCodesListener} from '../dto/NoCodesListener';
-import {NoCodesAction, NoCodesActionType} from '../dto/NoCodesAction';
+import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
+import NoCodesError from '../dto/NoCodesError';
+import {NoCodesErrorCode} from '../dto/enums';
 
 const {RNNoCodes} = NativeModules;
 
-const sdkVersion = "1.0.0";
-
-const EVENT_NOCODES = "NoCodesEvent";
-
-const mapNoCodesAction = (type: string, value?: Record<string, any>): NoCodesAction => {
-  return {
-    type: type as NoCodesActionType,
-    parameters: value
-  };
-};
+const EVENT_SCREEN_SHOWN = "nocodes_screen_shown";
+const EVENT_FINISHED = "nocodes_finished";
+const EVENT_ACTION_STARTED = "nocodes_action_started";
+const EVENT_ACTION_FAILED = "nocodes_action_failed";
+const EVENT_ACTION_FINISHED = "nocodes_action_finished";
+const EVENT_SCREEN_FAILED_TO_LOAD = "nocodes_screen_failed_to_load";
 
 export default class NoCodesInternal implements NoCodesApi {
-  private listener: NoCodesListener | null = null;
-
   constructor(config: NoCodesConfig) {
     RNNoCodes.initialize(config.projectKey);
 
@@ -29,63 +25,60 @@ export default class NoCodesInternal implements NoCodesApi {
     }
   }
 
-  async setScreenPresentationConfig(configData: Record<string, any>, contextKey?: string): Promise<void> {
-    const result: QNoCodesResult = await RNNoCodes.setScreenPresentationConfig(configData, contextKey);
-    Mapper.convertResult(result);
+  async setScreenPresentationConfig(config: ScreenPresentationConfig, contextKey?: string): Promise<void> {
+    const data = Mapper.convertScreenPresentationConfig(config);
+    return await RNNoCodes.setScreenPresentationConfig(data, contextKey);
   }
 
   async showScreen(contextKey: string): Promise<void> {
-    const result: QNoCodesResult = await RNNoCodes.showScreen(contextKey);
-    Mapper.convertResult(result);
+    return await RNNoCodes.showScreen(contextKey);
   }
 
   async close(): Promise<void> {
-    const result: QNoCodesResult = await RNNoCodes.close();
-    Mapper.convertResult(result);
+    return await RNNoCodes.close();
   }
 
   setNoCodesListener(listener: NoCodesListener) {
-    this.listener = listener;
     const eventEmitter = new NativeEventEmitter(RNNoCodes);
-    eventEmitter.removeAllListeners(EVENT_NOCODES);
-    eventEmitter.addListener(EVENT_NOCODES, rawPayload => {
-      if (!this.listener) return;
 
-      console.log('Raw payload:', rawPayload);
-      
-      const { event, payload } = rawPayload;
-      let mappedAction: NoCodesAction | undefined;
-      
-      if (payload) {
-        mappedAction = mapNoCodesAction(payload.type, payload.value);
-      }
+    eventEmitter.removeAllListeners(EVENT_SCREEN_SHOWN);
+    eventEmitter.addListener(EVENT_SCREEN_SHOWN, payload => {
+      const screenId = payload["screenId"] ?? "";
+      listener.onScreenShown(screenId);
+    });
 
-      switch (event) {
-        case 'nocodes_screen_shown':
-          console.log('SHOWN');
-          this.listener.noCodesHasShownScreen(payload.id);
-          break;
-        case 'nocodes_action_started':
-          console.log('START');
-          this.listener.noCodesStartsExecuting(mappedAction!);
-          break;
-        case 'nocodes_action_failed':
-          console.log('FAIL');
-          this.listener.noCodesFailedToExecute(mappedAction!, payload.error);
-          break;
-        case 'nocodes_action_finished':
-          console.log('Finish action');
-          this.listener.noCodesFinishedExecuting(mappedAction!);
-          break;
-        case 'nocodes_screen_closed':
-          console.log('Finish');
-          this.listener.noCodesFinished();
-          break;
-        case 'nocodes_screen_failed_to_load':
-          console.log('Failed to load');
-          this.listener.noCodesFailedToLoadScreen(payload.error);
-          break;
-      }
+    eventEmitter.removeAllListeners(EVENT_ACTION_STARTED);
+    eventEmitter.addListener(EVENT_ACTION_STARTED, payload => {
+      const action = Mapper.convertAction(payload);
+      listener.onActionStartedExecuting(action);
+    });
+
+    eventEmitter.removeAllListeners(EVENT_ACTION_FAILED);
+    eventEmitter.addListener(EVENT_ACTION_FAILED, payload => {
+      const action = Mapper.convertAction(payload);
+      listener.onActionFailedToExecute(action);
+    });
+
+    eventEmitter.removeAllListeners(EVENT_ACTION_FINISHED);
+    eventEmitter.addListener(EVENT_ACTION_FINISHED, payload => {
+      const action = Mapper.convertAction(payload);
+      listener.onActionFinishedExecuting(action);
+    });
+
+    eventEmitter.removeAllListeners(EVENT_FINISHED);
+    eventEmitter.addListener(EVENT_FINISHED, () => {
+      listener.onFinished();
+    });
+
+    eventEmitter.removeAllListeners(EVENT_SCREEN_FAILED_TO_LOAD);
+    eventEmitter.addListener(EVENT_SCREEN_FAILED_TO_LOAD, payload => {
+      const error = Mapper.convertNoCodesError(payload);
+      const defaultError = new NoCodesError(
+        NoCodesErrorCode.UNKNOWN,
+        "Failed to load No-Code screen",
+        "Native error parsing failed."
+      );
+      listener.onScreenFailedToLoad(error ?? defaultError);
     });
   }
 }

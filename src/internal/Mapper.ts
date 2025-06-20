@@ -30,7 +30,6 @@ import SKProduct from "../dto/storeProducts/SKProduct";
 import SKProductDiscount from "../dto/storeProducts/SKProductDiscount";
 import SKSubscriptionPeriod from "../dto/storeProducts/SKSubscriptionPeriod";
 import SkuDetails from "../dto/storeProducts/SkuDetails";
-import QonversionError from "../dto/QonversionError";
 import User from '../dto/User';
 import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
 import Experiment from "../dto/Experiment";
@@ -50,6 +49,9 @@ import ProductPricingPhase from "../dto/storeProducts/ProductPricingPhase";
 import ProductInstallmentPlanDetails from '../dto/storeProducts/ProductInstallmentPlanDetails';
 import PromotionalOffer from '../dto/PromotionalOffer';
 import SKPaymentDiscount from '../dto/storeProducts/SKPaymentDiscount';
+import NoCodesAction from '../dto/NoCodesAction';
+import QonversionError from '../dto/QonversionError';
+import NoCodesError from '../dto/NoCodesError';
 
 type QProduct = {
   id: string;
@@ -294,15 +296,6 @@ type QUserProperties = {
 };
 
 const priceMicrosRatio = 1000000;
-
-export interface QNoCodesResult {
-  success: boolean;
-  data?: Record<string, any>;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
 
 class Mapper {
   static convertPromoOffer(
@@ -1075,6 +1068,45 @@ class Mapper {
     }
   }
 
+  static convertAction(
+    payload: Record<string, any>
+  ): NoCodesAction {
+    console.log(payload);
+    return new NoCodesAction(
+      payload["type"],
+      payload["parameters"],
+      this.convertNoCodesError(payload["error"])
+    );
+  }
+
+  static convertNoCodesError(
+    payload: Record<string, string> | undefined
+  ): NoCodesError | undefined {
+    if (!payload) return undefined;
+
+    const code = this.convertNoCodesErrorCode(payload["code"]);
+    return new NoCodesError(
+      code,
+      payload["description"],
+      payload["additionalMessage"],
+      payload["domain"],
+    );
+  }
+
+  static convertQonversionError(
+    payload: Record<string, string> | undefined
+  ): QonversionError | undefined {
+    if (!payload) return undefined;
+
+    const code = this.convertQonversionErrorCode(payload["code"]);
+    return new QonversionError(
+      code,
+      payload["description"],
+      payload["additionalMessage"],
+      payload["domain"],
+    );
+  }
+
   static convertScreenPresentationConfig(config: ScreenPresentationConfig): Object {
     return {
       presentationStyle: config.presentationStyle,
@@ -1082,28 +1114,42 @@ class Mapper {
     };
   }
 
-  static convertErrorCode(code: string | undefined): QonversionErrorCode | NoCodesErrorCode {
+  static convertNoCodesErrorCode(code: string | undefined): NoCodesErrorCode  {
+    if (!code) {
+      return NoCodesErrorCode.UNKNOWN;
+    }
+
+    switch (code) {
+      case NoCodesErrorCode.UNKNOWN: return NoCodesErrorCode.UNKNOWN;
+      case NoCodesErrorCode.BAD_NETWORK_REQUEST: return NoCodesErrorCode.BAD_NETWORK_REQUEST;
+      case NoCodesErrorCode.BAD_RESPONSE: return NoCodesErrorCode.BAD_RESPONSE;
+      case NoCodesErrorCode.ACTIVITY_START: return NoCodesErrorCode.ACTIVITY_START;
+      case NoCodesErrorCode.NETWORK_REQUEST_EXECUTION: return NoCodesErrorCode.NETWORK_REQUEST_EXECUTION;
+      case NoCodesErrorCode.SERIALIZATION: return NoCodesErrorCode.SERIALIZATION;
+      case NoCodesErrorCode.DESERIALIZATION: return NoCodesErrorCode.DESERIALIZATION;
+      case NoCodesErrorCode.REQUEST_DENIED: return NoCodesErrorCode.REQUEST_DENIED;
+      case NoCodesErrorCode.MAPPING: return NoCodesErrorCode.MAPPING;
+      case NoCodesErrorCode.BACKEND_ERROR: return NoCodesErrorCode.BACKEND_ERROR;
+      case NoCodesErrorCode.SCREEN_NOT_FOUND: return NoCodesErrorCode.SCREEN_NOT_FOUND;
+      case NoCodesErrorCode.QONVERSION_ERROR: return NoCodesErrorCode.QONVERSION_ERROR;
+      case NoCodesErrorCode.INTERNAL: return NoCodesErrorCode.INTERNAL;
+      case NoCodesErrorCode.AUTHORIZATION_FAILED: return NoCodesErrorCode.AUTHORIZATION_FAILED;
+      case NoCodesErrorCode.CRITICAL: return NoCodesErrorCode.CRITICAL;
+      case NoCodesErrorCode.PRODUCT_NOT_FOUND: return NoCodesErrorCode.PRODUCT_NOT_FOUND;
+      case NoCodesErrorCode.PRODUCTS_LOADING_FAILED: return NoCodesErrorCode.PRODUCTS_LOADING_FAILED;
+      case NoCodesErrorCode.RATE_LIMIT_EXCEEDED: return NoCodesErrorCode.RATE_LIMIT_EXCEEDED;
+      case NoCodesErrorCode.SCREEN_LOADING_FAILED: return NoCodesErrorCode.SCREEN_LOADING_FAILED;
+      case NoCodesErrorCode.SDK_INITIALIZATION_ERROR: return NoCodesErrorCode.SDK_INITIALIZATION_ERROR;
+    }
+
+    return NoCodesErrorCode.UNKNOWN;
+  }
+
+  static convertQonversionErrorCode(code: string | undefined): QonversionErrorCode  {
     if (!code) {
       return QonversionErrorCode.UNKNOWN;
     }
 
-    // Проверяем коды ошибок NoCodes
-    switch (code) {
-      case NoCodesErrorCode.UNKNOWN:
-        return NoCodesErrorCode.UNKNOWN;
-      case NoCodesErrorCode.INITIALIZATION_ERROR:
-        return NoCodesErrorCode.INITIALIZATION_ERROR;
-      case NoCodesErrorCode.NETWORK_ERROR:
-        return NoCodesErrorCode.NETWORK_ERROR;
-      case NoCodesErrorCode.INVALID_DATA:
-        return NoCodesErrorCode.INVALID_DATA;
-      case NoCodesErrorCode.SCREEN_NOT_FOUND:
-        return NoCodesErrorCode.SCREEN_NOT_FOUND;
-      case NoCodesErrorCode.SCREEN_ALREADY_SHOWN:
-        return NoCodesErrorCode.SCREEN_ALREADY_SHOWN;
-    }
-
-    // Проверяем коды ошибок Qonversion
     switch (code) {
       case QonversionErrorCode.UNKNOWN: return QonversionErrorCode.UNKNOWN;
       case QonversionErrorCode.API_RATE_LIMIT_EXCEEDED: return QonversionErrorCode.API_RATE_LIMIT_EXCEEDED;
@@ -1146,16 +1192,6 @@ class Mapper {
     }
 
     return QonversionErrorCode.UNKNOWN;
-  }
-
-  static convertResult(result: QNoCodesResult): Record<string, any> {
-    if (!result.success) {
-      throw {
-        code: this.convertErrorCode(result.error?.code),
-        message: result.error?.message
-      };
-    }
-    return result.data || {};
   }
 }
 
