@@ -1,6 +1,6 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
 import NoCodesApi from "../NoCodesApi";
-import NoCodesConfig from "../dto/NoCodesConfig";
+import NoCodesConfig from "../NoCodesConfig";
 import Mapper from "./Mapper";
 import {NoCodesListener} from '../dto/NoCodesListener';
 import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';

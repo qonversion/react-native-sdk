@@ -1,5 +1,5 @@
 import NoCodesApi from "./NoCodesApi";
-import NoCodesConfig from "./dto/NoCodesConfig";
+import NoCodesConfig from "./NoCodesConfig";
 import NoCodesInternal from "./internal/NoCodesInternal";
 
 export default class NoCodes {
@@ -17,7 +17,7 @@ export default class NoCodes {
    */
   static getSharedInstance(): NoCodesApi {
     if (!this.backingInstance) {
-      throw "NoCodes has not been initialized. You should call " +
+      throw "No-Codes has not been initialized. You should call " +
         "the initialize method before accessing the shared instance of NoCodes."
     }
 
@@ -25,10 +25,10 @@ export default class NoCodes {
   }
 
   /**
-   * An entry point to use NoCodes SDK. Call to initialize NoCodes SDK with required configs.
+   * An entry point to use No-Codes SDK. Call to initialize No-Codes SDK with required configs.
    *
    * @param config a config that contains key SDK settings.
-   * @return Initialized instance of the NoCodes SDK.
+   * @return Initialized instance of the No-Codes SDK.
    */
   static initialize(config: NoCodesConfig): NoCodesApi {
     this.backingInstance = new NoCodesInternal(config);

@@ -20,7 +20,6 @@ import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 import {RemoteConfigList} from '../index';
 import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 import PromotionalOffer from '../dto/PromotionalOffer';
-import QonversionError from '../dto/QonversionError';
 
 const {RNQonversion} = NativeModules;
 
@@ -106,10 +105,8 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
-      if (e instanceof QonversionError) {
-        e.setUserCanceled(e.code === QonversionErrorCode.PURCHASE_CANCELED);
-      }
+    } catch (e: any) {
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
   }
@@ -135,10 +132,8 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
-      if (e instanceof QonversionError) {
-        e.setUserCanceled(e.code === QonversionErrorCode.PURCHASE_CANCELED);
-      }
+    } catch (e: any) {
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
   }
@@ -162,10 +157,8 @@ export default class QonversionInternal implements QonversionApi {
       const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
 
       return mappedPermissions;
-    } catch (e) {
-      if (e instanceof QonversionError) {
-        e.setUserCanceled(e.code === QonversionErrorCode.PURCHASE_CANCELED);
-      }
+    } catch (e: any) {
+      e.userCanceled = e.code === QonversionErrorCode.PURCHASE_CANCELED;
       throw e;
     }
   }

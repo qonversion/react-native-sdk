@@ -295,6 +295,17 @@ type QUserProperties = {
   properties: QUserProperty[];
 };
 
+type QQonversionError = {
+  code: string | undefined;
+  description: string | null | undefined,
+  additionalMessage: string | null | undefined,
+  domain: string | null | undefined,
+};
+
+type QNoCodesError = QQonversionError & {
+  qonversionError?: QQonversionError | null,
+};
+
 const priceMicrosRatio = 1000000;
 
 class Mapper {
@@ -1080,30 +1091,32 @@ class Mapper {
   }
 
   static convertNoCodesError(
-    payload: Record<string, string> | undefined
+    payload: QNoCodesError | undefined
   ): NoCodesError | undefined {
     if (!payload) return undefined;
 
-    const code = this.convertNoCodesErrorCode(payload["code"]);
+    const code = this.convertNoCodesErrorCode(payload.code);
+    const error = payload.qonversionError ? this.convertQonversionError(payload.qonversionError) : undefined;
     return new NoCodesError(
       code,
-      payload["description"],
-      payload["additionalMessage"],
-      payload["domain"],
+      payload.description,
+      payload.additionalMessage,
+      payload.domain,
+      error,
     );
   }
 
   static convertQonversionError(
-    payload: Record<string, string> | undefined
+    payload: QQonversionError | undefined
   ): QonversionError | undefined {
     if (!payload) return undefined;
 
-    const code = this.convertQonversionErrorCode(payload["code"]);
+    const code = this.convertQonversionErrorCode(payload.code);
     return new QonversionError(
       code,
-      payload["description"],
-      payload["additionalMessage"],
-      payload["domain"],
+      payload.description,
+      payload.additionalMessage,
+      payload.domain,
     );
   }
 

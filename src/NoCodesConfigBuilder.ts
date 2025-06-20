@@ -1,5 +1,5 @@
 import {NoCodesListener} from './dto/NoCodesListener';
-import NoCodesConfig from './dto/NoCodesConfig';
+import NoCodesConfig from './NoCodesConfig';
 
 class NoCodesConfigBuilder {
   private readonly projectKey: string;
