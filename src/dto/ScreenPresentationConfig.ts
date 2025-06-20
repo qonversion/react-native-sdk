@@ -1,6 +1,6 @@
 import {ScreenPresentationStyle} from './enums';
 
-export class ScreenPresentationConfig {
+class ScreenPresentationConfig {
   /**
    * Describes how screens will be displayed.
    * For mode details see the enum description.
@@ -20,3 +20,5 @@ export class ScreenPresentationConfig {
     this.animated = animated === undefined ? true : animated;
   }
 }
+
+export default ScreenPresentationConfig;

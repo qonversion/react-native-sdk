@@ -3,7 +3,7 @@ import NoCodesApi from "../NoCodesApi";
 import NoCodesConfig from "../NoCodesConfig";
 import Mapper from "./Mapper";
 import {NoCodesListener} from '../dto/NoCodesListener';
-import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
+import ScreenPresentationConfig from '../dto/ScreenPresentationConfig';
 import NoCodesError from '../dto/NoCodesError';
 import {NoCodesErrorCode} from '../dto/enums';
 
@@ -25,17 +25,17 @@ export default class NoCodesInternal implements NoCodesApi {
     }
   }
 
-  async setScreenPresentationConfig(config: ScreenPresentationConfig, contextKey?: string): Promise<void> {
+  async setScreenPresentationConfig(config: ScreenPresentationConfig, contextKey?: string) {
     const data = Mapper.convertScreenPresentationConfig(config);
-    return await RNNoCodes.setScreenPresentationConfig(data, contextKey);
+    await RNNoCodes.setScreenPresentationConfig(data, contextKey);
   }
 
-  async showScreen(contextKey: string): Promise<void> {
-    return await RNNoCodes.showScreen(contextKey);
+  async showScreen(contextKey: string) {
+    await RNNoCodes.showScreen(contextKey);
   }
 
-  async close(): Promise<void> {
-    return await RNNoCodes.close();
+  async close() {
+    await RNNoCodes.close();
   }
 
   setNoCodesListener(listener: NoCodesListener) {

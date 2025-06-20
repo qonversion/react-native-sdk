@@ -15,7 +15,6 @@ export { default as PurchaseUpdateModel } from './dto/PurchaseUpdateModel';
 export type { PromoPurchasesListener } from './dto/PromoPurchasesListener';
 export { default as RemoteConfig } from './dto/RemoteConfig';
 export { default as RemoteConfigList } from './dto/RemoteConfigList';
-export { ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
 export { default as SubscriptionPeriod } from './dto/SubscriptionPeriod';
 export { default as QonversionError } from './dto/QonversionError';
 export { default as User } from './dto/User';
@@ -35,6 +34,7 @@ export { default as PurchaseOptionsBuilder } from './dto/PurchaseOptionsBuilder'
 export { default as PurchaseOptions } from './dto/PurchaseOptionsBuilder';
 
 // NoCode exports
+export { default as ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
 export { default as NoCodes } from './NoCodes';
 export type { default as NoCodesApi } from './NoCodesApi';
 export { default as NoCodesConfig } from './NoCodesConfig';

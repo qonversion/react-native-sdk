@@ -1,4 +1,4 @@
-import {ScreenPresentationConfig} from './dto/ScreenPresentationConfig';
+import ScreenPresentationConfig from './dto/ScreenPresentationConfig';
 
 export default interface NoCodesApi {
   /**
@@ -7,18 +7,16 @@ export default interface NoCodesApi {
    * @param contextKey the context key of the screen, to which a config should be applied.
    *                   If not provided, the config is used for all the screens.
    */
-  setScreenPresentationConfig(config: ScreenPresentationConfig, contextKey?: string): Promise<void>;
+  setScreenPresentationConfig(config: ScreenPresentationConfig, contextKey?: string): void;
 
   /**
    * Show the screen using its context key.
    * @param contextKey the context key of the screen which must be shown
-   * @returns promise to await for completion.
    */
-  showScreen(contextKey: string): Promise<void>;
+  showScreen(contextKey: string): void;
 
   /**
    * Close the current opened No-Code screen.
-   * @returns promise to await for completion.
    */
-  close(): Promise<void>;
+  close(): void;
 }

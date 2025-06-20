@@ -344,20 +344,7 @@ export class QonversionSample extends React.PureComponent {
           <TouchableOpacity
             style={styles.additionalButton}
             onPress={() => {
-              this.setState({loading: true});
-              NoCodes.getSharedInstance().showScreen(NoCodeScreenContextKey).then(() => {
-                this.setState({loading: false});
-              }).catch(error => {
-                this.setState({loading: false});
-                Alert.alert(
-                  'Error',
-                  error.message,
-                  [
-                    {text: 'OK'},
-                  ],
-                  {cancelable: true}
-                );
-              });
+              NoCodes.getSharedInstance().showScreen(NoCodeScreenContextKey)
             }}
           >
             <Text style={styles.additionalButtonsText}>Show NoCodes Screen</Text>

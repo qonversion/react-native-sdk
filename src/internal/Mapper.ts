@@ -31,7 +31,7 @@ import SKProductDiscount from "../dto/storeProducts/SKProductDiscount";
 import SKSubscriptionPeriod from "../dto/storeProducts/SKSubscriptionPeriod";
 import SkuDetails from "../dto/storeProducts/SkuDetails";
 import User from '../dto/User';
-import {ScreenPresentationConfig} from '../dto/ScreenPresentationConfig';
+import ScreenPresentationConfig from '../dto/ScreenPresentationConfig';
 import Experiment from "../dto/Experiment";
 import ExperimentGroup from "../dto/ExperimentGroup";
 import SubscriptionPeriod from "../dto/SubscriptionPeriod";
