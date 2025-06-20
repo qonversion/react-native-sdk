@@ -1082,7 +1082,6 @@ class Mapper {
   static convertAction(
     payload: Record<string, any>
   ): NoCodesAction {
-    console.log(payload);
     return new NoCodesAction(
       payload["type"],
       payload["parameters"],
