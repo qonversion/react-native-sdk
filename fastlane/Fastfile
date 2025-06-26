@@ -16,7 +16,7 @@ end
 
 def upgrade_sandwich_android(new_version)
   path = "../android/build.gradle"
-  common_part = "implementation \"io.qonversion.sandwich:sandwich:"
+  common_part = "implementation \"io.qonversion:sandwich:"
   regex = /#{common_part}.*"/
   result_value = "#{common_part}#{new_version}\""
 
