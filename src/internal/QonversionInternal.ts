@@ -23,7 +23,7 @@ import PromotionalOffer from '../dto/PromotionalOffer';
 
 const {RNQonversion} = NativeModules;
 
-const sdkVersion = "9.0.0";
+const sdkVersion = "8.2.5";
 
 const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
 const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
