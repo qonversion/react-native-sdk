@@ -1,7 +1,5 @@
 #import "RNNoCodes.h"
 
-static NSString *const kNoCodesEventName = @"NoCodesEvent";
-
 @interface RNNoCodes ()
 
 @property (nonatomic, strong) NoCodesSandwich *noCodesSandwich;
@@ -21,7 +19,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[kNoCodesEventName];
+    return [_noCodesSandwich getAvailableEvents];
 }
 
 RCT_EXPORT_METHOD(initialize:(NSString *)projectKey
@@ -59,13 +57,7 @@ RCT_EXPORT_METHOD(close:(RCTPromiseResolveBlock)resolve
 }
 
 - (void)noCodesDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
-    NSMutableDictionary *eventData = [NSMutableDictionary dictionary];
-    eventData[@"event"] = event;
-    if (payload) {
-        eventData[@"payload"] = payload;
-    }
-    
-    [self sendEventWithName:kNoCodesEventName body:eventData];
+    [self sendEventWithName:event body:payload];
 }
 
 @end
