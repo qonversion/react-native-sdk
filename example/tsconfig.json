@@ -1,5 +1,5 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
+  "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "strict": true,
     "allowJs": true,
@@ -12,4 +12,4 @@
     "skipLibCheck": true,
     "target": "esnext"
   }
-} 
+}

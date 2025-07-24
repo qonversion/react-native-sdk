@@ -1,5 +1,9 @@
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-require_relative '../node_modules/react-native/scripts/react_native_pods'
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
 
 platform :ios, '16.0'
 prepare_react_native_project!
@@ -37,23 +41,10 @@ target 'example' do
       end
 
       target.build_configurations.each do |config|
-        # Общие настройки для всех таргетов
+        # Common settings for all targets
         config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ObjC -lc++'
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
-
-        # Добавляем все библиотеки в пути поиска
-        config.build_settings['LIBRARY_SEARCH_PATHS'] = [
-          '$(inherited)',
-          '$(PODS_ROOT)/DoubleConversion',
-          '$(PODS_ROOT)/DoubleConversion/double-conversion',
-          '$(PODS_ROOT)/RCT-Folly',
-          '$(PODS_ROOT)/RCT-Folly/folly',
-          '$(PODS_ROOT)/RCTDeprecation',
-          '$(PODS_CONFIGURATION_BUILD_DIR)/DoubleConversion',
-          '$(PODS_CONFIGURATION_BUILD_DIR)/RCT-Folly',
-          '$(PODS_CONFIGURATION_BUILD_DIR)/RCTDeprecation'
-        ]
       end
     end
   end
