@@ -1,12 +1,11 @@
-#import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
+#import <ReactNativeSdkSpec/ReactNativeSdkSpec.h>
 @import QonversionSandwich;
 
-@interface RNQonversion : RCTEventEmitter <RCTBridgeModule>
+@interface RNQonversion : NativeQonversionModuleSpecBase <NativeQonversionModuleSpec>
 
 - (void)handleResult:(NSDictionary *)result
                error:(SandwichError *)error
-          completion:(RCTPromiseResolveBlock)completion
-            rejecter:(RCTPromiseRejectBlock)reject;
+             resolve:(RCTPromiseResolveBlock)resolve
+              reject:(RCTPromiseRejectBlock)reject;
 
 @end

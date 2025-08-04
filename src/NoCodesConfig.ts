@@ -1,4 +1,4 @@
-import { NoCodesListener } from './dto/NoCodesListener';
+import type { NoCodesListener } from './dto/NoCodesListener';
 
 class NoCodesConfig {
   readonly projectKey: string;

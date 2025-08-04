@@ -1,4 +1,4 @@
-import {
+import type {
   SKProductDiscountPaymentModes,
   SKProductDiscountTypes,
 } from "../enums";
