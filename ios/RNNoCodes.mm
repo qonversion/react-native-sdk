@@ -1,8 +1,9 @@
 #import "RNNoCodes.h"
+#import "qonversion_react_native_sdk-Swift.h"
 
 @interface RNNoCodes ()
 
-@property (nonatomic, strong) NoCodesSandwich *noCodesSandwich;
+@property (nonatomic, strong) RNNoCodesImpl *impl;
 
 @end
 
@@ -10,56 +11,52 @@
 RCT_EXPORT_MODULE()
 
 - (instancetype)init {
-    self = [super init];
-    if (self) {
-        _noCodesSandwich = [[NoCodesSandwich alloc] initWithNoCodesEventListener:self];
-    }
-    return self;
+   self = [super init];
+   if (self) {
+       _impl = [[SwiftNoCodes alloc] init];
+   }
+   return self;
 }
 
 - (void)initialize:(NSString *)projectKey
            resolve:(RCTPromiseResolveBlock)resolve
-            reject:(RCTPromiseRejectBlock)reject) {
-    [self.noCodesSandwich initializeWithProjectKey:projectKey];
+            reject:(RCTPromiseRejectBlock)reject {
+    [self.impl initialize:projectKey];
 }
 
 - (void)setScreenPresentationConfig:(NSDictionary *)configData
-                         contextKey:(NSString *)contextKey
-                            resolve:(RCTPromiseResolveBlock)resolve
-                             reject:(RCTPromiseRejectBlock)reject {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.noCodesSandwich setScreenPresentationConfig:configData forContextKey:contextKey];
-    });
+                        contextKey:(NSString *)contextKey
+                           resolve:(RCcdTPromiseResolveBlock)resolve
+                            reject:(RCTPromiseRejectBlock)reject {
+    [self.impl setScreenPresentationConfig:configData forContextKey:contextKey];
 }
 
 - (void)showScreen:(NSString *)contextKey
            resolve:(RCTPromiseResolveBlock)resolve
-            reject:(RCTPromiseRejectBlock)reject) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.noCodesSandwich showScreen:contextKey];
-    });
+            reject:(RCTPromiseRejectBlock)reject {
+    [self.impl showScreen:contextKey];
 }
 
 - (void)close:(RCTPromiseResolveBlock)resolve
-       reject:(RCTPromiseRejectBlock)reject) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.noCodesSandwich close];
-    });
+      reject:(RCTPromiseRejectBlock)reject {
+   dispatch_async(dispatch_get_main_queue(), ^{
+       [self.impl close];
+   });
 }
-
-
-#pragma mark - NoCodesEventListener
-
-- (void)noCodesDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
-    [self emitOnNoCodeEvent:@{@"name": event, @"payload": payload}];
-}
-
-#pragma mark - TurboModule
-
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
-    return std::make_shared<facebook::react::NativeNoCodesModuleSpecJSI>(params);
-}
+//
+//
+//#pragma mark - NoCodesEventListener
+//
+//- (void)noCodesDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
+//    [self emitOnNoCodeEvent:@{@"name": event, @"payload": payload}];
+//}
+//
+//#pragma mark - TurboModule
+//
+//- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+//    (const facebook::react::ObjCTurboModule::InitParams &)params
+//{
+//    return std::make_shared<facebook::react::NativeNoCodesModuleSpecJSI>(params);
+//}
 
 @end

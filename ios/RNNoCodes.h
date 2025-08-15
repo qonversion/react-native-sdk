@@ -1,6 +1,5 @@
 #import <ReactNativeSdkSpec/ReactNativeSdkSpec.h>
-@import QonversionSandwich;
 
-@interface RNNoCodes : NativeNoCodesModuleSpecBase <NativeNoCodesModuleSpec, NoCodesEventListener>
+@interface RNNoCodes : NativeNoCodesModuleSpecBase <NativeNoCodesModuleSpec>
 
 @end
