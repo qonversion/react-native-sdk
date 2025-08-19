@@ -10,36 +10,59 @@ import QonversionSandwich
 import React
 
 @objc
-class RNNoCodesImpl: NSObject, NoCodesEventListener {
+public protocol NoCodesEventDelegate {
+    func noCodesDidTrigger(event: String, payload: [String: Any]?)
+}
+
+class NoCodesEventHandler: NoCodesEventListener {
+    weak var delegate: NoCodesEventDelegate?
+
+    init(delegate: NoCodesEventDelegate?) {
+        self.delegate = delegate
+    }
+
+    func noCodesDidTrigger(event: String, payload: [String : Any]?) {
+        delegate?.noCodesDidTrigger(event: event, payload: payload)
+    }
+}
+
+@objc
+public class RNNoCodesImpl: NSObject {
 
     var noCodesSandwich: NoCodesSandwich?
+    var eventHandler: NoCodesEventHandler
 
-    override init() {
+    @objc
+    public override init() {
+        eventHandler = NoCodesEventHandler(delegate: nil)
+      
         super.init()
-        noCodesSandwich = NoCodesSandwich(noCodesEventListener: self)
+      
+        noCodesSandwich = NoCodesSandwich(noCodesEventListener: eventHandler)
     }
 
     @objc
-    func initialize(projectKey: String) {
+    public func initialize(projectKey: String) {
         noCodesSandwich?.initialize(projectKey: projectKey)
     }
 
     @MainActor @objc
-    func setScreenPresentationConfig(configData: [String: Any], contextKey: String) {
+    public func setScreenPresentationConfig(_ configData: [String: Any], contextKey: String) {
         noCodesSandwich?.setScreenPresentationConfig(configData, forContextKey: contextKey)
     }
 
     @MainActor @objc
-    func showScreen(contextKey: String) {
+    public func showScreen(contextKey: String) {
         noCodesSandwich?.showScreen(contextKey)
     }
 
     @MainActor @objc
-    func close() {
+    public func close() {
         noCodesSandwich?.close()
     }
 
-    func noCodesDidTrigger(event: String, payload: [String : Any]?) {
-        
+    @objc
+    public func setDelegate(_ delegate: NoCodesEventDelegate?) {
+        eventHandler.delegate = delegate
     }
 }

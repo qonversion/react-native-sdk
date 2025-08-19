@@ -1,5 +1,5 @@
 //
-//  RNQonversion.swift
+//  RNQonversionImpl.swift
 //  qonversion-react-native-sdk
 //
 //  Created by Kamo Spertsyan on 14.08.2025.
@@ -9,214 +9,235 @@ import Foundation
 import QonversionSandwich
 import React
 
-@objc(RNQonversion)
-class RNQonversion: NSObject, QonversionEventListener {
+@objc
+public protocol QonversionEventDelegate {
+    func shouldPurchasePromoProduct(with productId: String)
+    func qonversionDidReceiveUpdatedEntitlements(_ entitlements: [String: Any])
+}
+
+class QonversionEventHandler: QonversionEventListener {
+    weak var delegate: QonversionEventDelegate?
+
+    init(delegate: QonversionEventDelegate?) {
+        self.delegate = delegate
+    }
+
+    func shouldPurchasePromoProduct(with productId: String) {
+        delegate?.shouldPurchasePromoProduct(with: productId)
+    }
+
+    func qonversionDidReceiveUpdatedEntitlements(_ entitlements: [String: Any]) {
+        delegate?.qonversionDidReceiveUpdatedEntitlements(entitlements)
+    }
+}
+
+@objc
+public class RNQonversionImpl: NSObject {
   
   var qonversionSandwich: QonversionSandwich?
+  var eventHandler: QonversionEventHandler
 
-  override init() {
+  public override init() {
+    eventHandler = QonversionEventHandler(delegate: nil)
+    
     super.init()
-    qonversionSandwich = QonversionSandwich(qonversionEventListener: self)
+    
+    qonversionSandwich = QonversionSandwich(qonversionEventListener: eventHandler)
   }
   
   @objc
-  func storeSDKInfo(source: String, version: String) {
+  public func setDelegate(_ delegate: QonversionEventDelegate?) {
+    eventHandler.delegate = delegate
+  }
+
+  @objc
+  public func storeSDKInfo(_ source: String, version: String) {
     qonversionSandwich?.storeSdkInfo(source: source, version: version)
   }
 
   @objc
-  func initializeSdk(key: String, launchModeKey: String, environmentKey: String, cacheLifetimeKey: String, proxyUrl: String, kidsMode: Bool) {
+  public func initializeSdk(_ key: String, launchModeKey: String, environmentKey: String, cacheLifetimeKey: String, proxyUrl: String, kidsMode: Bool) {
     qonversionSandwich?.initialize(projectKey: key, launchModeKey: launchModeKey, environmentKey: environmentKey, entitlementsCacheLifetimeKey: cacheLifetimeKey, proxyUrl: proxyUrl)
   }
 
   @objc
-  func syncHistoricalData() {
+  public func syncHistoricalData() {
     qonversionSandwich?.syncHistoricalData()
   }
 
   @objc
-  func syncStoreKit2Purchases() {
+  public func syncStoreKit2Purchases() {
     qonversionSandwich?.syncStoreKit2Purchases()
   }
 
   @objc
-  func getPromotionalOffer(productId: String, discountId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func getPromotionalOffer(_ productId: String, discountId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.getPromotionalOffer(productId, productDiscountId: discountId, completion: { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     })
   }
 
   @objc
-  func purchase(productId: String, quantity: Int, contextKeys: [String], promoOffer: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func purchase(_ productId: String, quantity: Int, contextKeys: [String], promoOffer: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.purchase(productId, quantity: quantity, contextKeys: contextKeys, promoOffer: promoOffer, completion: { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     })
   }
 
   @objc
-  func setDefinedProperty(property: String, value: String) {
+  public func setDefinedProperty(_ property: String, value: String) {
     qonversionSandwich?.setDefinedProperty(property, value: value)
   }
 
   @objc
-  func setCustomProperty(property: String, value: String) {
+  public func setCustomProperty(_ property: String, value: String) {
     qonversionSandwich?.setCustomProperty(property, value: value)
   }
 
   @objc
-  func userProperties(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func userProperties(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.userProperties { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func addAttributionData(data: [String: Any], provider: String) {
+  public func addAttributionData(_ data: [String: Any], provider: String) {
     qonversionSandwich?.attribution(providerKey: provider, value: data)
   }
 
   @objc
-  func checkEntitlements(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func checkEntitlements(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.checkEntitlements { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func products(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func products(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.products { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func offerings(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func offerings(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.offerings { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func checkTrialIntroEligibility(forProductIds data: [String], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func checkTrialIntroEligibility(forProductIds data: [String], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.checkTrialIntroEligibility(data) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func restore(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func restore(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.restore { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func identify(userId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func identify(_ userId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.identify(userId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func logout() {
+  public func logout() {
     qonversionSandwich?.logout()
   }
 
   @objc
-  func userInfo(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func userInfo(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.userInfo { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func remoteConfig(contextKey: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func remoteConfig(_ contextKey: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.remoteConfig(contextKey) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func remoteConfigList(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func remoteConfigList(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.remoteConfigList { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func remoteConfigList(forContextKeys contextKeys: [String], includeEmptyContextKey: Bool, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func remoteConfigList(forContextKeys contextKeys: [String], includeEmptyContextKey: Bool, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.remoteConfigList(contextKeys, includeEmptyContextKey: includeEmptyContextKey) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func attachUserToExperiment(experimentId: String, groupId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func attachUserToExperiment(_ experimentId: String, groupId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.attachUserToExperiment(with: experimentId, groupId: groupId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func detachUserFromExperiment(experimentId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func detachUserFromExperiment(_ experimentId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.detachUserFromExperiment(with: experimentId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func attachUserToRemoteConfiguration(remoteConfigurationId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func attachUserToRemoteConfiguration(_ remoteConfigurationId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.attachUserToRemoteConfiguration(with: remoteConfigurationId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func detachUserFromRemoteConfiguration(remoteConfigurationId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func detachUserFromRemoteConfiguration(_ remoteConfigurationId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.detachUserFromRemoteConfiguration(with: remoteConfigurationId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func isFallbackFileAccessible(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func isFallbackFileAccessible(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.isFallbackFileAccessible { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func collectAdvertisingID() {
+  public func collectAdvertisingID() {
     qonversionSandwich?.collectAdvertisingId()
   }
 
   @objc
-  func collectAppleSearchAdsAttribution() {
+  public func collectAppleSearchAdsAttribution() {
     qonversionSandwich?.collectAppleSearchAdsAttribution()
   }
 
   @objc
-  func promoPurchase(storeProductId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func promoPurchase(_ storeProductId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.promoPurchase(storeProductId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
   }
 
   @objc
-  func presentCodeRedemptionSheet() {
+  public func presentCodeRedemptionSheet() {
     if #available(iOS 14.0, *) {
       qonversionSandwich?.presentCodeRedemptionSheet()
     }
-  }
-
-  @objc
-  func shouldPurchasePromoProduct(with productId: String) {
-    emitOnPromoPurchaseReceived(productId)
-  }
-
-  @objc
-  func qonversionDidReceiveUpdatedEntitlements(_ entitlements: [String: Any]) {
-    emitOnEntitlementsUpdated(entitlements)
   }
 
   private func handleResult(result: [String: Any]?, error: SandwichError?, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
