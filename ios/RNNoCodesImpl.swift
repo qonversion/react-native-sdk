@@ -42,7 +42,8 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func initialize(projectKey: String) {
+    public func initialize(projectKey: String, source: String, version: String) {
+        // Ignore source and version, because it's taken from the Qonversion SDK.
         noCodesSandwich?.initialize(projectKey: projectKey)
     }
 

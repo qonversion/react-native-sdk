@@ -6,6 +6,8 @@ import ScreenPresentationConfig from '../dto/ScreenPresentationConfig';
 import NoCodesError from '../dto/NoCodesError';
 import {NoCodesErrorCode} from '../dto/enums';
 import RNNoCodes, {type NoCodeEvent} from './specs/NativeNoCodesModule';
+import {sdkSource, sdkVersion} from './QonversionInternal';
+
 const EVENT_SCREEN_SHOWN = "nocodes_screen_shown";
 const EVENT_FINISHED = "nocodes_finished";
 const EVENT_ACTION_STARTED = "nocodes_action_started";
@@ -17,7 +19,7 @@ export default class NoCodesInternal implements NoCodesApi {
   private noCodesListener: NoCodesListener | null = null;
 
   constructor(config: NoCodesConfig) {
-    RNNoCodes.initialize(config.projectKey);
+    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion);
 
     if (config.noCodesListener) {
       this.setNoCodesListener(config.noCodesListener);

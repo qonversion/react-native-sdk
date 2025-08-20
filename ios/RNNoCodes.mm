@@ -18,8 +18,10 @@
     return self;
 }
 
-- (void)initialize:(NSString *)projectKey {
-    [self.impl initializeWithProjectKey:projectKey];
+- (void)initialize:(NSString *)projectKey
+            source:(NSString *)source
+           version:(NSString *)version {
+    [self.impl initializeWithProjectKey:projectKey source:source version:version];
 }
 
 - (void)setScreenPresentationConfig:(NSDictionary *)configData

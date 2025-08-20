@@ -23,7 +23,8 @@ import PromotionalOffer from '../dto/PromotionalOffer';
 import RNQonversion from './specs/NativeQonversionModule';
 import type { QPromoOfferDetails } from './specs/NativeQonversionModule';
 
-const sdkVersion = "9.0.2";
+export const sdkVersion = "9.0.2";
+export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
 
@@ -31,7 +32,7 @@ export default class QonversionInternal implements QonversionApi {
   private promoPurchasesDelegate: PromoPurchasesListener | null = null;
 
   constructor(qonversionConfig: QonversionConfig) {
-    RNQonversion.storeSDKInfo("rn", sdkVersion);
+    RNQonversion.storeSDKInfo(sdkSource, sdkVersion);
     RNQonversion.initializeSdk(
       qonversionConfig.projectKey,
       qonversionConfig.launchMode,
