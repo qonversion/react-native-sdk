@@ -217,7 +217,7 @@ public class RNQonversionImpl: NSObject {
   }
 
   @objc
-  public func collectAdvertisingID() {
+  public func collectAdvertisingId() {
     qonversionSandwich?.collectAdvertisingId()
   }
 
