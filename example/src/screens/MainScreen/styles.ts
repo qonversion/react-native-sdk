@@ -1,0 +1,135 @@
+import { StyleSheet } from 'react-native';
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  contentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 32,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#000000',
+  },
+  userInfoContainer: {
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  userInfoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#000000',
+  },
+  userInfoText: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 4,
+  },
+  menuContainer: {
+    marginTop: 20,
+    width: '100%',
+  },
+  menuItem: {
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  menuItemText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000000',
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#FF3B30',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    alignItems: 'center',
+    minWidth: 120,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  initIndicatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 16,
+  },
+  initIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  initIndicatorGray: {
+    backgroundColor: '#999999',
+  },
+  initIndicatorGreen: {
+    backgroundColor: '#34C759',
+  },
+  initIndicatorRed: {
+    backgroundColor: '#FF3B30',
+  },
+  initIndicatorText: {
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '500',
+  },
+  userInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 6,
+    marginBottom: 8,
+    width: '100%',
+  },
+  userInfoLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333333',
+    flex: 1,
+  },
+  userInfoValue: {
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '500',
+    flex: 2,
+    textAlign: 'right',
+    marginRight: 8,
+    flexWrap: 'wrap',
+  },
+});
