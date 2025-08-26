@@ -29,14 +29,27 @@ const RemoteConfigsScreen: React.FC = () => {
       dispatch({ type: 'SET_LOADING', payload: true });
       let remoteConfigs;
       if (contextKeys.trim()) {
-        const keys = contextKeys.split(',').map(k => k.trim());
-        console.log('🔄 [Qonversion] Calling remoteConfigListForContextKeys with keys:', keys);
-        remoteConfigs = await Qonversion.getSharedInstance().remoteConfigListForContextKeys(keys, true);
-        console.log('✅ [Qonversion] remoteConfigListForContextKeys call successful:', remoteConfigs);
+        const keys = contextKeys.split(',').map((k) => k.trim());
+        console.log(
+          '🔄 [Qonversion] Calling remoteConfigListForContextKeys with keys:',
+          keys
+        );
+        remoteConfigs =
+          await Qonversion.getSharedInstance().remoteConfigListForContextKeys(
+            keys,
+            true
+          );
+        console.log(
+          '✅ [Qonversion] remoteConfigListForContextKeys call successful:',
+          remoteConfigs
+        );
       } else {
         console.log('🔄 [Qonversion] Calling remoteConfigList...');
         remoteConfigs = await Qonversion.getSharedInstance().remoteConfigList();
-        console.log('✅ [Qonversion] remoteConfigList call successful:', remoteConfigs);
+        console.log(
+          '✅ [Qonversion] remoteConfigList call successful:',
+          remoteConfigs
+        );
       }
       dispatch({ type: 'SET_REMOTE_CONFIGS', payload: remoteConfigs });
     } catch (error: any) {
@@ -49,9 +62,14 @@ const RemoteConfigsScreen: React.FC = () => {
 
   const loadSingleRemoteConfig = async () => {
     try {
-      console.log('🔄 [Qonversion] Starting remoteConfig call with contextKey:', singleContextKey);
+      console.log(
+        '🔄 [Qonversion] Starting remoteConfig call with contextKey:',
+        singleContextKey
+      );
       dispatch({ type: 'SET_LOADING', payload: true });
-      const config = await Qonversion.getSharedInstance().remoteConfig(singleContextKey || undefined);
+      const config = await Qonversion.getSharedInstance().remoteConfig(
+        singleContextKey || undefined
+      );
       console.log('✅ [Qonversion] remoteConfig call successful:', config);
       // Create a RemoteConfigList with a single config
       const remoteConfigList = new RemoteConfigList([config]);
@@ -66,30 +84,49 @@ const RemoteConfigsScreen: React.FC = () => {
 
   const attachToExperiment = async () => {
     try {
-      console.log('🔄 [Qonversion] Starting attachUserToExperiment call with experimentId:', experimentId, 'groupId:', groupId);
-      await Qonversion.getSharedInstance().attachUserToExperiment(experimentId, groupId);
+      console.log(
+        '🔄 [Qonversion] Starting attachUserToExperiment call with experimentId:',
+        experimentId,
+        'groupId:',
+        groupId
+      );
+      await Qonversion.getSharedInstance().attachUserToExperiment(
+        experimentId,
+        groupId
+      );
       console.log('✅ [Qonversion] attachUserToExperiment call successful');
       Snackbar.show({
         text: 'User attached to experiment!',
         duration: Snackbar.LENGTH_SHORT,
       });
     } catch (error: any) {
-      console.error('❌ [Qonversion] attachUserToExperiment call failed:', error);
+      console.error(
+        '❌ [Qonversion] attachUserToExperiment call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     }
   };
 
   const detachFromExperiment = async () => {
     try {
-      console.log('🔄 [Qonversion] Starting detachUserFromExperiment call with experimentId:', experimentId);
-      await Qonversion.getSharedInstance().detachUserFromExperiment(experimentId);
+      console.log(
+        '🔄 [Qonversion] Starting detachUserFromExperiment call with experimentId:',
+        experimentId
+      );
+      await Qonversion.getSharedInstance().detachUserFromExperiment(
+        experimentId
+      );
       console.log('✅ [Qonversion] detachUserFromExperiment call successful');
       Snackbar.show({
         text: 'User detached from experiment!',
         duration: Snackbar.LENGTH_SHORT,
       });
     } catch (error: any) {
-      console.error('❌ [Qonversion] detachUserFromExperiment call failed:', error);
+      console.error(
+        '❌ [Qonversion] detachUserFromExperiment call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     }
   };
@@ -99,7 +136,10 @@ const RemoteConfigsScreen: React.FC = () => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabel}>Context Keys (comma-separated):</Text>
         <TextInput
@@ -121,7 +161,10 @@ const RemoteConfigsScreen: React.FC = () => {
           onChangeText={setSingleContextKey}
           placeholder="Enter context key"
         />
-        <TouchableOpacity style={styles.button} onPress={loadSingleRemoteConfig}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={loadSingleRemoteConfig}
+        >
           <Text style={styles.buttonText}>Get Remote Config</Text>
         </TouchableOpacity>
       </View>
@@ -153,10 +196,18 @@ const RemoteConfigsScreen: React.FC = () => {
         <View style={styles.listContainer}>
           {state.remoteConfigs.remoteConfigs.map((config, index) => (
             <View key={index} style={styles.listItem}>
-              <Text style={styles.listItemTitle}>Context Key: {config.source.contextKey || 'empty'}</Text>
-              <Text style={styles.listItemSubtitle}>Source: {config.source.name}</Text>
-              <Text style={styles.listItemSubtitle}>Type: {config.source.type}</Text>
-              <Text style={styles.listItemSubtitle}>Payload: {JSON.stringify(config.payload)}</Text>
+              <Text style={styles.listItemTitle}>
+                Context Key: {config.source.contextKey || 'empty'}
+              </Text>
+              <Text style={styles.listItemSubtitle}>
+                Source: {config.source.name}
+              </Text>
+              <Text style={styles.listItemSubtitle}>
+                Type: {config.source.type}
+              </Text>
+              <Text style={styles.listItemSubtitle}>
+                Payload: {JSON.stringify(config.payload)}
+              </Text>
             </View>
           ))}
         </View>

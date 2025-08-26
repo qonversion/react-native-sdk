@@ -7,7 +7,12 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import { AppContext, initialState, appReducer, getCurrentScreen } from './store/AppStore';
+import {
+  AppContext,
+  initialState,
+  appReducer,
+  getCurrentScreen,
+} from './store/AppStore';
 import Qonversion, {
   QonversionConfigBuilder,
   LaunchMode,
@@ -49,22 +54,31 @@ const App: React.FC = () => {
       const initializeQonversion = async () => {
         try {
           console.log('🔄 [Qonversion] Starting SDK initialization...');
-          dispatch({ type: 'SET_QONVERSION_INIT_STATUS', payload: 'initializing' });
-          
+          dispatch({
+            type: 'SET_QONVERSION_INIT_STATUS',
+            payload: 'initializing',
+          });
+
           console.log('🔄 [Qonversion] Building config...');
-          const config = new QonversionConfigBuilder(ProjectKey, LaunchMode.SUBSCRIPTION_MANAGEMENT)
+          const config = new QonversionConfigBuilder(
+            ProjectKey,
+            LaunchMode.SUBSCRIPTION_MANAGEMENT
+          )
             .setEnvironment(Environment.SANDBOX)
             .setEntitlementsCacheLifetime(EntitlementsCacheLifetime.MONTH)
             .setEntitlementsUpdateListener({
               onEntitlementsUpdated(entitlements: any) {
-                console.log('📡 [Qonversion] Entitlements updated via listener:', entitlements);
+                console.log(
+                  '📡 [Qonversion] Entitlements updated via listener:',
+                  entitlements
+                );
                 dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
               },
             })
-            .setProxyURL("api-eu.qonversion.io")
+            .setProxyURL('api-eu.qonversion.io')
             .build();
           console.log('✅ [Qonversion] Config built successfully:', config);
-          
+
           console.log('🔄 [Qonversion] Initializing SDK...');
           Qonversion.initialize(config);
           console.log('✅ [Qonversion] SDK initialized successfully');
@@ -73,11 +87,13 @@ const App: React.FC = () => {
 
           // Load initial user info asynchronously
           loadUserInfo();
-          
         } catch (error: any) {
           console.error('❌ [Qonversion] SDK initialization failed:', error);
           dispatch({ type: 'SET_QONVERSION_INIT_STATUS', payload: 'error' });
-          Alert.alert('Initialization Error', error.message || 'Failed to initialize Qonversion SDK');
+          Alert.alert(
+            'Initialization Error',
+            error.message || 'Failed to initialize Qonversion SDK'
+          );
         }
       };
 
@@ -93,11 +109,19 @@ const App: React.FC = () => {
       case 'products':
         return <ProductsScreen />;
       case 'productDetail':
-        return state.selectedProduct ? <ProductDetailScreen product={state.selectedProduct} /> : <ProductsScreen />;
+        return state.selectedProduct ? (
+          <ProductDetailScreen product={state.selectedProduct} />
+        ) : (
+          <ProductsScreen />
+        );
       case 'entitlements':
         return <EntitlementsScreen />;
       case 'entitlementDetail':
-        return state.selectedEntitlement ? <EntitlementDetailScreen entitlement={state.selectedEntitlement} /> : <EntitlementsScreen />;
+        return state.selectedEntitlement ? (
+          <EntitlementDetailScreen entitlement={state.selectedEntitlement} />
+        ) : (
+          <EntitlementsScreen />
+        );
       case 'offerings':
         return <OfferingsScreen />;
       case 'remoteConfigs':
@@ -134,7 +158,10 @@ const App: React.FC = () => {
             </TouchableOpacity>
           )}
           <Text style={styles.headerTitle}>
-            {getCurrentScreen(state) === 'main' ? 'Qonversion SDK Demo' : getCurrentScreen(state).charAt(0).toUpperCase() + getCurrentScreen(state).slice(1)}
+            {getCurrentScreen(state) === 'main'
+              ? 'Qonversion SDK Demo'
+              : getCurrentScreen(state).charAt(0).toUpperCase() +
+                getCurrentScreen(state).slice(1)}
           </Text>
         </View>
         {renderScreen()}

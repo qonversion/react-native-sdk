@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-} from 'react-native';
+import { Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import Qonversion from '@qonversion/react-native-sdk';
 import { AppContext } from '../../store/AppStore';
 import SkeletonLoader from '../../components/SkeletonLoader';
@@ -39,20 +33,25 @@ const OfferingsScreen: React.FC = () => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <TouchableOpacity style={styles.button} onPress={loadOfferings}>
         <Text style={styles.buttonText}>Load Offerings</Text>
       </TouchableOpacity>
 
       {state.offerings ? (
         <View style={styles.listContainer}>
-          <Text style={styles.sectionTitle}>Main Offering ID: {state.offerings.main?.id}</Text>
-          
+          <Text style={styles.sectionTitle}>
+            Main Offering ID: {state.offerings.main?.id}
+          </Text>
+
           {state.offerings.availableOffering.map((offering) => (
             <View key={offering.id} style={styles.offeringContainer}>
               <Text style={styles.offeringTitle}>{offering.id}</Text>
               <Text style={styles.offeringSubtitle}>Tag: {offering.tag}</Text>
-              
+
               {offering.products.length > 0 ? (
                 <View style={styles.productsContainer}>
                   <Text style={styles.productsTitle}>Products:</Text>
@@ -61,7 +60,9 @@ const OfferingsScreen: React.FC = () => {
                   ))}
                 </View>
               ) : (
-                <Text style={styles.noProductsText}>No products in this offering</Text>
+                <Text style={styles.noProductsText}>
+                  No products in this offering
+                </Text>
               )}
             </View>
           ))}

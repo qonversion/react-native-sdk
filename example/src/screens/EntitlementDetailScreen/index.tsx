@@ -1,16 +1,14 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  ScrollView,
-} from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import styles from './styles';
 
 interface EntitlementDetailScreenProps {
   entitlement: any;
 }
 
-const EntitlementDetailScreen: React.FC<EntitlementDetailScreenProps> = ({ entitlement }) => {
+const EntitlementDetailScreen: React.FC<EntitlementDetailScreenProps> = ({
+  entitlement,
+}) => {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -37,21 +35,24 @@ const EntitlementDetailScreen: React.FC<EntitlementDetailScreenProps> = ({ entit
     return (
       <View style={styles.fieldContainer}>
         <Text style={styles.fieldLabel}>{label}:</Text>
-        <Text style={styles.fieldValue}>
-          {date ? formatDate(date) : '-'}
-        </Text>
+        <Text style={styles.fieldValue}>{date ? formatDate(date) : '-'}</Text>
       </View>
     );
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>{entitlement.id}</Text>
-        <View style={[
-          styles.statusBadge,
-          entitlement.isActive ? styles.statusActive : styles.statusInactive
-        ]}>
+        <View
+          style={[
+            styles.statusBadge,
+            entitlement.isActive ? styles.statusActive : styles.statusInactive,
+          ]}
+        >
           <Text style={styles.statusText}>
             {entitlement.isActive ? 'Active' : 'Inactive'}
           </Text>
@@ -75,16 +76,24 @@ const EntitlementDetailScreen: React.FC<EntitlementDetailScreenProps> = ({ entit
         {renderDateField('Trial Start Date', entitlement.trialStartDate)}
         {renderDateField('First Purchase Date', entitlement.firstPurchaseDate)}
         {renderDateField('Last Purchase Date', entitlement.lastPurchaseDate)}
-        {renderDateField('Auto Renew Disable Date', entitlement.autoRenewDisableDate)}
+        {renderDateField(
+          'Auto Renew Disable Date',
+          entitlement.autoRenewDisableDate
+        )}
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Additional Information</Text>
-        {renderField('Last Activated Offer Code', entitlement.lastActivatedOfferCode)}
+        {renderField(
+          'Last Activated Offer Code',
+          entitlement.lastActivatedOfferCode
+        )}
         {entitlement.transactions && entitlement.transactions.length > 0 && (
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Transactions:</Text>
-            <Text style={styles.fieldValue}>{entitlement.transactions.length} transaction(s)</Text>
+            <Text style={styles.fieldValue}>
+              {entitlement.transactions.length} transaction(s)
+            </Text>
           </View>
         )}
       </View>

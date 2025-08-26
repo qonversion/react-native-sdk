@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-} from 'react-native';
-import Qonversion, { Product } from '@qonversion/react-native-sdk';
+import { Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import Qonversion from '@qonversion/react-native-sdk';
 import { AppContext } from '../../store/AppStore';
 import SkeletonLoader from '../../components/SkeletonLoader';
 import ProductCard from '../../components/ProductCard';
@@ -37,7 +31,10 @@ const ProductsScreen: React.FC = () => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <TouchableOpacity style={styles.button} onPress={loadProducts}>
         <Text style={styles.buttonText}>Load Products</Text>
       </TouchableOpacity>

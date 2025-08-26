@@ -1,5 +1,10 @@
 import React from 'react';
-import { Offerings, Product, RemoteConfigList, User } from '@qonversion/react-native-sdk';
+import {
+  Offerings,
+  Product,
+  RemoteConfigList,
+  User,
+} from '@qonversion/react-native-sdk';
 import Entitlement from '../../../src/dto/Entitlement';
 
 // Global Store (Redux-like pattern)
@@ -12,7 +17,11 @@ export interface AppState {
   loading: boolean;
   navigationStack: string[];
   noCodesEvents: string[];
-  qonversionInitStatus: 'not_initialized' | 'initializing' | 'success' | 'error';
+  qonversionInitStatus:
+    | 'not_initialized'
+    | 'initializing'
+    | 'success'
+    | 'error';
   selectedProduct: Product | null;
   selectedEntitlement: Entitlement | null;
   isQonversionInitialized: boolean;
@@ -29,7 +38,10 @@ export type AppAction =
   | { type: 'POP_SCREEN' }
   | { type: 'REPLACE_SCREEN'; payload: string }
   | { type: 'ADD_NOCODES_EVENT'; payload: string }
-  | { type: 'SET_QONVERSION_INIT_STATUS'; payload: 'not_initialized' | 'initializing' | 'success' | 'error' }
+  | {
+      type: 'SET_QONVERSION_INIT_STATUS';
+      payload: 'not_initialized' | 'initializing' | 'success' | 'error';
+    }
   | { type: 'SET_SELECTED_PRODUCT'; payload: Product | null }
   | { type: 'SET_SELECTED_ENTITLEMENT'; payload: Entitlement | null }
   | { type: 'SET_QONVERSION_INITIALIZED'; payload: boolean };
@@ -64,26 +76,31 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
     case 'PUSH_SCREEN':
-      return { 
-        ...state, 
-        navigationStack: [...state.navigationStack, action.payload]
+      return {
+        ...state,
+        navigationStack: [...state.navigationStack, action.payload],
       };
     case 'POP_SCREEN':
-      return { 
-        ...state, 
-        navigationStack: state.navigationStack.length > 1 
-          ? state.navigationStack.slice(0, -1) 
-          : state.navigationStack
+      return {
+        ...state,
+        navigationStack:
+          state.navigationStack.length > 1
+            ? state.navigationStack.slice(0, -1)
+            : state.navigationStack,
       };
     case 'REPLACE_SCREEN':
-      return { 
-        ...state, 
-        navigationStack: state.navigationStack.length > 0 
-          ? [...state.navigationStack.slice(0, -1), action.payload]
-          : [action.payload]
+      return {
+        ...state,
+        navigationStack:
+          state.navigationStack.length > 0
+            ? [...state.navigationStack.slice(0, -1), action.payload]
+            : [action.payload],
       };
     case 'ADD_NOCODES_EVENT':
-      return { ...state, noCodesEvents: [...state.noCodesEvents, action.payload] };
+      return {
+        ...state,
+        noCodesEvents: [...state.noCodesEvents, action.payload],
+      };
     case 'SET_QONVERSION_INIT_STATUS':
       return { ...state, qonversionInitStatus: action.payload };
     case 'SET_SELECTED_PRODUCT':

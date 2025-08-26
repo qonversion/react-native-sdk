@@ -18,17 +18,28 @@ const OtherScreen: React.FC = () => {
   if (!context) return null;
   const { state, dispatch } = context;
 
-  const [fallbackAccessible, setFallbackAccessible] = useState<boolean | null>(null);
+  const [fallbackAccessible, setFallbackAccessible] = useState<boolean | null>(
+    null
+  );
 
   const checkFallbackFile = async () => {
     try {
-      console.log('🔄 [Qonversion] Starting isFallbackFileAccessible() call...');
+      console.log(
+        '🔄 [Qonversion] Starting isFallbackFileAccessible() call...'
+      );
       dispatch({ type: 'SET_LOADING', payload: true });
-      const accessible = await Qonversion.getSharedInstance().isFallbackFileAccessible();
-      console.log('✅ [Qonversion] isFallbackFileAccessible() call successful:', accessible);
+      const accessible =
+        await Qonversion.getSharedInstance().isFallbackFileAccessible();
+      console.log(
+        '✅ [Qonversion] isFallbackFileAccessible() call successful:',
+        accessible
+      );
       setFallbackAccessible(accessible);
     } catch (error: any) {
-      console.error('❌ [Qonversion] isFallbackFileAccessible() call failed:', error);
+      console.error(
+        '❌ [Qonversion] isFallbackFileAccessible() call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -49,7 +60,10 @@ const OtherScreen: React.FC = () => {
         duration: Snackbar.LENGTH_SHORT,
       });
     } catch (error: any) {
-      console.error('❌ [Qonversion] collectAdvertisingId() call failed:', error);
+      console.error(
+        '❌ [Qonversion] collectAdvertisingId() call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     }
   };
@@ -60,15 +74,22 @@ const OtherScreen: React.FC = () => {
       return;
     }
     try {
-      console.log('🔄 [Qonversion] Starting collectAppleSearchAdsAttribution() call...');
+      console.log(
+        '🔄 [Qonversion] Starting collectAppleSearchAdsAttribution() call...'
+      );
       Qonversion.getSharedInstance().collectAppleSearchAdsAttribution();
-      console.log('✅ [Qonversion] collectAppleSearchAdsAttribution() call successful');
+      console.log(
+        '✅ [Qonversion] collectAppleSearchAdsAttribution() call successful'
+      );
       Snackbar.show({
         text: 'Apple Search Ads attribution collected!',
         duration: Snackbar.LENGTH_SHORT,
       });
     } catch (error: any) {
-      console.error('❌ [Qonversion] collectAppleSearchAdsAttribution() call failed:', error);
+      console.error(
+        '❌ [Qonversion] collectAppleSearchAdsAttribution() call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     }
   };
@@ -79,15 +100,22 @@ const OtherScreen: React.FC = () => {
       return;
     }
     try {
-      console.log('🔄 [Qonversion] Starting presentCodeRedemptionSheet() call...');
+      console.log(
+        '🔄 [Qonversion] Starting presentCodeRedemptionSheet() call...'
+      );
       Qonversion.getSharedInstance().presentCodeRedemptionSheet();
-      console.log('✅ [Qonversion] presentCodeRedemptionSheet() call successful');
+      console.log(
+        '✅ [Qonversion] presentCodeRedemptionSheet() call successful'
+      );
       Snackbar.show({
         text: 'Code redemption sheet presented!',
         duration: Snackbar.LENGTH_SHORT,
       });
     } catch (error: any) {
-      console.error('❌ [Qonversion] presentCodeRedemptionSheet() call failed:', error);
+      console.error(
+        '❌ [Qonversion] presentCodeRedemptionSheet() call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     }
   };
@@ -97,11 +125,14 @@ const OtherScreen: React.FC = () => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <TouchableOpacity style={styles.button} onPress={checkFallbackFile}>
         <Text style={styles.buttonText}>Check Fallback File Accessibility</Text>
       </TouchableOpacity>
-      
+
       <View style={styles.indicatorContainer}>
         <Text style={styles.indicatorLabel}>Accessibility:</Text>
         <View
@@ -119,10 +150,18 @@ const OtherScreen: React.FC = () => {
         <TouchableOpacity style={styles.button} onPress={collectAdvertisingId}>
           <Text style={styles.buttonText}>Collect Advertising ID</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={collectAppleSearchAdsAttribution}>
-          <Text style={styles.buttonText}>Collect Apple Search Ads Attribution</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={collectAppleSearchAdsAttribution}
+        >
+          <Text style={styles.buttonText}>
+            Collect Apple Search Ads Attribution
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={presentCodeRedemptionSheet}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={presentCodeRedemptionSheet}
+        >
           <Text style={styles.buttonText}>Present Code Redemption Sheet</Text>
         </TouchableOpacity>
       </View>

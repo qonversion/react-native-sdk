@@ -28,7 +28,9 @@ const NoCodesScreen: React.FC = () => {
   const { state, dispatch } = context;
 
   const [contextKey, setContextKey] = useState('kamo_test');
-  const [presentationStyle, setPresentationStyle] = useState(ScreenPresentationStyle.FULL_SCREEN);
+  const [presentationStyle, setPresentationStyle] = useState(
+    ScreenPresentationStyle.FULL_SCREEN
+  );
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
@@ -67,11 +69,11 @@ const NoCodesScreen: React.FC = () => {
             console.log('📡 [NoCodes] Screen failed to load event:', error);
             dispatch({ type: 'ADD_NOCODES_EVENT', payload: event });
             NoCodes.getSharedInstance().close();
-          }
+          },
         })
         .build();
       console.log('✅ [NoCodes] Config built successfully:', noCodesConfig);
-      
+
       console.log('🔄 [NoCodes] Initializing SDK...');
       NoCodes.initialize(noCodesConfig);
       console.log('✅ [NoCodes] SDK initialized successfully');
@@ -82,7 +84,10 @@ const NoCodesScreen: React.FC = () => {
 
   const showScreen = () => {
     try {
-      console.log('🔄 [NoCodes] Starting showScreen() call with contextKey:', contextKey);
+      console.log(
+        '🔄 [NoCodes] Starting showScreen() call with contextKey:',
+        contextKey
+      );
       NoCodes.getSharedInstance().showScreen(contextKey);
       console.log('✅ [NoCodes] showScreen() call successful');
     } catch (error: any) {
@@ -93,17 +98,28 @@ const NoCodesScreen: React.FC = () => {
 
   const setPresentationConfig = () => {
     try {
-      console.log('🔄 [NoCodes] Starting setScreenPresentationConfig() call with contextKey:', contextKey, 'config:', { presentationStyle, animated });
+      console.log(
+        '🔄 [NoCodes] Starting setScreenPresentationConfig() call with contextKey:',
+        contextKey,
+        'config:',
+        { presentationStyle, animated }
+      );
       const config = new ScreenPresentationConfig(presentationStyle, animated);
-      
-      NoCodes.getSharedInstance().setScreenPresentationConfig(config, contextKey);
+
+      NoCodes.getSharedInstance().setScreenPresentationConfig(
+        config,
+        contextKey
+      );
       console.log('✅ [NoCodes] setScreenPresentationConfig() call successful');
       Snackbar.show({
         text: 'Presentation config set successfully!',
         duration: Snackbar.LENGTH_SHORT,
       });
     } catch (error: any) {
-      console.error('❌ [NoCodes] setScreenPresentationConfig() call failed:', error);
+      console.error(
+        '❌ [NoCodes] setScreenPresentationConfig() call failed:',
+        error
+      );
       Alert.alert('Error', error.message);
     }
   };
@@ -124,7 +140,10 @@ const NoCodesScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabel}>Context Key:</Text>
         <TextInput
@@ -146,14 +165,14 @@ const NoCodesScreen: React.FC = () => {
             key={style}
             style={[
               styles.radioButton,
-              presentationStyle === style && styles.radioButtonSelected
+              presentationStyle === style && styles.radioButtonSelected,
             ]}
             onPress={() => setPresentationStyle(style)}
           >
             <Text style={styles.radioButtonText}>{style}</Text>
           </TouchableOpacity>
         ))}
-        
+
         {Platform.OS === 'ios' && (
           <TouchableOpacity
             style={[styles.checkbox, animated && styles.checkboxSelected]}
@@ -162,7 +181,7 @@ const NoCodesScreen: React.FC = () => {
             <Text style={styles.checkboxText}>Animated (iOS only)</Text>
           </TouchableOpacity>
         )}
-        
+
         <TouchableOpacity style={styles.button} onPress={setPresentationConfig}>
           <Text style={styles.buttonText}>Set Presentation Config</Text>
         </TouchableOpacity>
@@ -176,7 +195,9 @@ const NoCodesScreen: React.FC = () => {
         <Text style={styles.sectionTitle}>No-Codes Events:</Text>
         <ScrollView style={styles.eventsList}>
           {state.noCodesEvents.map((event, index) => (
-            <Text key={index} style={styles.eventText}>{event}</Text>
+            <Text key={index} style={styles.eventText}>
+              {event}
+            </Text>
           ))}
         </ScrollView>
       </View>

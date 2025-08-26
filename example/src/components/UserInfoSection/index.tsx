@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Snackbar from 'react-native-snackbar';
 import { User } from '@qonversion/react-native-sdk';
@@ -15,10 +11,10 @@ interface UserInfoSectionProps {
   showCopyButtons?: boolean;
 }
 
-const UserInfoSection: React.FC<UserInfoSectionProps> = ({ 
-  userInfo, 
-  title = 'User Information:', 
-  showCopyButtons = true 
+const UserInfoSection: React.FC<UserInfoSectionProps> = ({
+  userInfo,
+  title = 'User Information:',
+  showCopyButtons = true,
 }) => {
   if (!userInfo) {
     return null;
@@ -35,28 +31,40 @@ const UserInfoSection: React.FC<UserInfoSectionProps> = ({
   return (
     <View style={styles.userInfoContainer}>
       <Text style={styles.userInfoTitle}>{title}</Text>
-      
+
       {showCopyButtons ? (
         <>
           <TouchableOpacity
             style={styles.userInfoRow}
-            onPress={() => copyToClipboard(userInfo?.qonversionId || '', 'Qonversion ID')}
+            onPress={() =>
+              copyToClipboard(userInfo?.qonversionId || '', 'Qonversion ID')
+            }
           >
             <Text style={styles.userInfoLabel}>Qonversion ID:</Text>
-            <Text style={styles.userInfoValue}>{userInfo?.qonversionId || 'Not available'}</Text>
+            <Text style={styles.userInfoValue}>
+              {userInfo?.qonversionId || 'Not available'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.userInfoRow}
-            onPress={() => copyToClipboard(userInfo?.identityId || '', 'Identity ID')}
+            onPress={() =>
+              copyToClipboard(userInfo?.identityId || '', 'Identity ID')
+            }
           >
             <Text style={styles.userInfoLabel}>Identity ID:</Text>
-            <Text style={styles.userInfoValue}>{userInfo?.identityId || 'Anonymous'}</Text>
+            <Text style={styles.userInfoValue}>
+              {userInfo?.identityId || 'Anonymous'}
+            </Text>
           </TouchableOpacity>
         </>
       ) : (
         <>
-          <Text style={styles.userInfoText}>ID: {userInfo?.identityId || 'Anonymous'}</Text>
-          <Text style={styles.userInfoText}>Qonversion ID: {userInfo?.qonversionId || 'Not available'}</Text>
+          <Text style={styles.userInfoText}>
+            ID: {userInfo?.identityId || 'Anonymous'}
+          </Text>
+          <Text style={styles.userInfoText}>
+            Qonversion ID: {userInfo?.qonversionId || 'Not available'}
+          </Text>
         </>
       )}
     </View>

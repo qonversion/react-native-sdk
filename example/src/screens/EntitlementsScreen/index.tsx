@@ -22,8 +22,12 @@ const EntitlementsScreen: React.FC = () => {
     try {
       console.log('🔄 [Qonversion] Starting checkEntitlements() call...');
       dispatch({ type: 'SET_LOADING', payload: true });
-      const entitlements = await Qonversion.getSharedInstance().checkEntitlements();
-      console.log('✅ [Qonversion] checkEntitlements() call successful:', entitlements);
+      const entitlements =
+        await Qonversion.getSharedInstance().checkEntitlements();
+      console.log(
+        '✅ [Qonversion] checkEntitlements() call successful:',
+        entitlements
+      );
       dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
     } catch (error: any) {
       console.error('❌ [Qonversion] checkEntitlements() call failed:', error);
@@ -37,11 +41,16 @@ const EntitlementsScreen: React.FC = () => {
     console.log('🔄 [Qonversion] Setting entitlements update listener...');
     Qonversion.getSharedInstance().setEntitlementsUpdateListener({
       onEntitlementsUpdated(entitlements: Map<string, Entitlement>) {
-        console.log('📡 [Qonversion] Entitlements updated via listener:', Object.fromEntries(entitlements));
+        console.log(
+          '📡 [Qonversion] Entitlements updated via listener:',
+          Object.fromEntries(entitlements)
+        );
         dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
       },
     });
-    console.log('✅ [Qonversion] Entitlements update listener set successfully');
+    console.log(
+      '✅ [Qonversion] Entitlements update listener set successfully'
+    );
     Snackbar.show({
       text: 'Entitlements listener set successfully!',
       duration: Snackbar.LENGTH_SHORT,
@@ -129,13 +138,21 @@ const EntitlementsScreen: React.FC = () => {
 
   const renderContent = () => {
     return (
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
         <TouchableOpacity style={styles.button} onPress={loadEntitlements}>
           <Text style={styles.buttonText}>Load Entitlements</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={setEntitlementsListener}>
-          <Text style={styles.buttonText}>Set Entitlements Updated Listener</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={setEntitlementsListener}
+        >
+          <Text style={styles.buttonText}>
+            Set Entitlements Updated Listener
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={restore}>
@@ -146,8 +163,13 @@ const EntitlementsScreen: React.FC = () => {
           <Text style={styles.buttonText}>Sync Historical Data</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={syncStoreKit2Purchases}>
-          <Text style={styles.buttonText}>Sync StoreKit 2 Purchases (iOS Only)</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={syncStoreKit2Purchases}
+        >
+          <Text style={styles.buttonText}>
+            Sync StoreKit 2 Purchases (iOS Only)
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={syncPurchases}>
@@ -167,7 +189,8 @@ const EntitlementsScreen: React.FC = () => {
             <View style={styles.emptyStateContainer}>
               <Text style={styles.emptyStateTitle}>No Entitlements Loaded</Text>
               <Text style={styles.emptyStateText}>
-                Tap "Load Entitlements" to fetch your current entitlements from the server.
+                Tap "Load Entitlements" to fetch your current entitlements from
+                the server.
               </Text>
             </View>
           ) : state.entitlements.size === 0 ? (
@@ -175,36 +198,45 @@ const EntitlementsScreen: React.FC = () => {
             <View style={styles.emptyStateContainer}>
               <Text style={styles.emptyStateTitle}>No Entitlements Found</Text>
               <Text style={styles.emptyStateText}>
-                You don't have any active entitlements. Try restoring purchases or check your subscription status.
+                You don't have any active entitlements. Try restoring purchases
+                or check your subscription status.
               </Text>
             </View>
           ) : (
             // Entitlements list
             <View style={styles.listContainer}>
               <Text style={styles.sectionTitle}>Your Entitlements</Text>
-              {Array.from(state.entitlements.entries()).map(([id, entitlement]) => (
-                <TouchableOpacity
-                  key={id}
-                  style={styles.listItem}
-                  onPress={() => {
-                    dispatch({ type: 'SET_SELECTED_ENTITLEMENT', payload: entitlement });
-                    dispatch({ type: 'PUSH_SCREEN', payload: 'entitlementDetail' });
-                  }}
-                >
-                  <Text style={styles.listItemTitle}>{entitlement.id}</Text>
-                  <Text style={styles.listItemSubtitle}>
-                    Status: {entitlement.isActive ? 'Active' : 'Inactive'}
-                  </Text>
-                  <Text style={styles.listItemSubtitle}>
-                    Started: {formatDate(entitlement.startedDate)}
-                  </Text>
-                  {entitlement.expirationDate && (
+              {Array.from(state.entitlements.entries()).map(
+                ([id, entitlement]) => (
+                  <TouchableOpacity
+                    key={id}
+                    style={styles.listItem}
+                    onPress={() => {
+                      dispatch({
+                        type: 'SET_SELECTED_ENTITLEMENT',
+                        payload: entitlement,
+                      });
+                      dispatch({
+                        type: 'PUSH_SCREEN',
+                        payload: 'entitlementDetail',
+                      });
+                    }}
+                  >
+                    <Text style={styles.listItemTitle}>{entitlement.id}</Text>
                     <Text style={styles.listItemSubtitle}>
-                      Expires: {formatDate(entitlement.expirationDate)}
+                      Status: {entitlement.isActive ? 'Active' : 'Inactive'}
                     </Text>
-                  )}
-                </TouchableOpacity>
-              ))}
+                    <Text style={styles.listItemSubtitle}>
+                      Started: {formatDate(entitlement.startedDate)}
+                    </Text>
+                    {entitlement.expirationDate && (
+                      <Text style={styles.listItemSubtitle}>
+                        Expires: {formatDate(entitlement.expirationDate)}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )
+              )}
             </View>
           )}
         </View>

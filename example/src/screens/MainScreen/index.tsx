@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Snackbar from 'react-native-snackbar';
 import { AppContext } from '../../store/AppStore';
@@ -21,7 +15,7 @@ const MainScreen: React.FC = () => {
       </View>
     );
   }
-  
+
   const { state, dispatch } = context;
 
   const menuItems = [
@@ -35,29 +29,39 @@ const MainScreen: React.FC = () => {
   ];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <Image
         style={styles.logo}
         source={require('../../../assets/q_icon.png')}
       />
       <Text style={styles.title}>Qonversion SDK Demo</Text>
-      
+
       <View style={styles.initIndicatorContainer}>
-        <View style={[
-          styles.initIndicator,
-          state.qonversionInitStatus === 'not_initialized' && styles.initIndicatorGray,
-          state.qonversionInitStatus === 'initializing' && styles.initIndicatorGray,
-          state.qonversionInitStatus === 'success' && styles.initIndicatorGreen,
-          state.qonversionInitStatus === 'error' && styles.initIndicatorRed,
-        ]} />
+        <View
+          style={[
+            styles.initIndicator,
+            state.qonversionInitStatus === 'not_initialized' &&
+              styles.initIndicatorGray,
+            state.qonversionInitStatus === 'initializing' &&
+              styles.initIndicatorGray,
+            state.qonversionInitStatus === 'success' &&
+              styles.initIndicatorGreen,
+            state.qonversionInitStatus === 'error' && styles.initIndicatorRed,
+          ]}
+        />
         <Text style={styles.initIndicatorText}>
-          {state.qonversionInitStatus === 'not_initialized' && 'Initialization not completed'}
+          {state.qonversionInitStatus === 'not_initialized' &&
+            'Initialization not completed'}
           {state.qonversionInitStatus === 'initializing' && 'Initializing...'}
-          {state.qonversionInitStatus === 'success' && 'Initialization successful'}
+          {state.qonversionInitStatus === 'success' &&
+            'Initialization successful'}
           {state.qonversionInitStatus === 'error' && 'Initialization error'}
         </Text>
       </View>
-      
+
       {state.userInfo && (
         <View style={styles.userInfoContainer}>
           <Text style={styles.userInfoTitle}>Current User:</Text>
@@ -72,7 +76,9 @@ const MainScreen: React.FC = () => {
             }}
           >
             <Text style={styles.userInfoLabel}>Qonversion ID:</Text>
-            <Text style={styles.userInfoValue}>{state.userInfo?.qonversionId || 'Not available'}</Text>
+            <Text style={styles.userInfoValue}>
+              {state.userInfo?.qonversionId || 'Not available'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.userInfoRow}
@@ -85,7 +91,9 @@ const MainScreen: React.FC = () => {
             }}
           >
             <Text style={styles.userInfoLabel}>Identity ID:</Text>
-            <Text style={styles.userInfoValue}>{state.userInfo?.identityId || 'Anonymous'}</Text>
+            <Text style={styles.userInfoValue}>
+              {state.userInfo?.identityId || 'Anonymous'}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { Product } from '@qonversion/react-native-sdk';
 import { AppContext } from '../../store/AppStore';
 import styles from './styles';
@@ -26,9 +22,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <TouchableOpacity style={styles.listItem} onPress={handlePress}>
       <Text style={styles.listItemTitle}>{product.qonversionId}</Text>
       <Text style={styles.listItemSubtitle}>Store ID: {product.storeId}</Text>
-      <Text style={styles.listItemSubtitle}>Base Plan ID: {product.basePlanId}</Text>
+      <Text style={styles.listItemSubtitle}>
+        Base Plan ID: {product.basePlanId}
+      </Text>
       <Text style={styles.listItemSubtitle}>Type: {product.type}</Text>
-      <Text style={styles.listItemSubtitle}>Price: {product.prettyPrice || 'N/A'}</Text>
+      <Text style={styles.listItemSubtitle}>
+        Price: {product.prettyPrice || 'N/A'}
+      </Text>
     </TouchableOpacity>
   );
 };

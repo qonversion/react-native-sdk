@@ -7,7 +7,10 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native';
-import Qonversion, { UserPropertyKey, AttributionProvider } from '@qonversion/react-native-sdk';
+import Qonversion, {
+  UserPropertyKey,
+  AttributionProvider,
+} from '@qonversion/react-native-sdk';
 import { AppContext } from '../../store/AppStore';
 import SkeletonLoader from '../../components/SkeletonLoader';
 import UserInfoSection from '../../components/UserInfoSection';
@@ -15,25 +18,32 @@ import styles from './styles';
 import Snackbar from 'react-native-snackbar';
 
 const UserScreen: React.FC = () => {
-  const context = React.useContext(AppContext);
-  if (!context) return null;
-  const { state, dispatch } = context;
-
   const [identityId, setIdentityId] = useState('');
   const [propertyKey, setPropertyKey] = useState('');
   const [propertyValue, setPropertyValue] = useState('');
   const [attributionData, setAttributionData] = useState('');
   const [userProperties, setUserProperties] = useState<any>(null);
-  
+
   // New state for radio button selection
-  const [selectedPropertyKey, setSelectedPropertyKey] = useState<UserPropertyKey | 'custom'>('custom');
-  const [selectedAttributionProvider, setSelectedAttributionProvider] = useState<AttributionProvider>(AttributionProvider.APPSFLYER);
+  const [selectedPropertyKey, setSelectedPropertyKey] = useState<
+    UserPropertyKey | 'custom'
+  >('custom');
+  const [selectedAttributionProvider, setSelectedAttributionProvider] =
+    useState<AttributionProvider>(AttributionProvider.APPSFLYER);
+
+  const context = React.useContext(AppContext);
+  if (!context) return null;
+  const { state, dispatch } = context;
 
   const identify = async () => {
     try {
-      console.log('🔄 [Qonversion] Starting identify() call with identityId:', identityId);
+      console.log(
+        '🔄 [Qonversion] Starting identify() call with identityId:',
+        identityId
+      );
       dispatch({ type: 'SET_LOADING', payload: true });
-      const userInfo = await Qonversion.getSharedInstance().identify(identityId);
+      const userInfo =
+        await Qonversion.getSharedInstance().identify(identityId);
       console.log('✅ [Qonversion] identify() call successful:', userInfo);
       dispatch({ type: 'SET_USER_INFO', payload: userInfo });
       Snackbar.show({
@@ -53,10 +63,13 @@ const UserScreen: React.FC = () => {
       console.log('🔄 [Qonversion] Starting logout() call...');
       Qonversion.getSharedInstance().logout();
       console.log('✅ [Qonversion] logout() call successful');
-      
+
       console.log('🔄 [Qonversion] Starting userInfo() call after logout...');
       const userInfo = await Qonversion.getSharedInstance().userInfo();
-      console.log('✅ [Qonversion] userInfo() call after logout successful:', userInfo);
+      console.log(
+        '✅ [Qonversion] userInfo() call after logout successful:',
+        userInfo
+      );
       dispatch({ type: 'SET_USER_INFO', payload: userInfo });
       Snackbar.show({
         text: 'User logged out successfully!',
@@ -88,7 +101,10 @@ const UserScreen: React.FC = () => {
       console.log('🔄 [Qonversion] Starting userProperties() call...');
       dispatch({ type: 'SET_LOADING', payload: true });
       const properties = await Qonversion.getSharedInstance().userProperties();
-      console.log('✅ [Qonversion] userProperties() call successful:', properties);
+      console.log(
+        '✅ [Qonversion] userProperties() call successful:',
+        properties
+      );
       setUserProperties(properties);
       Snackbar.show({
         text: 'User properties loaded successfully!',
@@ -108,9 +124,19 @@ const UserScreen: React.FC = () => {
         if (selectedPropertyKey === 'custom') {
           // For custom properties, use setCustomUserProperty
           if (propertyKey && propertyValue) {
-            console.log('🔄 [Qonversion] Starting setCustomUserProperty() call with key:', propertyKey, 'value:', propertyValue);
-            Qonversion.getSharedInstance().setCustomUserProperty(propertyKey, propertyValue);
-            console.log('✅ [Qonversion] setCustomUserProperty() call successful');
+            console.log(
+              '🔄 [Qonversion] Starting setCustomUserProperty() call with key:',
+              propertyKey,
+              'value:',
+              propertyValue
+            );
+            Qonversion.getSharedInstance().setCustomUserProperty(
+              propertyKey,
+              propertyValue
+            );
+            console.log(
+              '✅ [Qonversion] setCustomUserProperty() call successful'
+            );
             Snackbar.show({
               text: 'Custom user property set successfully!',
               duration: Snackbar.LENGTH_SHORT,
@@ -118,8 +144,16 @@ const UserScreen: React.FC = () => {
           }
         } else {
           // For predefined properties, use setUserProperty
-          console.log('🔄 [Qonversion] Starting setUserProperty() call with key:', selectedPropertyKey, 'value:', propertyValue);
-          Qonversion.getSharedInstance().setUserProperty(selectedPropertyKey as UserPropertyKey, propertyValue);
+          console.log(
+            '🔄 [Qonversion] Starting setUserProperty() call with key:',
+            selectedPropertyKey,
+            'value:',
+            propertyValue
+          );
+          Qonversion.getSharedInstance().setUserProperty(
+            selectedPropertyKey as UserPropertyKey,
+            propertyValue
+          );
           console.log('✅ [Qonversion] setUserProperty() call successful');
           Snackbar.show({
             text: 'User property set successfully!',
@@ -133,14 +167,20 @@ const UserScreen: React.FC = () => {
     }
   };
 
-
-
   const sendAttribution = async () => {
     try {
       if (attributionData && selectedAttributionProvider) {
         const data = JSON.parse(attributionData);
-        console.log('🔄 [Qonversion] Starting attribution() call with provider:', selectedAttributionProvider, 'data:', data);
-        Qonversion.getSharedInstance().attribution(data, selectedAttributionProvider as AttributionProvider);
+        console.log(
+          '🔄 [Qonversion] Starting attribution() call with provider:',
+          selectedAttributionProvider,
+          'data:',
+          data
+        );
+        Qonversion.getSharedInstance().attribution(
+          data,
+          selectedAttributionProvider as AttributionProvider
+        );
         console.log('✅ [Qonversion] attribution() call successful');
         Snackbar.show({
           text: 'Attribution data sent successfully!',
@@ -179,7 +219,10 @@ const UserScreen: React.FC = () => {
   const canLogout = !!state.userInfo?.identityId;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <UserInfoSection userInfo={state.userInfo} />
 
       <View style={styles.inputContainer}>
@@ -219,14 +262,36 @@ const UserScreen: React.FC = () => {
           <View style={styles.userPropertiesContainer}>
             <Text style={styles.userPropertiesTitle}>User Properties:</Text>
             <View style={styles.tableHeader}>
-              <Text style={styles.tableHeaderKey} numberOfLines={1}>Key</Text>
-              <Text style={styles.tableHeaderValue} numberOfLines={1}>Value</Text>
+              <Text style={styles.tableHeaderKey} numberOfLines={1}>
+                Key
+              </Text>
+              <Text style={styles.tableHeaderValue} numberOfLines={1}>
+                Value
+              </Text>
             </View>
             <View style={styles.tableContainer}>
               {userProperties.properties.map((property: any, index: number) => (
-                <View key={property.key} style={[styles.tableRow, index % 2 === 0 && styles.tableRowEven]}>
-                  <Text style={styles.tableCellKey} numberOfLines={1} ellipsizeMode="tail">{property.key}</Text>
-                  <Text style={styles.tableCellValue} numberOfLines={1} ellipsizeMode="tail">{property.value}</Text>
+                <View
+                  key={property.key}
+                  style={[
+                    styles.tableRow,
+                    index % 2 === 0 && styles.tableRowEven,
+                  ]}
+                >
+                  <Text
+                    style={styles.tableCellKey}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {property.key}
+                  </Text>
+                  <Text
+                    style={styles.tableCellValue}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {property.value}
+                  </Text>
                 </View>
               ))}
             </View>
@@ -234,17 +299,27 @@ const UserScreen: React.FC = () => {
         )}
 
         <Text style={styles.inputLabel}>Property Key:</Text>
-        
+
         {/* UserPropertyKey Radio Buttons */}
         <View style={styles.radioGroup}>
           {Object.values(UserPropertyKey)
-            .filter(key => key !== UserPropertyKey.CUSTOM)
+            .filter((key) => key !== UserPropertyKey.CUSTOM)
             .map((key) =>
-              renderRadioButton(key, key, selectedPropertyKey, setSelectedPropertyKey)
+              renderRadioButton(
+                key,
+                key,
+                selectedPropertyKey,
+                setSelectedPropertyKey
+              )
             )}
-          {renderRadioButton('Custom (Manual Input)', 'custom', selectedPropertyKey, setSelectedPropertyKey)}
+          {renderRadioButton(
+            'Custom (Manual Input)',
+            'custom',
+            selectedPropertyKey,
+            setSelectedPropertyKey
+          )}
         </View>
-        
+
         {selectedPropertyKey === 'custom' && (
           <TextInput
             style={styles.textInput}
@@ -253,7 +328,7 @@ const UserScreen: React.FC = () => {
             placeholder="Enter custom property key"
           />
         )}
-        
+
         <Text style={styles.inputLabel}>Property Value:</Text>
         <TextInput
           style={styles.textInput}
@@ -276,16 +351,21 @@ const UserScreen: React.FC = () => {
           placeholder='{"key": "value"}'
           multiline
         />
-        
+
         <Text style={styles.inputLabel}>Attribution Provider:</Text>
-        
+
         {/* AttributionProvider Radio Buttons */}
         <View style={styles.radioGroup}>
           {Object.values(AttributionProvider).map((provider) =>
-            renderRadioButton(provider, provider, selectedAttributionProvider, setSelectedAttributionProvider)
+            renderRadioButton(
+              provider,
+              provider,
+              selectedAttributionProvider,
+              setSelectedAttributionProvider
+            )
           )}
         </View>
-        
+
         <TouchableOpacity style={styles.button} onPress={sendAttribution}>
           <Text style={styles.buttonText}>Send Attribution</Text>
         </TouchableOpacity>

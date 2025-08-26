@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-} from 'react-native';
+import { Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import Qonversion, { Product } from '@qonversion/react-native-sdk';
 import { AppContext } from '../../store/AppStore';
@@ -16,17 +10,26 @@ interface ProductDetailScreenProps {
   product: Product;
 }
 
-const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ product }) => {
+const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
+  product,
+}) => {
   const context = React.useContext(AppContext);
   if (!context) return null;
   const { state, dispatch } = context;
 
   const purchaseProduct = async () => {
     try {
-      console.log('🔄 [Qonversion] Starting purchaseProduct() call with product:', product);
+      console.log(
+        '🔄 [Qonversion] Starting purchaseProduct() call with product:',
+        product
+      );
       dispatch({ type: 'SET_LOADING', payload: true });
-      const entitlements = await Qonversion.getSharedInstance().purchaseProduct(product);
-      console.log('✅ [Qonversion] purchaseProduct() call successful:', entitlements);
+      const entitlements =
+        await Qonversion.getSharedInstance().purchaseProduct(product);
+      console.log(
+        '✅ [Qonversion] purchaseProduct() call successful:',
+        entitlements
+      );
       dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
       Snackbar.show({
         text: 'Product purchased successfully!',
@@ -57,9 +60,14 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ product }) =>
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <View style={styles.header}>
-        <Text style={styles.title}>{product.storeTitle || product.qonversionId}</Text>
+        <Text style={styles.title}>
+          {product.storeTitle || product.qonversionId}
+        </Text>
         {product.prettyPrice && (
           <Text style={styles.price}>{product.prettyPrice}</Text>
         )}
@@ -79,7 +87,10 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ product }) =>
         {renderField('Pretty Price', product.prettyPrice)}
         {renderField('Price', product.price)}
         {renderField('Currency Code', product.currencyCode)}
-        {renderField('Pretty Introductory Price', product.prettyIntroductoryPrice)}
+        {renderField(
+          'Pretty Introductory Price',
+          product.prettyIntroductoryPrice
+        )}
       </View>
 
       <View style={styles.section}>
@@ -94,7 +105,8 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ product }) =>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Subscription Period:</Text>
             <Text style={styles.fieldValue}>
-              {product.subscriptionPeriod.unitCount} {product.subscriptionPeriod.unit}
+              {product.subscriptionPeriod.unitCount}{' '}
+              {product.subscriptionPeriod.unit}
             </Text>
           </View>
         )}
