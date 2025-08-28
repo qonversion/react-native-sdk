@@ -7,7 +7,7 @@ import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.reactlibrary.QonversionModule
 
-class ReactNativeSdkPackage : BaseReactPackage() {
+class QonversionPackage : BaseReactPackage() {
     override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
         return if (name == NoCodesModule.NAME) {
             NoCodesModule(reactContext)

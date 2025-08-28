@@ -16,7 +16,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'ReactNativeExample' do
+target 'QonversionExample' do
   config = use_native_modules!
 
   use_react_native!(

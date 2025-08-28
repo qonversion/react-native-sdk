@@ -18,10 +18,6 @@ public protocol QonversionEventDelegate {
 class QonversionEventHandler: QonversionEventListener {
     weak var delegate: QonversionEventDelegate?
 
-    init(delegate: QonversionEventDelegate?) {
-        self.delegate = delegate
-    }
-
     func shouldPurchasePromoProduct(with productId: String) {
         delegate?.shouldPurchasePromoProduct(with: productId)
     }
@@ -38,7 +34,7 @@ public class RNQonversionImpl: NSObject {
   var eventHandler: QonversionEventHandler
 
   public override init() {
-    eventHandler = QonversionEventHandler(delegate: nil)
+    eventHandler = QonversionEventHandler()
     
     super.init()
     
@@ -241,11 +237,11 @@ public class RNQonversionImpl: NSObject {
   }
 
   private func handleResult(result: [String: Any]?, error: SandwichError?, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-    if let error = error {
+    if let error {
       reject(error.code, error.details, nil)
       return
     }
-    if let result = result {
+    if let result {
       resolve(result)
     } else {
       resolve([:])
