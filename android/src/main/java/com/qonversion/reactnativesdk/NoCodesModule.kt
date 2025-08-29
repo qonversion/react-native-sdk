@@ -32,7 +32,8 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
     }
 
     @ReactMethod
-    override fun initialize(projectKey: String) {
+    override fun initialize(projectKey: String, source: String, version: String) {
+        noCodesSandwich.storeSdkInfo(reactContext, source, version)
         noCodesSandwich.initialize(reactContext, projectKey, null, null, null)
         noCodesSandwich.setDelegate(noCodesEventListener)
         noCodesSandwich.setScreenCustomizationDelegate()

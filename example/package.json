@@ -7,7 +7,7 @@
     "android": "react-native run-android",
     "reIos": "yarn cleanIos && yarn ios",
     "ios": "react-native run-ios",
-    "pods": "cd ios && RCT_NEW_ARCH_ENABLED=1 bundle exec pod install && cd ..",
+    "pods": "cd ios && bundle exec pod install && cd ..",
     "start": "react-native start",
     "clean": "rm -rf node_modules/ && cd .. && rm -rf node_modules/ && yarn install && yarn prepare && cd example && yarn install",
     "cleanIos": "yarn clean && yarn pods"
