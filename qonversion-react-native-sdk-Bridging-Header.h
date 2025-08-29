@@ -3,4 +3,4 @@
 //
 
 #import <React/RCTBridgeModule.h>
-#import <ReactNativeSdkSpec/ReactNativeSdkSpec.h>
+#import <QonversionSdkSpec/QonversionSdkSpec.h>
