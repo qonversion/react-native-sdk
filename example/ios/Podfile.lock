@@ -19,7 +19,7 @@ PODS:
     - fmt
     - glog
     - hermes-engine
-    - QonversionSandwich (= 6.0.8)
+    - QonversionSandwich (= 6.0.10)
     - RCT-Folly
     - RCT-Folly/Fabric
     - RCTRequired
@@ -43,7 +43,7 @@ PODS:
     - SocketRocket
     - Yoga
   - Qonversion/Main (5.13.3)
-  - QonversionSandwich (6.0.8):
+  - QonversionSandwich (6.0.10):
     - NoCodes (= 0.1.3)
     - Qonversion (= 5.13.3)
   - RCT-Folly (2024.11.18.00):
@@ -2406,8 +2406,8 @@ SPEC CHECKSUMS:
   hermes-engine: 4f07404533b808de66cf48ac4200463068d0e95a
   NoCodes: 21b87d320a16758c6eb79167ff98010d81b4894e
   Qonversion: 2b32ae8681de3ba02db5b5ed69c8f213ac4a28fa
-  qonversion-react-native-sdk: 046d871f4599e0f6e8097a0d660bf3091493888f
-  QonversionSandwich: 8a8638ee1fbdf304f0629f064712d206c390fedf
+  qonversion-react-native-sdk: dc32c5cf63d9e4f1d650ba3692209d09f115df06
+  QonversionSandwich: 6a8c8704a57bc97393ec1684c8932402aa0b7ba9
   RCT-Folly: 59ec0ac1f2f39672a0c6e6cecdd39383b764646f
   RCTDeprecation: efa5010912100e944a7ac9a93a157e1def1988fe
   RCTRequired: bbc4cf999ddc4a4b076e076c74dd1d39d0254630
