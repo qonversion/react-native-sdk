@@ -2301,6 +2301,7 @@ __metadata:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
+    "@react-native-clipboard/clipboard": ^1.16.3
     "@react-native-community/cli": 19.0.0
     "@react-native-community/cli-platform-android": 19.0.0
     "@react-native-community/cli-platform-ios": 19.0.0
@@ -2311,6 +2312,7 @@ __metadata:
     react: 19.1.0
     react-native: 0.80.1
     react-native-builder-bob: 0.40.13
+    react-native-snackbar: ^2.9.0
   languageName: unknown
   linkType: soft
 
@@ -2344,6 +2346,23 @@ __metadata:
     react-native: ">=0.60.0-rc.0 <1.0.x"
   languageName: unknown
   linkType: soft
+
+"@react-native-clipboard/clipboard@npm:^1.16.3":
+  version: 1.16.3
+  resolution: "@react-native-clipboard/clipboard@npm:1.16.3"
+  peerDependencies:
+    react: ">= 16.9.0"
+    react-native: ">= 0.61.5"
+    react-native-macos: ">= 0.61.0"
+    react-native-windows: ">= 0.61.0"
+  peerDependenciesMeta:
+    react-native-macos:
+      optional: true
+    react-native-windows:
+      optional: true
+  checksum: 3d9944fc2c4acbecf917e752cc36ec92c4dcdb590c94c81c78c24df9ddd4b02448e252eb39e0949000b01046cfdfe2b03e1676c5e3ac0fe7eb3bf6b649970c27
+  languageName: node
+  linkType: hard
 
 "@react-native-community/cli-clean@npm:15.0.0-alpha.2":
   version: 15.0.0-alpha.2
@@ -9211,6 +9230,16 @@ __metadata:
     escape-string-regexp: ^5.0.0
     fast-glob: ^3.3.3
   checksum: 6356c362c517c49e17d54ee764c3566ba71491fa0d755618ecf2ca548348668e84fe448c24066645983acbc2bd4c0ed47594f9b3ec9dcc0558c0fd9594d2391e
+  languageName: node
+  linkType: hard
+
+"react-native-snackbar@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "react-native-snackbar@npm:2.9.0"
+  peerDependencies:
+    react: ">=16"
+    react-native: ">=0.60"
+  checksum: ea80b525306fd207e390c7852cf8a4d8d0345c1c48c56713316e1f28e4676f3307f381ed3b80ff966e4ecaa6db1041079e92f9816100df7d4f39ca4f365cc9d5
   languageName: node
   linkType: hard
 
