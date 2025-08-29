@@ -1,7 +1,5 @@
-#import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
-@import QonversionSandwich;
+#import <QonversionSdkSpec/QonversionSdkSpec.h>
 
-@interface RNNoCodes : RCTEventEmitter <RCTBridgeModule, NoCodesEventListener>
+@interface RNNoCodes : NativeNoCodesModuleSpecBase <NativeNoCodesModuleSpec>
 
 @end

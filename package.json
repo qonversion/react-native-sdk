@@ -1,36 +1,47 @@
 {
-  "name": "react-native-qonversion",
+  "name": "@qonversion/react-native-sdk",
   "title": "React Native Qonversion",
   "version": "9.0.2",
   "description": "Qonversion provides full in-app purchases infrastructure, so you do not need to build your own server for receipt validation. Implement in-app subscriptions, validate user receipts, check subscription status, and provide access to your app features and content using our StoreKit wrapper and Google Play Billing wrapper.",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./lib/module/index.js",
+  "types": "./lib/typescript/src/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./lib/typescript/src/index.d.ts",
+      "default": "./lib/module/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
-    "build",
+    "src",
+    "lib",
     "android",
-    "!android/local.properties",
-    "!android/gradle",
-    "!android/.gradle",
-    "!android/gradlew*",
-    "!android/build",
     "ios",
+    "cpp",
+    "*.podspec",
+    "react-native.config.js",
     "!ios/build",
-    "!ios/Qonversion.xcodeproj/xcuserdata",
-    "!ios/Qonversion.xcworkspace",
-    "react-native-qonversion.podspec",
-    "!.github",
-    "!**/.gitignore",
-    "!**/.gitattributes",
-    "!**/.idea"
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
   ],
   "scripts": {
-    "prepare": "rm -rf build && tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qonversion/react-native-sdk.git",
-    "baseUrl": "https://github.com/qonversion/react-native-sdk"
+    "example": "yarn workspace @qonversion/react-native-sdk-example",
+    "test": "jest",
+    "typecheck": "tsc",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepare": "bob build",
+    "codegenAndroid": "cd example/android && ./gradlew generateCodegenArtifactsFromSchema",
+    "codegenIos": "node node_modules/react-native/scripts/generate-codegen-artifacts.js --targetPlatform ios --path ./ --outputPath ./generated",
+    "codegen": "yarn codegenAndroid && yarn codegenIos"
   },
   "keywords": [
     "react-native",
@@ -43,20 +54,98 @@
     "in-app",
     "Purchases"
   ],
-  "author": {
-    "name": "Qonversion",
-    "email": "hi@qonversion.io"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qonversion/react-native-sdk.git"
   },
+  "author": "Qonversion <hi@qonversion.io> (https://qonversion.io)",
   "license": "MIT",
-  "licenseFilename": "LICENSE",
-  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/qonversion/react-native-sdk/issues"
+  },
+  "homepage": "https://github.com/qonversion/react-native-sdk#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
-    "typescript": "^4.2.4",
-    "@types/react": "*",
-    "@types/react-native": "*"
+    "@commitlint/config-conventional": "^19.6.0",
+    "@eslint/compat": "^1.2.7",
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.22.0",
+    "@react-native-community/cli": "15.0.0-alpha.2",
+    "@react-native/babel-preset": "0.79.2",
+    "@react-native/eslint-config": "^0.78.0",
+    "@types/jest": "^29.5.5",
+    "@types/react": "^19.0.0",
+    "commitlint": "^19.6.1",
+    "del-cli": "^5.1.0",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.3",
+    "react": "19.0.0",
+    "react-native": "0.79.2",
+    "react-native-builder-bob": "0.40.13",
+    "turbo": "^1.10.7",
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
-    "react": "^16.8.1 || ^17.0.0 || ^18.0.0",
+    "react": "^16.8.1 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-native": ">=0.60.0-rc.0 <1.0.x"
+  },
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@3.6.1",
+  "jest": {
+    "preset": "react-native",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "codegenConfig": {
+    "name": "QonversionSdkSpec",
+    "type": "modules",
+    "jsSrcsDir": "src/internal/specs",
+    "android": {
+      "javaPackageName": "com.qonversion.reactnativesdk"
+    }
+  },
+  "create-react-native-library": {
+    "languages": "kotlin-objc",
+    "type": "turbo-module",
+    "version": "0.52.0"
   }
 }

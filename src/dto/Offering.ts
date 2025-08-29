@@ -1,4 +1,4 @@
-import { OfferingTags } from "./enums";
+import type { OfferingTags } from "./enums";
 import Product from "./Product";
 
 class Offering {

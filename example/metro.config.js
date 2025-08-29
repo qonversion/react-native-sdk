@@ -1,21 +1,20 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
+const path = require('path');
+const { getDefaultConfig } = require('@react-native/metro-config');
+const { getConfig } = require('react-native-builder-bob/metro-config');
+const pkg = require('../package.json');
+
+const root = path.resolve(__dirname, '..');
 
 /**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
  *
- * @format
+ * @type {import('metro-config').MetroConfig}
  */
-
-const config = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: false,
-      },
-    }),
-  },
+module.exports = getConfig(getDefaultConfig(__dirname), {
+  root,
+  pkg,
+  project: __dirname,
   resolver: {
     sourceExts: ['jsx', 'js', 'ts', 'tsx', 'json'],
     assetExts: ['png', 'jpg', 'jpeg', 'gif', 'ttf', 'otf'],
@@ -23,6 +22,4 @@ const config = {
   watchFolders: [
     './assets'
   ]
-};
-
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+});

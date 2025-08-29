@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "@qonversion/react-native-sdk-example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,42 +7,29 @@
     "android": "react-native run-android",
     "reIos": "yarn cleanIos && yarn ios",
     "ios": "react-native run-ios",
+    "pods": "cd ios && bundle exec pod install && cd ..",
     "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint .",
     "clean": "rm -rf node_modules/ && cd .. && rm -rf node_modules/ && yarn install && yarn prepare && cd example && yarn install",
-    "cleanIos": "yarn clean && cd ios && pod install && cd .."
+    "cleanIos": "yarn clean && yarn pods"
   },
   "dependencies": {
-    "babel-preset-react-native": "^4.0.1",
-    "react": "18.3.1",
-    "react-native": "0.77.0",
-    "react-native-qonversion": "file:../"
+    "react": "19.1.0",
+    "react-native": "0.80.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "15.0.1",
-    "@react-native-community/cli-platform-android": "15.0.1",
-    "@react-native-community/cli-platform-ios": "15.0.1",
-    "@react-native/babel-preset": "0.77.0",
-    "@react-native/eslint-config": "0.77.0",
-    "@react-native/metro-config": "0.77.0",
-    "@react-native/typescript-config": "0.77.0",
-    "@types/react": "^18.2.6",
-    "@types/react-test-renderer": "^18.0.0",
-    "babel-jest": "^29.6.3",
-    "eslint": "^8.19.0",
-    "jest": "^29.6.3",
-    "prettier": "2.8.8",
-    "react-test-renderer": "18.3.1",
-    "typescript": "5.0.4"
+    "@react-native-community/cli": "19.0.0",
+    "@react-native-community/cli-platform-android": "19.0.0",
+    "@react-native-community/cli-platform-ios": "19.0.0",
+    "@react-native/babel-preset": "0.80.1",
+    "@react-native/metro-config": "0.80.1",
+    "@react-native/typescript-config": "0.80.1",
+    "@types/react": "^19.1.0",
+    "react-native-builder-bob": "0.40.13"
   },
   "engines": {
     "node": ">=18"
-  },
-  "react-native": {
-    "newArchEnabled": false
   }
 }
