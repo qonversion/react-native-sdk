@@ -8,18 +8,18 @@ import PurchaseUpdateModel from './PurchaseUpdateModel';
 import SubscriptionPeriod from './SubscriptionPeriod';
 
 class Product {
-  qonversionID: string;
-  storeID: string | null;
+  qonversionId: string;
+  storeId: string | null;
 
   /**
    * Identifier of the base plan for Google product.
    */
-  basePlanID: string | null;
+  basePlanId: string | null;
 
   /**
    * Google Play Store details of this product.
    * Android only. Null for iOS, or if the product was not found.
-   * Doesn't take into account {@link basePlanID}.
+   * Doesn't take into account {@link basePlanId}.
    * @deprecated Consider using {@link storeDetails} instead.
    */
   skuDetails: SkuDetails | null;
@@ -39,7 +39,7 @@ class Product {
   offeringId?: string | null;
 
   /**
-   * For Android - the subscription base plan duration. If the {@link basePlanID} is not specified,
+   * For Android - the subscription base plan duration. If the {@link basePlanId} is not specified,
    * the duration is calculated using the deprecated {@link skuDetails}.
    * For iOS - the duration of the {@link skProduct}.
    * Null, if it's not a subscription product or the product was not found in the store.
@@ -57,7 +57,7 @@ class Product {
   /**
    * The calculated type of this product based on the store information.
    * On Android uses deprecated {@link skuDetails} for the old subscription products
-   * where {@link basePlanID} is not specified, and {@link storeDetails} for all the other products.
+   * where {@link basePlanId} is not specified, and {@link storeDetails} for all the other products.
    * On iOS uses {@link skProduct} information.
    */
   type: ProductType;
@@ -74,9 +74,9 @@ class Product {
   prettyIntroductoryPrice?: string;
 
   constructor(
-    qonversionID: string,
-    storeID: string,
-    basePlanID: string | null,
+    qonversionId: string,
+    storeId: string,
+    basePlanId: string | null,
     skuDetails: SkuDetails | null,
     storeDetails: ProductStoreDetails | null,
     skProduct: SKProduct | null,
@@ -91,9 +91,9 @@ class Product {
     storeDescription: string | undefined,
     prettyIntroductoryPrice: string | undefined,
   ) {
-    this.qonversionID = qonversionID;
-    this.storeID = storeID;
-    this.basePlanID = basePlanID;
+    this.qonversionId = qonversionId;
+    this.storeId = storeId;
+    this.basePlanId = basePlanId;
     this.skuDetails = skuDetails;
     this.storeDetails = storeDetails;
     this.skProduct = skProduct;
@@ -120,7 +120,7 @@ class Product {
    * @returns purchase model to pass to the purchase method.
    */
   toPurchaseModel(offerId: string | null = null): PurchaseModel {
-    return new PurchaseModel(this.qonversionID, offerId);
+    return new PurchaseModel(this.qonversionId, offerId);
   }
 
   /**
@@ -152,7 +152,7 @@ class Product {
     oldProductId: string,
     updatePolicy: PurchaseUpdatePolicy | null = null
   ): PurchaseUpdateModel {
-    return new PurchaseUpdateModel(this.qonversionID, oldProductId, updatePolicy);
+    return new PurchaseUpdateModel(this.qonversionId, oldProductId, updatePolicy);
   }
 }
 

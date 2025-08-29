@@ -67,7 +67,7 @@ export default class QonversionInternal implements QonversionApi {
     if (isAndroid()) {
       return null;
     }
-    const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionID, discount.identifier);
+    const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionId, discount.identifier);
     const mappedPromoOffer: PromotionalOffer | null = Mapper.convertPromoOffer(promoOffer);
 
     return mappedPromoOffer;
@@ -90,7 +90,7 @@ export default class QonversionInternal implements QonversionApi {
 
       if (isIos()) {
         purchasePromise = RNQonversion.purchase(
-          product.qonversionID,
+          product.qonversionId,
           options.quantity,
           options.contextKeys,
           promoOffer,
@@ -101,13 +101,13 @@ export default class QonversionInternal implements QonversionApi {
         );
       } else {
         purchasePromise = RNQonversion.purchase(
-            product.qonversionID,
+            product.qonversionId,
             1,
             options.contextKeys,
             undefined,
             options.offerId,
             options.applyOffer,
-            options.oldProduct?.qonversionID,
+            options.oldProduct?.qonversionId,
             options.updatePolicy,
         );
       }
@@ -232,8 +232,8 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.syncPurchases();
   }
 
-  async identify(userID: string): Promise<User> {
-    const userInfo = await RNQonversion.identify(userID);
+  async identify(userId: string): Promise<User> {
+    const userInfo = await RNQonversion.identify(userId);
     const mappedUserInfo: User = Mapper.convertUserInfo(userInfo);
 
     return mappedUserInfo;

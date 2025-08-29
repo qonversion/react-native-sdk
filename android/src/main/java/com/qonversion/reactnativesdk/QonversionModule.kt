@@ -172,8 +172,8 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
     }
 
     @ReactMethod
-    override fun identify(userID: String, promise: Promise) {
-        qonversionSandwich.identify(userID, getResultListener(promise))
+    override fun identify(userId: String, promise: Promise) {
+        qonversionSandwich.identify(userId, getResultListener(promise))
     }
 
     @ReactMethod

@@ -124,7 +124,7 @@
 }
 
 - (void)collectAdvertisingId {
-    [self.impl collectAdvertisingID];
+    [self.impl collectAdvertisingId];
 }
 
 - (void)collectAppleSearchAdsAttribution {

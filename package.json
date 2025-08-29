@@ -136,7 +136,7 @@
     ]
   },
   "codegenConfig": {
-    "name": "ReactNativeSdkSpec",
+    "name": "QonversionSdkSpec",
     "type": "modules",
     "jsSrcsDir": "src/internal/specs",
     "android": {

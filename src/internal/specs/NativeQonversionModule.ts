@@ -49,7 +49,7 @@ export interface Spec extends TurboModule {
   checkEntitlements(): Promise<Object>; // Record<string, QEntitlement>
   restore(): Promise<Object>; // Record<string, QEntitlement>
   syncPurchases(): void;
-  identify(userID: string): Promise<QUser>;
+  identify(userId: string): Promise<QUser>;
   logout(): void;
   userInfo(): Promise<QUser>;
   addAttributionData(data: Object, provider: string): void;

@@ -13,7 +13,7 @@ class Offering {
   }
 
   productForIdentifier(identifier: string): Product | undefined {
-    return this.products.find((object) => object.qonversionID === identifier);
+    return this.products.find((object) => object.qonversionId === identifier);
   }
 }
 
