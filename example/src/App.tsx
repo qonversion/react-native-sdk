@@ -66,15 +66,6 @@ const App: React.FC = () => {
           )
             .setEnvironment(Environment.SANDBOX)
             .setEntitlementsCacheLifetime(EntitlementsCacheLifetime.MONTH)
-            .setEntitlementsUpdateListener({
-              onEntitlementsUpdated(entitlements: any) {
-                console.log(
-                  '📡 [Qonversion] Entitlements updated via listener:',
-                  entitlements
-                );
-                dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
-              },
-            })
             .setProxyURL('api-eu.qonversion.io')
             .build();
           console.log('✅ [Qonversion] Config built successfully:', config);

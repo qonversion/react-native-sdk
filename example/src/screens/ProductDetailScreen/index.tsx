@@ -28,7 +28,7 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
         await Qonversion.getSharedInstance().purchaseProduct(product);
       console.log(
         '✅ [Qonversion] purchaseProduct() call successful:',
-        entitlements
+        Object.fromEntries(entitlements)
       );
       dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
       Snackbar.show({

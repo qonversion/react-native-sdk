@@ -47,7 +47,7 @@
 }
 
 - (void)noCodesDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
-  [self emitOnNoCodeEvent:@{@"name": event, @"payload": payload}];
+  [self emitOnNoCodeEvent:@{@"name": event, @"payload": payload ?: [NSNull null]}];
 }
 
 #pragma mark - TurboModule

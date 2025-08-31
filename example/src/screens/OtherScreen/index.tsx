@@ -7,7 +7,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import Qonversion from '@qonversion/react-native-sdk';
+import Qonversion, { Entitlement, type PromoPurchasesListener } from '@qonversion/react-native-sdk';
 import { AppContext } from '../../store/AppStore';
 import SkeletonLoader from '../../components/SkeletonLoader';
 import styles from './styles';
@@ -120,6 +120,47 @@ const OtherScreen: React.FC = () => {
     }
   };
 
+  const setPromoPurchasesDelegate = () => {
+    if (Platform.OS !== 'ios') {
+      Alert.alert('Error', 'This method is iOS only');
+      return;
+    }
+    try {
+      console.log(
+        '🔄 [Qonversion] Starting setPromoPurchasesDelegate() call...'
+      );
+      
+      const promoPurchasesListener: PromoPurchasesListener = {
+        onPromoPurchaseReceived: (productId: string, promoPurchaseExecutor: () => Promise<Map<string, Entitlement>>) => {
+          console.log('🎁 [PromoPurchasesListener] onPromoPurchaseReceived:', {
+            productId,
+          });
+
+          promoPurchaseExecutor().then(entitlements => {
+            console.log('✅ [PromoPurchasesListener] promo purchase executed:', Object.fromEntries(entitlements));
+          }).catch(error => {
+            console.error('❌ [PromoPurchasesListener] promo purchase failed:', error);
+          });
+        },
+      };
+      
+      Qonversion.getSharedInstance().setPromoPurchasesDelegate(promoPurchasesListener);
+      console.log(
+        '✅ [Qonversion] setPromoPurchasesDelegate() call successful'
+      );
+      Snackbar.show({
+        text: 'Promo purchases delegate set!',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } catch (error: any) {
+      console.error(
+        '❌ [Qonversion] setPromoPurchasesDelegate() call failed:',
+        error
+      );
+      Alert.alert('Error', error.message);
+    }
+  };
+
   if (state.loading) {
     return <SkeletonLoader />;
   }
@@ -163,6 +204,12 @@ const OtherScreen: React.FC = () => {
           onPress={presentCodeRedemptionSheet}
         >
           <Text style={styles.buttonText}>Present Code Redemption Sheet</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={setPromoPurchasesDelegate}
+        >
+          <Text style={styles.buttonText}>Set Promo Purchases Delegate</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

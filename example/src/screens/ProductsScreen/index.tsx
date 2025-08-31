@@ -16,7 +16,7 @@ const ProductsScreen: React.FC = () => {
       console.log('🔄 [Qonversion] Starting products() call...');
       dispatch({ type: 'SET_LOADING', payload: true });
       const products = await Qonversion.getSharedInstance().products();
-      console.log('✅ [Qonversion] products() call successful:', products);
+      console.log('✅ [Qonversion] products() call successful:', Object.fromEntries(products));
       dispatch({ type: 'SET_PRODUCTS', payload: products });
     } catch (error: any) {
       console.error('❌ [Qonversion] products() call failed:', error);

@@ -26,7 +26,7 @@ const EntitlementsScreen: React.FC = () => {
         await Qonversion.getSharedInstance().checkEntitlements();
       console.log(
         '✅ [Qonversion] checkEntitlements() call successful:',
-        entitlements
+        Object.fromEntries(entitlements)
       );
       dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
     } catch (error: any) {
@@ -62,7 +62,7 @@ const EntitlementsScreen: React.FC = () => {
       console.log('🔄 [Qonversion] Starting restore() call...');
       dispatch({ type: 'SET_LOADING', payload: true });
       const entitlements = await Qonversion.getSharedInstance().restore();
-      console.log('✅ [Qonversion] restore() call successful:', entitlements);
+      console.log('✅ [Qonversion] restore() call successful:', Object.fromEntries(entitlements));
       dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
       Snackbar.show({
         text: 'Purchases restored successfully!',
