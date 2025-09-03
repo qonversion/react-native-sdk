@@ -1,5 +1,5 @@
 export { default } from './Qonversion';
-export type { default as QonversionApi } from './QonversionApi';
+export type { QonversionApi } from './QonversionApi';
 export { default as QonversionConfig } from './QonversionConfig';
 export { default as QonversionConfigBuilder } from './QonversionConfigBuilder';
 

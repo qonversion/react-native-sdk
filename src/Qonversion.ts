@@ -1,5 +1,5 @@
 import QonversionConfig from './QonversionConfig';
-import QonversionApi from './QonversionApi';
+import type { QonversionApi } from './QonversionApi';
 import QonversionInternal from './internal/QonversionInternal';
 
 export default class Qonversion {

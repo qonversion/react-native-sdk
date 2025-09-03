@@ -1,4 +1,4 @@
-import NoCodesApi from "./NoCodesApi";
+import type NoCodesApi from "./NoCodesApi";
 import NoCodesConfig from "./NoCodesConfig";
 import NoCodesInternal from "./internal/NoCodesInternal";
 

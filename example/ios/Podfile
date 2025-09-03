@@ -1,60 +1,37 @@
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-require_relative '../node_modules/react-native/scripts/react_native_pods'
+ENV['RCT_NEW_ARCH_ENABLED'] = '1'
 
-platform :ios, '16.0'
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
-target 'example' do
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+target 'QonversionExample' do
   config = use_native_modules!
 
   use_react_native!(
-    :path => "../node_modules/react-native",
-    :hermes_enabled => false,
-    :fabric_enabled => false,
-    :new_arch_enabled => false,
+    :path => config[:reactNativePath],
+    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
-
   post_install do |installer|
+    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
-      "../node_modules/react-native",
-      :mac_catalyst_enabled => false
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false,
+      # :ccache_enabled => true
     )
-
-    installer.pods_project.targets.each do |target|
-      if target.name == 'Flipper'
-        file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
-        contents = File.read(file_path)
-        unless contents.include?('#include <functional>')
-          File.open(file_path, 'w') do |file|
-            file.puts('#include <functional>')
-            file.puts(contents)
-          end
-        end
-      end
-
-      target.build_configurations.each do |config|
-        # Общие настройки для всех таргетов
-        config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ObjC -lc++'
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
-
-        # Добавляем все библиотеки в пути поиска
-        config.build_settings['LIBRARY_SEARCH_PATHS'] = [
-          '$(inherited)',
-          '$(PODS_ROOT)/DoubleConversion',
-          '$(PODS_ROOT)/DoubleConversion/double-conversion',
-          '$(PODS_ROOT)/RCT-Folly',
-          '$(PODS_ROOT)/RCT-Folly/folly',
-          '$(PODS_ROOT)/RCTDeprecation',
-          '$(PODS_CONFIGURATION_BUILD_DIR)/DoubleConversion',
-          '$(PODS_CONFIGURATION_BUILD_DIR)/RCT-Folly',
-          '$(PODS_CONFIGURATION_BUILD_DIR)/RCTDeprecation'
-        ]
-      end
-    end
   end
 end
