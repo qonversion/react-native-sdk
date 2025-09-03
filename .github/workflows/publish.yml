@@ -20,7 +20,7 @@ jobs:
       - name: Setup node for publishing
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npm
