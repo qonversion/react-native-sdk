@@ -1,5 +1,5 @@
 import {EntitlementsCacheLifetime, Environment, LaunchMode} from './dto/enums';
-import {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
+import type {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
 
 class QonversionConfig {
   readonly projectKey: string;

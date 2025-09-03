@@ -4,8 +4,8 @@ import {UserPropertyKey, AttributionProvider} from './dto/enums';
 import Offerings from './dto/Offerings';
 import IntroEligibility from './dto/IntroEligibility';
 import User from './dto/User';
-import {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
-import {PromoPurchasesListener} from './dto/PromoPurchasesListener';
+import type {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
+import type {PromoPurchasesListener} from './dto/PromoPurchasesListener';
 import RemoteConfig from "./dto/RemoteConfig";
 import RemoteConfigList from "./dto/RemoteConfigList";
 import UserProperties from './dto/UserProperties';
@@ -15,7 +15,7 @@ import PurchaseOptions from "./dto/PurchaseOptions";
 import SKProductDiscount from './dto/storeProducts/SKProductDiscount';
 import PromotionalOffer from './dto/PromotionalOffer';
 
-interface QonversionApi {
+export interface QonversionApi {
 
   /**
    * Call this function to sync the subscriber data with the first launch when Qonversion is implemented.
@@ -33,7 +33,7 @@ interface QonversionApi {
    * Call this function to check if the fallback file is accessible.
    * @returns the promise with the flag that indicates whether Qonversion was able to read data from the fallback file or not.
    */
-  isFallbackFileAccessible(): Promise<Boolean>;
+  isFallbackFileAccessible(): Promise<boolean>;
 
   /**
    * iOS only.
@@ -57,7 +57,7 @@ interface QonversionApi {
    *
    * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */
-  purchaseProduct(product: Product, options: PurchaseOptions | undefined): Promise<Map<string, Entitlement>>
+  purchaseProduct(product: Product, options?: PurchaseOptions | undefined): Promise<Map<string, Entitlement>>
 
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend.
@@ -150,10 +150,10 @@ interface QonversionApi {
   /**
    * Call this function to link a user to his unique ID in your system and share purchase data.
    *
-   * @param userID unique user ID in your system
+   * @param userId unique user ID in your system
    * @returns the promise with the information about the identified user.
    */
-  identify(userID: string): Promise<User>;
+  identify(userId: string): Promise<User>;
 
   /**
    * Call this function to unlink a user from his unique ID in your system and his purchase data.
@@ -316,5 +316,3 @@ interface QonversionApi {
    */
   detachUserFromRemoteConfiguration(remoteConfigurationId: string): Promise<void>
 }
-
-export default QonversionApi;

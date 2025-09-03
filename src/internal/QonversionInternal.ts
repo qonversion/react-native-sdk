@@ -1,17 +1,17 @@
-import {NativeEventEmitter, NativeModules} from "react-native";
 import {AttributionProvider, QonversionErrorCode, UserPropertyKey} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
-import Mapper, {QEntitlement} from "./Mapper";
+import Mapper from "./Mapper";
+import type {QEntitlement, QEligibilityInfo, QProduct} from "./Mapper";
 import Offerings from "../dto/Offerings";
 import Entitlement from "../dto/Entitlement";
 import Product from "../dto/Product";
 import {isAndroid, isIos} from "./utils";
-import {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
-import {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
+import type {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
+import type {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
 import PurchaseOptions from '../dto/PurchaseOptions';
 import SKProductDiscount from '../dto/storeProducts/SKProductDiscount';
-import QonversionApi from '../QonversionApi';
+import type { QonversionApi } from '../QonversionApi';
 import QonversionConfig from '../QonversionConfig';
 import RemoteConfig from "../dto/RemoteConfig";
 import UserProperties from '../dto/UserProperties';
@@ -20,18 +20,19 @@ import PurchaseUpdateModel from '../dto/PurchaseUpdateModel';
 import {RemoteConfigList} from '../index';
 import PurchaseOptionsBuilder from "../dto/PurchaseOptionsBuilder";
 import PromotionalOffer from '../dto/PromotionalOffer';
+import RNQonversion from './specs/NativeQonversionModule';
+import type { QPromoOfferDetails } from './specs/NativeQonversionModule';
 
-const {RNQonversion} = NativeModules;
-
-const sdkVersion = "9.0.2";
-
-const EVENT_ENTITLEMENTS_UPDATED = "entitlements_updated";
-const EVENT_PROMO_PURCHASE_RECEIVED = "promo_purchase_received";
+export const sdkVersion = "9.0.2";
+export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
 
+  private entitlementsUpdateListener: EntitlementsUpdateListener | null = null;
+  private promoPurchasesDelegate: PromoPurchasesListener | null = null;
+
   constructor(qonversionConfig: QonversionConfig) {
-    RNQonversion.storeSDKInfo("rn", sdkVersion);
+    RNQonversion.storeSDKInfo(sdkSource, sdkVersion);
     RNQonversion.initializeSdk(
       qonversionConfig.projectKey,
       qonversionConfig.launchMode,
@@ -56,7 +57,7 @@ export default class QonversionInternal implements QonversionApi {
     }
   }
 
-  async isFallbackFileAccessible(): Promise<Boolean> {
+  async isFallbackFileAccessible(): Promise<boolean> {
     const isAccessibleResult = await RNQonversion.isFallbackFileAccessible();
 
     return isAccessibleResult.success;
@@ -66,7 +67,7 @@ export default class QonversionInternal implements QonversionApi {
     if (isAndroid()) {
       return null;
     }
-    const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionID, discount.identifier);
+    const promoOffer = await RNQonversion.getPromotionalOffer(product.qonversionId, discount.identifier);
     const mappedPromoOffer: PromotionalOffer | null = Mapper.convertPromoOffer(promoOffer);
 
     return mappedPromoOffer;
@@ -78,8 +79,8 @@ export default class QonversionInternal implements QonversionApi {
         options = new PurchaseOptionsBuilder().build();
       }
 
-      let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
-      const promoOffer = {
+      let purchasePromise: Promise<Object | null | undefined>;
+      const promoOffer: QPromoOfferDetails = {
         productDiscountId: options.promotionalOffer?.productDiscount.identifier,
         keyIdentifier: options.promotionalOffer?.paymentDiscount.keyIdentifier,
         nonce: options.promotionalOffer?.paymentDiscount.nonce,
@@ -88,21 +89,32 @@ export default class QonversionInternal implements QonversionApi {
       };
 
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(product.qonversionID, options.quantity, options.contextKeys, promoOffer);
+        purchasePromise = RNQonversion.purchase(
+          product.qonversionId,
+          options.quantity,
+          options.contextKeys,
+          promoOffer,
+          undefined,
+          false,
+          undefined,
+          undefined,
+        );
       } else {
         purchasePromise = RNQonversion.purchase(
-            product.qonversionID,
+            product.qonversionId,
+            1,
+            options.contextKeys,
+            undefined,
             options.offerId,
             options.applyOffer,
-            options.oldProduct?.qonversionID,
+            options.oldProduct?.qonversionId,
             options.updatePolicy,
-            options.contextKeys
         );
       }
       const entitlements = await purchasePromise;
 
       // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions = Mapper.convertEntitlements(entitlements);
+      const mappedPermissions = Mapper.convertEntitlements(entitlements as Record<string, QEntitlement>);
 
       return mappedPermissions;
     } catch (e: any) {
@@ -113,23 +125,34 @@ export default class QonversionInternal implements QonversionApi {
 
   async purchase(purchaseModel: PurchaseModel): Promise<Map<string, Entitlement>> {
     try {
-      let purchasePromise: Promise<Record<string, QEntitlement> | null | undefined>;
+      let purchasePromise: Promise<Object | null | undefined>;
       if (isIos()) {
-        purchasePromise = RNQonversion.purchase(purchaseModel.productId, 1, null, null);
+        purchasePromise = RNQonversion.purchase(
+          purchaseModel.productId,
+          1,
+          undefined,
+          undefined,
+          undefined,
+          false,
+          undefined,
+          undefined,
+        );
       } else {
         purchasePromise = RNQonversion.purchase(
           purchaseModel.productId,
+          1,
+          undefined,
+          undefined,
           purchaseModel.offerId,
           purchaseModel.applyOffer,
-          null,
-          null,
-          null
+          undefined,
+          undefined
         );
       }
       const entitlements = await purchasePromise;
 
       // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions = Mapper.convertEntitlements(entitlements);
+      const mappedPermissions = Mapper.convertEntitlements(entitlements as Record<string, QEntitlement>);
 
       return mappedPermissions;
     } catch (e: any) {
@@ -150,11 +173,10 @@ export default class QonversionInternal implements QonversionApi {
         purchaseUpdateModel.applyOffer,
         purchaseUpdateModel.oldProductId,
         purchaseUpdateModel.updatePolicy,
-        null
       );
 
       // noinspection UnnecessaryLocalVariableJS
-      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
+      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements as Record<string, QEntitlement>);
 
       return mappedPermissions;
     } catch (e: any) {
@@ -165,9 +187,7 @@ export default class QonversionInternal implements QonversionApi {
 
   async products(): Promise<Map<string, Product>> {
     let products = await RNQonversion.products();
-    const mappedProducts: Map<string, Product> = Mapper.convertProducts(
-      products
-    );
+    const mappedProducts: Map<string, Product> = Mapper.convertProducts(products as Record<string, QProduct>);
 
     return mappedProducts;
   }
@@ -184,20 +204,14 @@ export default class QonversionInternal implements QonversionApi {
   ): Promise<Map<string, IntroEligibility>> {
     const eligibilityInfo = await RNQonversion.checkTrialIntroEligibilityForProductIds(ids);
 
-    const mappedEligibility: Map<
-      string,
-      IntroEligibility
-    > = Mapper.convertEligibility(eligibilityInfo);
+    const mappedEligibility: Map<string, IntroEligibility> = Mapper.convertEligibility(eligibilityInfo as Record<string, QEligibilityInfo>);
 
     return mappedEligibility;
   }
 
   async checkEntitlements(): Promise<Map<string, Entitlement>> {
     const entitlements = await RNQonversion.checkEntitlements();
-    const mappedPermissions: Map<
-      string,
-      Entitlement
-    > = Mapper.convertEntitlements(entitlements);
+    const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements as Record<string, QEntitlement>);
 
     return mappedPermissions;
   }
@@ -205,10 +219,7 @@ export default class QonversionInternal implements QonversionApi {
   async restore(): Promise<Map<string, Entitlement>> {
     const entitlements = await RNQonversion.restore();
 
-    const mappedPermissions: Map<
-      string,
-      Entitlement
-    > = Mapper.convertEntitlements(entitlements);
+    const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements as Record<string, QEntitlement>);
 
     return mappedPermissions;
   }
@@ -221,8 +232,8 @@ export default class QonversionInternal implements QonversionApi {
     RNQonversion.syncPurchases();
   }
 
-  async identify(userID: string): Promise<User> {
-    const userInfo = await RNQonversion.identify(userID);
+  async identify(userId: string): Promise<User> {
+    const userInfo = await RNQonversion.identify(userId);
     const mappedUserInfo: User = Mapper.convertUserInfo(userInfo);
 
     return mappedUserInfo;
@@ -266,7 +277,7 @@ export default class QonversionInternal implements QonversionApi {
 
   collectAdvertisingId() {
     if (isIos()) {
-      RNQonversion.collectAdvertisingID();
+      RNQonversion.collectAdvertisingId();
     }
   }
 
@@ -274,32 +285,6 @@ export default class QonversionInternal implements QonversionApi {
     if (isIos()) {
       RNQonversion.collectAppleSearchAdsAttribution();
     }
-  }
-
-  setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
-    const eventEmitter = new NativeEventEmitter(RNQonversion);
-    eventEmitter.removeAllListeners(EVENT_ENTITLEMENTS_UPDATED);
-    eventEmitter.addListener(EVENT_ENTITLEMENTS_UPDATED, payload => {
-      const entitlements = Mapper.convertEntitlements(payload);
-      listener.onEntitlementsUpdated(entitlements);
-    });
-  }
-
-  setPromoPurchasesDelegate(delegate: PromoPurchasesListener) {
-    if (!isIos()) {
-      return;
-    }
-
-    const eventEmitter = new NativeEventEmitter(RNQonversion);
-    eventEmitter.removeAllListeners(EVENT_PROMO_PURCHASE_RECEIVED);
-    eventEmitter.addListener(EVENT_PROMO_PURCHASE_RECEIVED, productId => {
-      const promoPurchaseExecutor = async () => {
-        const entitlements = await RNQonversion.promoPurchase(productId);
-        const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements);
-        return mappedPermissions;
-      };
-      delegate.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
-    });
   }
 
   presentCodeRedemptionSheet() {
@@ -347,5 +332,39 @@ export default class QonversionInternal implements QonversionApi {
   async detachUserFromRemoteConfiguration(remoteConfigurationId: string): Promise<void> {
     await RNQonversion.detachUserFromRemoteConfiguration(remoteConfigurationId);
     return;
+  }
+
+  private entitlementsUpdatedEventHandler = (payload: Object) => {
+    const entitlements = Mapper.convertEntitlements(payload as Record<string, QEntitlement>);
+    this.entitlementsUpdateListener?.onEntitlementsUpdated(entitlements);
+  }
+
+  private promoPurchaseReceivedEventHandler = (productId: string) => {
+    const promoPurchaseExecutor = async () => {
+      const entitlements = await RNQonversion.promoPurchase(productId);
+      const mappedPermissions: Map<string, Entitlement> = Mapper.convertEntitlements(entitlements as Record<string, QEntitlement>);
+      return mappedPermissions;
+    };
+    this.promoPurchasesDelegate?.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
+  }
+
+  setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
+    if (this.entitlementsUpdateListener == null) {
+      RNQonversion.onEntitlementsUpdated(this.entitlementsUpdatedEventHandler);
+    }
+    
+    this.entitlementsUpdateListener = listener;
+  }
+
+  setPromoPurchasesDelegate(delegate: PromoPurchasesListener) {
+    if (!isIos()) {
+      return;
+    }
+
+    if (this.promoPurchasesDelegate == null) {
+      RNQonversion.onPromoPurchaseReceived(this.promoPurchaseReceivedEventHandler);
+    }
+
+    this.promoPurchasesDelegate = delegate;
   }
 }

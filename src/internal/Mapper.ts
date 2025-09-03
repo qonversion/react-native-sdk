@@ -20,6 +20,7 @@ import {
   TransactionType,
   UserPropertyKey,
   NoCodesErrorCode,
+  ActionType,
 } from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Offering from "../dto/Offering";
@@ -53,7 +54,7 @@ import NoCodesAction from '../dto/NoCodesAction';
 import QonversionError from '../dto/QonversionError';
 import NoCodesError from '../dto/NoCodesError';
 
-type QProduct = {
+export type QProduct = {
   id: string;
   storeId: string;
   basePlanId?: string | null;
@@ -109,7 +110,7 @@ type QProductInstallmentPlanDetails = {
   subsequentCommitmentPaymentsCount: number;
 }
 
-type QPromotionalOffer = {
+export type QPromotionalOffer = {
   productDiscount: QProductDiscount,
   paymentDiscount: QPaymentDiscount,
 }
@@ -240,7 +241,7 @@ type QTransaction = {
   promoOfferId: string;
 }
 
-type QOfferings = {
+export type QOfferings = {
   availableOfferings?: Array<QOffering>;
   main: QOffering;
 };
@@ -251,18 +252,25 @@ type QOffering = {
   products: Array<QProduct>;
 };
 
-type QUser = {
+export type QEligibilityInfo = {
+  status:
+    | "non_intro_or_trial_product"
+    | "intro_or_trial_eligible"
+    | "intro_or_trial_ineligible";
+};
+
+export type QUser = {
   qonversionId: string;
   identityId?: string | null;
 };
 
-type QRemoteConfig = {
+export type QRemoteConfig = {
   payload: Record<string, Object>;
   experiment?: QExperiment | null;
   source: QRemoteConfigurationSource;
 };
 
-type QRemoteConfigList = {
+export type QRemoteConfigList = {
   remoteConfigs: Array<QRemoteConfig>;
 }
 
@@ -291,7 +299,7 @@ type QUserProperty = {
   value: string;
 };
 
-type QUserProperties = {
+export type QUserProperties = {
   properties: QUserProperty[];
 };
 
@@ -302,9 +310,17 @@ type QQonversionError = {
   domain: string | null | undefined,
 };
 
-type QNoCodesError = QQonversionError & {
+export type QNoCodeAction = {
+  type: ActionType;
+  parameters: Map<string, string | undefined>;
+  error: QNoCodesError | undefined;
+};
+
+export type QNoCodesError = QQonversionError & {
   qonversionError?: QQonversionError | null,
 };
+
+export type QNoCodeScreenInfo = { screenId: string };
 
 const priceMicrosRatio = 1000000;
 
@@ -977,12 +993,7 @@ class Mapper {
   }
 
   static convertEligibility(
-    eligibilityMap: Record<string, {
-      status:
-        | "non_intro_or_trial_product"
-        | "intro_or_trial_eligible"
-        | "intro_or_trial_ineligible";
-    }> | null | undefined
+    eligibilityMap: Record<string, QEligibilityInfo> | null | undefined
   ): Map<string, IntroEligibility> {
     let mappedEligibility = new Map<string, IntroEligibility>();
 
@@ -1080,7 +1091,7 @@ class Mapper {
   }
 
   static convertAction(
-    payload: Record<string, any>
+    payload: QNoCodeAction
   ): NoCodesAction {
     return new NoCodesAction(
       payload["type"],

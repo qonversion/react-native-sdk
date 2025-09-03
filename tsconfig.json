@@ -1,18 +1,29 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "module": "commonjs",
-    "strict": true,
+    "rootDir": ".",
+    "paths": {
+      "@qonversion/react-native-sdk": ["./src/index"]
+    },
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "jsx": "react",
-    "lib": ["es2017"],
-    "target": "esnext",
-    "rootDir": "./src",
-    "outDir": "build",
-    "sourceMap": true,
-    "skipLibCheck": true
-  },
-  "exclude": ["node_modules"]
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ESNext",
+    "verbatimModuleSyntax": true
+  }
 }
