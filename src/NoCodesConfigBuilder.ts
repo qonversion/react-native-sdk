@@ -4,6 +4,7 @@ import NoCodesConfig from './NoCodesConfig';
 class NoCodesConfigBuilder {
   private readonly projectKey: string;
   private noCodesListener: NoCodesListener | undefined = undefined;
+  private proxyUrl: string | undefined = undefined;
 
   constructor(projectKey: string) {
     this.projectKey = projectKey;
@@ -25,6 +26,18 @@ class NoCodesConfigBuilder {
   }
 
   /**
+   * Set proxy URL for NoCodes SDK.
+   * iOS only.
+   *
+   * @param proxyUrl proxy URL to use for API requests.
+   * @return builder instance for chain calls.
+   */
+  setProxyURL(proxyUrl: string): NoCodesConfigBuilder {
+    this.proxyUrl = proxyUrl;
+    return this;
+  }
+
+  /**
    * Generate {@link NoCodesConfig} instance with all the provided configurations.
    *
    * @return the complete {@link NoCodesConfig} instance.
@@ -32,7 +45,8 @@ class NoCodesConfigBuilder {
   build(): NoCodesConfig {
     return new NoCodesConfig(
       this.projectKey,
-      this.noCodesListener
+      this.noCodesListener,
+      this.proxyUrl
     );
   }
 }

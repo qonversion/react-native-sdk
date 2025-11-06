@@ -19,7 +19,7 @@ export default class NoCodesInternal implements NoCodesApi {
   private noCodesListener: NoCodesListener | null = null;
 
   constructor(config: NoCodesConfig) {
-    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion);
+    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion, config.proxyUrl);
 
     if (config.noCodesListener) {
       this.setNoCodesListener(config.noCodesListener);

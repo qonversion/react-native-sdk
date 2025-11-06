@@ -80,7 +80,7 @@ def kotlin_version = getExtOrDefault("kotlinVersion")
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation "io.qonversion:sandwich:6.0.11"
+  implementation "io.qonversion:sandwich:7.0.0"
 }
 
 if (isNewArchitectureEnabled()) {

@@ -20,8 +20,9 @@
 
 - (void)initialize:(NSString *)projectKey
             source:(NSString *)source
-           version:(NSString *)version {
-    [self.impl initializeWithProjectKey:projectKey source:source version:version];
+           version:(NSString *)version
+          proxyUrl:(NSString *)proxyUrl {
+    [self.impl initializeWithProjectKey:projectKey source:source version:version proxyUrl:proxyUrl];
 }
 
 - (void)setScreenPresentationConfig:(NSDictionary *)configData

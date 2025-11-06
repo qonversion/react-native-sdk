@@ -1,6 +1,5 @@
 import {ProductType, PurchaseUpdatePolicy} from "./enums";
 import SKProduct from "./storeProducts/SKProduct";
-import SkuDetails from "./storeProducts/SkuDetails";
 import ProductStoreDetails from "./storeProducts/ProductStoreDetails";
 import ProductOfferDetails from './storeProducts/ProductOfferDetails';
 import PurchaseModel from './PurchaseModel';
@@ -19,14 +18,6 @@ class Product {
   /**
    * Google Play Store details of this product.
    * Android only. Null for iOS, or if the product was not found.
-   * Doesn't take into account {@link basePlanId}.
-   * @deprecated Consider using {@link storeDetails} instead.
-   */
-  skuDetails: SkuDetails | null;
-
-  /**
-   * Google Play Store details of this product.
-   * Android only. Null for iOS, or if the product was not found.
    */
   storeDetails: ProductStoreDetails | null;
 
@@ -39,8 +30,7 @@ class Product {
   offeringId?: string | null;
 
   /**
-   * For Android - the subscription base plan duration. If the {@link basePlanId} is not specified,
-   * the duration is calculated using the deprecated {@link skuDetails}.
+   * For Android - the subscription base plan duration from {@link storeDetails}.
    * For iOS - the duration of the {@link skProduct}.
    * Null, if it's not a subscription product or the product was not found in the store.
    */
@@ -56,8 +46,7 @@ class Product {
 
   /**
    * The calculated type of this product based on the store information.
-   * On Android uses deprecated {@link skuDetails} for the old subscription products
-   * where {@link basePlanId} is not specified, and {@link storeDetails} for all the other products.
+   * On Android uses {@link storeDetails} for all products.
    * On iOS uses {@link skProduct} information.
    */
   type: ProductType;
@@ -77,7 +66,6 @@ class Product {
     qonversionId: string,
     storeId: string,
     basePlanId: string | null,
-    skuDetails: SkuDetails | null,
     storeDetails: ProductStoreDetails | null,
     skProduct: SKProduct | null,
     offeringId: string | null,
@@ -94,7 +82,6 @@ class Product {
     this.qonversionId = qonversionId;
     this.storeId = storeId;
     this.basePlanId = basePlanId;
-    this.skuDetails = skuDetails;
     this.storeDetails = storeDetails;
     this.skProduct = skProduct;
     this.offeringId = offeringId;
