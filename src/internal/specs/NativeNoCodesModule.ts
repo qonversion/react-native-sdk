@@ -9,7 +9,7 @@ export type NoCodeEvent = {
 };
 
 export interface Spec extends TurboModule {
-  initialize(projectKey: string, source: string, version: string): void;
+  initialize(projectKey: string, source: string, version: string, proxyUrl?: string): void;
   setScreenPresentationConfig(configData: Object, contextKey?: string): Promise<boolean>;
   showScreen(contextKey: string): Promise<boolean>;
   close(): Promise<boolean>;

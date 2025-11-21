@@ -91,7 +91,7 @@
     [self.impl userInfo:resolve reject:reject];
 }
 
-- (void)remoteConfig:(NSString *)contextKey resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+- (void)remoteConfig:(NSString * _Nullable)contextKey resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
     [self.impl remoteConfig:contextKey resolve:resolve reject:reject];
 }
 
