@@ -27,7 +27,6 @@ class NoCodesConfigBuilder {
 
   /**
    * Set proxy URL for NoCodes SDK.
-   * iOS only.
    *
    * @param proxyUrl proxy URL to use for API requests.
    * @return builder instance for chain calls.
