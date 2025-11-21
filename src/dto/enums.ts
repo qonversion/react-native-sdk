@@ -345,6 +345,7 @@ export enum QonversionErrorCode {
   LAUNCH_ERROR = "LaunchError", // There was an error while launching Qonversion SDK
   NETWORK_CONNECTION_FAILED = "NetworkConnectionFailed", // There was a network issue. Make sure that the Internet connection is available on the device
   OFFERINGS_NOT_FOUND = "OfferingsNotFound", // No offerings found
+  OFFERINGS_NOT_AVAILABLE = "OfferingsNotAvailable",
   PAYMENT_INVALID = "PaymentInvalid", // Purchase identifier was invalid, etc.
   PAYMENT_NOT_ALLOWED = "PaymentNotAllowed", // This device is not allowed to make the payment
   PLAY_STORE_ERROR = "PlayStoreError", // There was an issue with the Play Store service

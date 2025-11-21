@@ -42,9 +42,9 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func initialize(projectKey: String, source: String, version: String) {
+    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?) {
         // Ignore source and version, because it's taken from the Qonversion SDK.
-        noCodesSandwich?.initialize(projectKey: projectKey)
+        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl)
     }
 
     @MainActor @objc

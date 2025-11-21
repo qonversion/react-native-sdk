@@ -157,7 +157,7 @@ public class RNQonversionImpl: NSObject {
   }
 
   @objc
-  public func remoteConfig(_ contextKey: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  public func remoteConfig(_ contextKey: String?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.remoteConfig(contextKey) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
     }
