@@ -92,9 +92,9 @@ public class RNNoCodesImpl: NSObject {
 
     @objc
     public func setPurchaseDelegate(_ delegate: NoCodesPurchaseDelegateProxy) {
-        let delegate = NoCodesPurchaseDelegateHandler(delegate: delegate)
-        purchaseDelegateHandler = delegate
-        noCodesSandwich?.setPurchaseDelegate(delegate)
+        let delegateHandler = NoCodesPurchaseDelegateHandler(delegate: delegate)
+        purchaseDelegateHandler = delegateHandler
+        noCodesSandwich?.setPurchaseDelegate(delegateHandler)
     }
 
     @objc
