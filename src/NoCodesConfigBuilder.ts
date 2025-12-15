@@ -1,9 +1,11 @@
 import type {NoCodesListener} from './dto/NoCodesListener';
+import type {PurchaseDelegate} from './dto/PurchaseDelegate';
 import NoCodesConfig from './NoCodesConfig';
 
 class NoCodesConfigBuilder {
   private readonly projectKey: string;
   private noCodesListener: NoCodesListener | undefined = undefined;
+  private purchaseDelegate: PurchaseDelegate | undefined = undefined;
   private proxyUrl: string | undefined = undefined;
 
   constructor(projectKey: string) {
@@ -22,6 +24,18 @@ class NoCodesConfigBuilder {
    */
   setNoCodesListener(noCodesListener: NoCodesListener): NoCodesConfigBuilder {
     this.noCodesListener = noCodesListener;
+    return this;
+  }
+
+  /**
+   * Provide a delegate for custom purchase and restore handling.
+   * When this delegate is provided, it replaces the default Qonversion SDK purchase flow.
+   *
+   * @param purchaseDelegate delegate to handle purchase and restore operations.
+   * @return builder instance for chain calls.
+   */
+  setPurchaseDelegate(purchaseDelegate: PurchaseDelegate): NoCodesConfigBuilder {
+    this.purchaseDelegate = purchaseDelegate;
     return this;
   }
 
@@ -45,6 +59,7 @@ class NoCodesConfigBuilder {
     return new NoCodesConfig(
       this.projectKey,
       this.noCodesListener,
+      this.purchaseDelegate,
       this.proxyUrl
     );
   }
