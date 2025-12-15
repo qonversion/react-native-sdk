@@ -8,14 +8,16 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import {
+import Qonversion, {
   NoCodesAction,
   NoCodesConfigBuilder,
   ScreenPresentationStyle,
   ScreenPresentationConfig,
   NoCodes,
+  NoCodesError,
+  type PurchaseDelegate,
+  Product
 } from '@qonversion/react-native-sdk';
-import type NoCodesError from '../../../../src/dto/NoCodesError';
 import { AppContext } from '../../store/AppStore';
 import styles from './styles';
 import Snackbar from 'react-native-snackbar';
@@ -37,6 +39,42 @@ const NoCodesScreen: React.FC = () => {
     // Initialize No-Codes SDK once
     const initializeNoCodes = () => {
       console.log('🔄 [NoCodes] Starting SDK initialization...');
+      // @ts-ignore - PurchaseDelegate is not used until the comment below is uncommented
+      const purchaseDelegate: PurchaseDelegate = {
+        purchase: async (product: Product) => {
+          console.log('🔄 [PurchaseDelegate] Starting purchase for product:', product.qonversionId);
+          try {
+            const entitlements = await Qonversion.getSharedInstance().purchaseProduct(product);
+            console.log('✅ [PurchaseDelegate] Purchase successful:', Object.fromEntries(entitlements));
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase completed: ${product.qonversionId}` });
+            Snackbar.show({
+              text: `Purchase completed: ${product.qonversionId}`,
+              duration: Snackbar.LENGTH_SHORT,
+            });
+          } catch (error: any) {
+            console.error('❌ [PurchaseDelegate] Purchase failed:', error);
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase failed: ${error.message}` });
+            throw error; // Re-throw to let NoCodes SDK handle the error
+          }
+        },
+        restore: async () => {
+          console.log('🔄 [PurchaseDelegate] Starting restore...');
+          try {
+            const entitlements = await Qonversion.getSharedInstance().restore();
+            console.log('✅ [PurchaseDelegate] Restore successful:', Object.fromEntries(entitlements));
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: 'Restore completed' });
+            Snackbar.show({
+              text: 'Restore completed successfully!',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+          } catch (error: any) {
+            console.error('❌ [PurchaseDelegate] Restore failed:', error);
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Restore failed: ${error.message}` });
+            throw error; // Re-throw to let NoCodes SDK handle the error
+          }
+        },
+      };
+
       const noCodesConfig = new NoCodesConfigBuilder(ProjectKey)
         .setNoCodesListener({
           onScreenShown: (id: string) => {
@@ -71,6 +109,7 @@ const NoCodesScreen: React.FC = () => {
             NoCodes.getSharedInstance().close();
           },
         })
+        // .setPurchaseDelegate(purchaseDelegate) // Uncomment this to use the purchase delegate
         .build();
       console.log('✅ [NoCodes] Config built successfully:', noCodesConfig);
 

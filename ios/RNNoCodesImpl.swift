@@ -27,10 +27,33 @@ class NoCodesEventHandler: NoCodesEventListener {
 }
 
 @objc
+public protocol NoCodesPurchaseDelegateProxy {
+    func purchase(_ product: [String: Any])
+    func restore()
+}
+
+class NoCodesPurchaseDelegateHandler: NoCodesPurchaseDelegateBridge {
+    private let delegate: NoCodesPurchaseDelegateProxy
+
+    init(delegate: NoCodesPurchaseDelegateProxy) {
+        self.delegate = delegate
+    }
+
+    func purchase(_ product: [String: Any]) {
+        delegate.purchase(product)
+    }
+
+    func restore() {
+        delegate.restore()
+    }
+}
+
+@objc
 public class RNNoCodesImpl: NSObject {
 
     var noCodesSandwich: NoCodesSandwich?
     var eventHandler: NoCodesEventHandler
+    var purchaseDelegateHandler: NoCodesPurchaseDelegateHandler?
 
     @objc
     public override init() {
@@ -63,7 +86,34 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func setDelegate(_ delegate: NoCodesEventDelegate?) {
+    public func setDelegate(_ delegate: NoCodesEventDelegate) {
         eventHandler.delegate = delegate
+    }
+
+    @objc
+    public func setPurchaseDelegate(_ delegate: NoCodesPurchaseDelegateProxy) {
+        let delegate = NoCodesPurchaseDelegateHandler(delegate: delegate)
+        purchaseDelegateHandler = delegate
+        noCodesSandwich?.setPurchaseDelegate(delegate)
+    }
+
+    @objc
+    public func delegatedPurchaseCompleted() {
+        noCodesSandwich?.delegatedPurchaseCompleted()
+    }
+
+    @objc
+    public func delegatedPurchaseFailed(_ errorMessage: String) {
+        noCodesSandwich?.delegatedPurchaseFailed(errorMessage)
+    }
+
+    @objc
+    public func delegatedRestoreCompleted() {
+        noCodesSandwich?.delegatedRestoreCompleted()
+    }
+
+    @objc
+    public func delegatedRestoreFailed(_ errorMessage: String) {
+        noCodesSandwich?.delegatedRestoreFailed(errorMessage)
     }
 }
