@@ -8,16 +8,16 @@ PODS:
   - hermes-engine (0.80.1):
     - hermes-engine/Pre-built (= 0.80.1)
   - hermes-engine/Pre-built (0.80.1)
-  - Qonversion (6.0.0):
-    - Qonversion/Main (= 6.0.0)
-  - qonversion-react-native-sdk (10.0.0):
+  - Qonversion (6.1.0):
+    - Qonversion/Main (= 6.1.0)
+  - qonversion-react-native-sdk (10.0.1):
     - boost
     - DoubleConversion
     - fast_float
     - fmt
     - glog
     - hermes-engine
-    - QonversionSandwich (= 7.0.0)
+    - QonversionSandwich (= 7.2.0)
     - RCT-Folly
     - RCT-Folly/Fabric
     - RCTRequired
@@ -40,9 +40,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - Qonversion/Main (6.0.0)
-  - QonversionSandwich (7.0.0):
-    - Qonversion (= 6.0.0)
+  - Qonversion/Main (6.1.0)
+  - QonversionSandwich (7.2.0):
+    - Qonversion (= 6.1.0)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2437,10 +2437,10 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 4f07404533b808de66cf48ac4200463068d0e95a
-  Qonversion: 694b88c4bfc06d827c189908e73ea955a1ddde6c
-  qonversion-react-native-sdk: 262513c36e2c4ebd3718ff31af1c2cde4e52eb81
-  QonversionSandwich: 1795bd19b40c129e76e976d2e5b88d7a7c9174ef
-  RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
+  Qonversion: 0b64e731cb59f94ab03c132cea2b70552b4dcc2b
+  qonversion-react-native-sdk: fce9e2a5d3d61425f8f2d547043c65e5f6edab79
+  QonversionSandwich: 6aee2b128590545439041bb793a77eaf1d4b325e
+  RCT-Folly: 59ec0ac1f2f39672a0c6e6cecdd39383b764646f
   RCTDeprecation: efa5010912100e944a7ac9a93a157e1def1988fe
   RCTRequired: bbc4cf999ddc4a4b076e076c74dd1d39d0254630
   RCTTypeSafety: d877728097547d0a37786cc9130c43ad71739ac3
@@ -2507,8 +2507,8 @@ SPEC CHECKSUMS:
   RNCClipboard: b228d492733d66e0126e18ce66c6d2f90bacc7e5
   RNSnackbar: c1b235eb606b03938c693ce769ed3059c31dff9b
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  Yoga: daa1e4de4b971b977b23bc842aaa3e135324f1f3
+  Yoga: 703055a9f39562521cdb8657162dfd80f8c174c3
 
 PODFILE CHECKSUM: 05782888d88e3a4a4bbc945c42df54704269e6ea
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2
