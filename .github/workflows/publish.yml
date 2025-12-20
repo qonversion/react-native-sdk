@@ -4,6 +4,9 @@ on:
   release:
     types: [released]
 
+permissions:
+  id-token: write  # Required for OIDC to deploy to npmjs via Trusted Publisher
+
 jobs:
   publish:
     name: Upload archives
@@ -25,5 +28,3 @@ jobs:
 
       - name: Publish to npm
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
