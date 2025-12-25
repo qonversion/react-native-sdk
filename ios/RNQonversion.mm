@@ -1,5 +1,9 @@
 #import "RNQonversion.h"
+#if __has_include(<qonversion_react_native_sdk/qonversion_react_native_sdk-Swift.h>)
+#import <qonversion_react_native_sdk/qonversion_react_native_sdk-Swift.h>
+#else
 #import "qonversion_react_native_sdk-Swift.h"
+#endif
 
 @interface RNQonversion () <QonversionEventDelegate>
 
