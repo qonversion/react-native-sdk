@@ -26,19 +26,10 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Debug - Check OIDC availability
-        run: |
-          echo "=== Environment variables for OIDC ==="
-          echo "ACTIONS_ID_TOKEN_REQUEST_URL: ${ACTIONS_ID_TOKEN_REQUEST_URL:-NOT SET}"
-          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+SET (hidden)}"
-          echo ""
-          echo "=== NPM config ==="
-          npm config list
-
       - name: Build
         run: |
           yarn
           yarn prepare
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: npm publish --access public
