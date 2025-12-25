@@ -6,13 +6,16 @@ on:
     types: [released]
 
 permissions:
-  id-token: write   # Required for OIDC
-  contents: read    # Required for checkout
+  id-token: write
+  contents: read
 
 jobs:
   publish:
     name: Upload archives
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write    # OIDC for npm trusted publishers
+      contents: read
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -23,16 +26,14 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Debug - Check npm version and config
+      - name: Debug - Check OIDC availability
         run: |
-          echo "Node version:"
-          node --version
-          echo "NPM version:"
-          npm --version
-          echo "NPM config:"
+          echo "=== Environment variables for OIDC ==="
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL: ${ACTIONS_ID_TOKEN_REQUEST_URL:-NOT SET}"
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+SET (hidden)}"
+          echo ""
+          echo "=== NPM config ==="
           npm config list
-          echo "OIDC token available:"
-          echo "ACTIONS_ID_TOKEN_REQUEST_URL is set: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL != '' }}"
 
       - name: Build
         run: |
