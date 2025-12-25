@@ -11,7 +11,7 @@ permissions:
 jobs:
   publish:
     name: Upload archives
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -22,10 +22,21 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Debug - Check npm version and config
+        run: |
+          echo "Node version:"
+          node --version
+          echo "NPM version:"
+          npm --version
+          echo "NPM config:"
+          npm config list
+          echo "OIDC token available:"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL is set: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL != '' }}"
+
       - name: Build
         run: |
           yarn
           yarn prepare
 
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --provenance --access public
