@@ -32,4 +32,4 @@ jobs:
           yarn prepare
 
       - name: Publish to npm
-        run: npm publish --access public
+        run: npm publish
