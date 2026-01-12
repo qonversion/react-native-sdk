@@ -34,6 +34,7 @@ const NoCodesScreen: React.FC = () => {
     ScreenPresentationStyle.FULL_SCREEN
   );
   const [animated, setAnimated] = useState(false);
+  const [locale, setLocale] = useState('');
 
   useEffect(() => {
     // Initialize No-Codes SDK once
@@ -178,6 +179,38 @@ const NoCodesScreen: React.FC = () => {
     }
   };
 
+  const applyLocale = () => {
+    try {
+      const localeValue = locale.trim() || null;
+      console.log('🔄 [NoCodes] Setting locale to:', localeValue);
+      NoCodes.getSharedInstance().setLocale(localeValue);
+      console.log('✅ [NoCodes] setLocale() call successful');
+      Snackbar.show({
+        text: localeValue ? `Locale set to: ${localeValue}` : 'Locale reset to device default',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } catch (error: any) {
+      console.error('❌ [NoCodes] setLocale() call failed:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
+  const resetLocale = () => {
+    try {
+      console.log('🔄 [NoCodes] Resetting locale to device default...');
+      NoCodes.getSharedInstance().setLocale(null);
+      setLocale('');
+      console.log('✅ [NoCodes] Locale reset successful');
+      Snackbar.show({
+        text: 'Locale reset to device default',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } catch (error: any) {
+      console.error('❌ [NoCodes] resetLocale() call failed:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -223,6 +256,25 @@ const NoCodesScreen: React.FC = () => {
 
         <TouchableOpacity style={styles.button} onPress={setPresentationConfig}>
           <Text style={styles.buttonText}>Set Presentation Config</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.sectionTitle}>Locale</Text>
+        <Text style={styles.inputLabel}>Locale code (e.g. "en", "de", "fr"):</Text>
+        <TextInput
+          style={styles.textInput}
+          value={locale}
+          onChangeText={setLocale}
+          placeholder="Leave empty for device default"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        <TouchableOpacity style={styles.button} onPress={applyLocale}>
+          <Text style={styles.buttonText}>Set Locale</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.secondaryButton} onPress={resetLocale}>
+          <Text style={styles.secondaryButtonText}>Reset to Device Default</Text>
         </TouchableOpacity>
       </View>
 

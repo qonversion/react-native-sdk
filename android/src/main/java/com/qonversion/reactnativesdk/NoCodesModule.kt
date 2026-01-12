@@ -43,9 +43,9 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
     }
 
     @ReactMethod
-    override fun initialize(projectKey: String, source: String, version: String, proxyUrl: String?) {
+    override fun initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?) {
         noCodesSandwich.storeSdkInfo(reactContext, source, version)
-        noCodesSandwich.initialize(reactContext, projectKey, null, null, proxyUrl)
+        noCodesSandwich.initialize(reactContext, projectKey, null, null, proxyUrl, locale)
         noCodesSandwich.setDelegate(noCodesEventListener)
         noCodesSandwich.setScreenCustomizationDelegate()
     }
@@ -104,6 +104,11 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
     @ReactMethod
     override fun delegatedRestoreFailed(errorMessage: String) {
         noCodesSandwich.delegatedRestoreFailed(errorMessage)
+    }
+
+    @ReactMethod
+    override fun setLocale(locale: String?) {
+        noCodesSandwich.setLocale(locale)
     }
 
     companion object {

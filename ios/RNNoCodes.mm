@@ -25,8 +25,9 @@
 - (void)initialize:(NSString *)projectKey
             source:(NSString *)source
            version:(NSString *)version
-          proxyUrl:(NSString *)proxyUrl {
-    [self.impl initializeWithProjectKey:projectKey source:source version:version proxyUrl:proxyUrl];
+          proxyUrl:(NSString *)proxyUrl
+            locale:(NSString *)locale {
+    [self.impl initializeWithProjectKey:projectKey source:source version:version proxyUrl:proxyUrl locale:locale];
 }
 
 - (void)setScreenPresentationConfig:(NSDictionary *)configData
@@ -69,6 +70,10 @@
 
 - (void)delegatedRestoreFailed:(NSString *)errorMessage {
     [self.impl delegatedRestoreFailed:errorMessage];
+}
+
+- (void)setLocale:(NSString *)locale {
+    [self.impl setLocale:locale];
 }
 
 #pragma mark - NoCodesEventDelegate

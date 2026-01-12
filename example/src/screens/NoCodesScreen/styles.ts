@@ -39,6 +39,20 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  secondaryButton: {
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  secondaryButtonText: {
+    color: '#007AFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
