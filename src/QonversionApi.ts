@@ -24,7 +24,6 @@ export interface QonversionApi {
 
   /**
    * iOS only
-   * Contact us before you start using this function
    * Call this function to sync purchases if you are using StoreKit2 and our SDK in Analytics mode.
    */
   syncStoreKit2Purchases(): void;

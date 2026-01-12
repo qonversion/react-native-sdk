@@ -10,7 +10,7 @@ PODS:
   - hermes-engine/Pre-built (0.80.1)
   - Qonversion (6.1.0):
     - Qonversion/Main (= 6.1.0)
-  - qonversion-react-native-sdk (10.0.0):
+  - qonversion-react-native-sdk (10.0.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2440,7 +2440,7 @@ SPEC CHECKSUMS:
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 4f07404533b808de66cf48ac4200463068d0e95a
   Qonversion: 0b64e731cb59f94ab03c132cea2b70552b4dcc2b
-  qonversion-react-native-sdk: ce6463d62e5ea60ddf3bf7b4cce582f9415f1c01
+  qonversion-react-native-sdk: f4866555352a9eede1049a32679fcbb2ebc6691b
   QonversionSandwich: 6aee2b128590545439041bb793a77eaf1d4b325e
   RCT-Folly: 59ec0ac1f2f39672a0c6e6cecdd39383b764646f
   RCTDeprecation: efa5010912100e944a7ac9a93a157e1def1988fe

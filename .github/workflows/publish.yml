@@ -1,29 +1,35 @@
 name: Publish
 
 on:
+  workflow_dispatch:
   release:
     types: [released]
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   publish:
     name: Upload archives
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write    # OIDC for npm trusted publishers
+      contents: read
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Build
         run: |
           yarn
           yarn prepare
 
-      - name: Setup node for publishing
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22.x'
-          registry-url: 'https://registry.npmjs.org'
-
       - name: Publish to npm
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
