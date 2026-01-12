@@ -22,7 +22,7 @@ export default class NoCodesInternal implements NoCodesApi {
   private purchaseDelegate: PurchaseDelegate | null = null;
 
   constructor(config: NoCodesConfig) {
-    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion, config.proxyUrl);
+    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion, config.proxyUrl, config.locale);
 
     if (config.noCodesListener) {
       this.setNoCodesListener(config.noCodesListener);
@@ -117,5 +117,9 @@ export default class NoCodesInternal implements NoCodesApi {
     RNNoCodes.onNoCodePurchase(this.customPurchaseHandler);
     RNNoCodes.onNoCodeRestore(this.customRestoreHandler);
     RNNoCodes.setPurchaseDelegate();
+  }
+
+  setLocale(locale: string | null) {
+    RNNoCodes.setLocale(locale);
   }
 }

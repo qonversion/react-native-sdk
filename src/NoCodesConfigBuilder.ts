@@ -7,6 +7,7 @@ class NoCodesConfigBuilder {
   private noCodesListener: NoCodesListener | undefined = undefined;
   private purchaseDelegate: PurchaseDelegate | undefined = undefined;
   private proxyUrl: string | undefined = undefined;
+  private locale: string | undefined = undefined;
 
   constructor(projectKey: string) {
     this.projectKey = projectKey;
@@ -51,6 +52,18 @@ class NoCodesConfigBuilder {
   }
 
   /**
+   * Set the locale for No-Code screens.
+   * Use this to override the device locale for the No-Codes SDK.
+   *
+   * @param locale the locale to use (e.g. "en", "de", "fr").
+   * @return builder instance for chain calls.
+   */
+  setLocale(locale: string): NoCodesConfigBuilder {
+    this.locale = locale;
+    return this;
+  }
+
+  /**
    * Generate {@link NoCodesConfig} instance with all the provided configurations.
    *
    * @return the complete {@link NoCodesConfig} instance.
@@ -60,7 +73,8 @@ class NoCodesConfigBuilder {
       this.projectKey,
       this.noCodesListener,
       this.purchaseDelegate,
-      this.proxyUrl
+      this.proxyUrl,
+      this.locale
     );
   }
 }

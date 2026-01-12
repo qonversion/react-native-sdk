@@ -65,9 +65,9 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?) {
+    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?) {
         // Ignore source and version, because it's taken from the Qonversion SDK.
-        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl)
+        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl, locale: locale)
     }
 
     @MainActor @objc
@@ -115,5 +115,10 @@ public class RNNoCodesImpl: NSObject {
     @objc
     public func delegatedRestoreFailed(_ errorMessage: String) {
         noCodesSandwich?.delegatedRestoreFailed(errorMessage)
+    }
+
+    @objc
+    public func setLocale(_ locale: String?) {
+        noCodesSandwich?.setLocale(locale)
     }
 }
