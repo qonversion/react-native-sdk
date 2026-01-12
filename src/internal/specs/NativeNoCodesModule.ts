@@ -13,8 +13,17 @@ export interface Spec extends TurboModule {
   setScreenPresentationConfig(configData: Object, contextKey?: string): Promise<boolean>;
   showScreen(contextKey: string): Promise<boolean>;
   close(): Promise<boolean>;
+  setPurchaseDelegate(): void;
+
+  // Methods to notify native code about purchase/restore results
+  delegatedPurchaseCompleted(): void;
+  delegatedPurchaseFailed(errorMessage: string): void;
+  delegatedRestoreCompleted(): void;
+  delegatedRestoreFailed(errorMessage: string): void;
 
   readonly onNoCodeEvent: EventEmitter<NoCodeEvent>;
+  readonly onNoCodePurchase: EventEmitter<Object>; // QProduct
+  readonly onNoCodeRestore: EventEmitter<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('RNNoCodes');

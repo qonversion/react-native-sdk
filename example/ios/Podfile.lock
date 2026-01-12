@@ -2200,6 +2200,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - qonversion-react-native-sdk (from `../..`)
+  - QonversionSandwich (from `../../../sandwich-sdk`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
   - RCTRequired (from `../node_modules/react-native/Libraries/Required`)
@@ -2273,7 +2274,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Qonversion
-    - QonversionSandwich
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -2294,6 +2294,8 @@ EXTERNAL SOURCES:
     :tag: hermes-2025-05-06-RNv0.80.0-4eb6132a5bf0450bf4c6c91987675381d7ac8bca
   qonversion-react-native-sdk:
     :path: "../.."
+  QonversionSandwich:
+    :path: "../../../sandwich-sdk"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2509,6 +2511,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 703055a9f39562521cdb8657162dfd80f8c174c3
 
-PODFILE CHECKSUM: 05782888d88e3a4a4bbc945c42df54704269e6ea
+PODFILE CHECKSUM: f56bbcfb3ee0fbed79b9ce0f06983ea8ea7533f8
 
 COCOAPODS: 1.16.2

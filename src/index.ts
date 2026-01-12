@@ -39,4 +39,6 @@ export type { default as NoCodesApi } from './NoCodesApi';
 export { default as NoCodesConfig } from './NoCodesConfig';
 export { default as NoCodesConfigBuilder } from './NoCodesConfigBuilder';
 export type { NoCodesListener } from './dto/NoCodesListener';
+export type { PurchaseDelegate } from './dto/PurchaseDelegate';
 export { default as NoCodesAction } from './dto/NoCodesAction';
+export { default as NoCodesError } from './dto/NoCodesError';

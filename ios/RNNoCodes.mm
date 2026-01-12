@@ -5,7 +5,7 @@
 #import "qonversion_react_native_sdk-Swift.h"
 #endif
 
-@interface RNNoCodes () <NoCodesEventDelegate>
+@interface RNNoCodes () <NoCodesEventDelegate, NoCodesPurchaseDelegateProxy>
 
 @property (nonatomic, strong) RNNoCodesImpl *impl;
 
@@ -51,8 +51,40 @@
     });
 }
 
+- (void)setPurchaseDelegate {
+    [self.impl setPurchaseDelegate:self];
+}
+
+- (void)delegatedPurchaseCompleted {
+    [self.impl delegatedPurchaseCompleted];
+}
+
+- (void)delegatedPurchaseFailed:(NSString *)errorMessage {
+    [self.impl delegatedPurchaseFailed:errorMessage];
+}
+
+- (void)delegatedRestoreCompleted {
+    [self.impl delegatedRestoreCompleted];
+}
+
+- (void)delegatedRestoreFailed:(NSString *)errorMessage {
+    [self.impl delegatedRestoreFailed:errorMessage];
+}
+
+#pragma mark - NoCodesEventDelegate
+
 - (void)noCodesDidTriggerWithEvent:(NSString * _Nonnull)event payload:(NSDictionary<NSString *,id> * _Nullable)payload {
-  [self emitOnNoCodeEvent:@{@"name": event, @"payload": payload ?: [NSNull null]}];
+    [self emitOnNoCodeEvent:@{@"name": event, @"payload": payload ?: [NSNull null]}];
+}
+
+#pragma mark - NoCodesPurchaseDelegateProxy
+
+- (void)purchase:(NSDictionary *)product {
+    [self emitOnNoCodePurchase:product];
+}
+
+- (void)restore {
+    [self emitOnNoCodeRestore];
 }
 
 #pragma mark - TurboModule
