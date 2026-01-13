@@ -388,3 +388,43 @@ export enum NoCodesErrorCode {
   SCREEN_LOADING_FAILED = "ScreenLoadingFailed", // iOS
   SDK_INITIALIZATION_ERROR = "SDKInitializationError" // iOS
 }
+
+/**
+ * Status of the purchase result.
+ */
+export enum PurchaseResultStatus {
+  /**
+   * The purchase was successful.
+   */
+  SUCCESS = "Success",
+
+  /**
+   * The purchase was canceled by the user.
+   */
+  USER_CANCELED = "UserCanceled",
+
+  /**
+   * The purchase is pending (e.g., waiting for parental approval).
+   */
+  PENDING = "Pending",
+
+  /**
+   * An error occurred during the purchase.
+   */
+  ERROR = "Error",
+}
+
+/**
+ * Source of the purchase result data.
+ */
+export enum PurchaseResultSource {
+  /**
+   * The result was obtained from the Qonversion API.
+   */
+  API = "Api",
+
+  /**
+   * The result was obtained from the local store.
+   */
+  LOCAL = "Local",
+}

@@ -31,6 +31,8 @@ export { default as SKProductDiscount } from './dto/storeProducts/SKProductDisco
 export { default as SKSubscriptionPeriod } from './dto/storeProducts/SKSubscriptionPeriod';
 export { default as PurchaseOptionsBuilder } from './dto/PurchaseOptionsBuilder';
 export { default as PurchaseOptions } from './dto/PurchaseOptionsBuilder';
+export { default as PurchaseResult } from './dto/PurchaseResult';
+export { default as StoreTransaction } from './dto/StoreTransaction';
 
 // NoCode exports
 export { default as ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
@@ -39,4 +41,6 @@ export type { default as NoCodesApi } from './NoCodesApi';
 export { default as NoCodesConfig } from './NoCodesConfig';
 export { default as NoCodesConfigBuilder } from './NoCodesConfigBuilder';
 export type { NoCodesListener } from './dto/NoCodesListener';
+export type { PurchaseDelegate } from './dto/PurchaseDelegate';
 export { default as NoCodesAction } from './dto/NoCodesAction';
+export { default as NoCodesError } from './dto/NoCodesError';

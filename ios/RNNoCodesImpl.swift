@@ -27,10 +27,33 @@ class NoCodesEventHandler: NoCodesEventListener {
 }
 
 @objc
+public protocol NoCodesPurchaseDelegateProxy {
+    func purchase(_ product: [String: Any])
+    func restore()
+}
+
+class NoCodesPurchaseDelegateHandler: NoCodesPurchaseDelegateBridge {
+    private let delegate: NoCodesPurchaseDelegateProxy
+
+    init(delegate: NoCodesPurchaseDelegateProxy) {
+        self.delegate = delegate
+    }
+
+    func purchase(_ product: [String: Any]) {
+        delegate.purchase(product)
+    }
+
+    func restore() {
+        delegate.restore()
+    }
+}
+
+@objc
 public class RNNoCodesImpl: NSObject {
 
     var noCodesSandwich: NoCodesSandwich?
     var eventHandler: NoCodesEventHandler
+    var purchaseDelegateHandler: NoCodesPurchaseDelegateHandler?
 
     @objc
     public override init() {
@@ -42,9 +65,9 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?) {
+    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?) {
         // Ignore source and version, because it's taken from the Qonversion SDK.
-        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl)
+        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl, locale: locale)
     }
 
     @MainActor @objc
@@ -63,7 +86,39 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func setDelegate(_ delegate: NoCodesEventDelegate?) {
+    public func setDelegate(_ delegate: NoCodesEventDelegate) {
         eventHandler.delegate = delegate
+    }
+
+    @objc
+    public func setPurchaseDelegate(_ delegate: NoCodesPurchaseDelegateProxy) {
+        let delegateHandler = NoCodesPurchaseDelegateHandler(delegate: delegate)
+        purchaseDelegateHandler = delegateHandler
+        noCodesSandwich?.setPurchaseDelegate(delegateHandler)
+    }
+
+    @objc
+    public func delegatedPurchaseCompleted() {
+        noCodesSandwich?.delegatedPurchaseCompleted()
+    }
+
+    @objc
+    public func delegatedPurchaseFailed(_ errorMessage: String) {
+        noCodesSandwich?.delegatedPurchaseFailed(errorMessage)
+    }
+
+    @objc
+    public func delegatedRestoreCompleted() {
+        noCodesSandwich?.delegatedRestoreCompleted()
+    }
+
+    @objc
+    public func delegatedRestoreFailed(_ errorMessage: String) {
+        noCodesSandwich?.delegatedRestoreFailed(errorMessage)
+    }
+
+    @objc
+    public func setLocale(_ locale: String?) {
+        noCodesSandwich?.setLocale(locale)
     }
 }

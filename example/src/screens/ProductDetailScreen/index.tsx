@@ -20,26 +20,48 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   const purchaseProduct = async () => {
     try {
       console.log(
-        '🔄 [Qonversion] Starting purchaseProduct() call with product:',
+        '🔄 [Qonversion] Starting purchaseWithResult() call with product:',
         product
       );
       dispatch({ type: 'SET_LOADING', payload: true });
-      const entitlements =
-        await Qonversion.getSharedInstance().purchaseProduct(product);
+      const result =
+        await Qonversion.getSharedInstance().purchaseWithResult(product);
       console.log(
-        '✅ [Qonversion] purchaseProduct() call successful:',
-        Object.fromEntries(entitlements)
+        '✅ [Qonversion] purchaseWithResult() call completed with status:',
+        result.status
       );
-      dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
-      Snackbar.show({
-        text: 'Product purchased successfully!',
-        duration: Snackbar.LENGTH_SHORT,
-      });
-    } catch (error: any) {
-      console.error('❌ [Qonversion] purchaseProduct() call failed:', error);
-      if (!error.userCanceled) {
-        Alert.alert('Error', error.message);
+
+      console.log('📦 [Qonversion] Purchase result:', result);
+
+      if (result.isSuccess) {
+        console.log('✅ [Qonversion] Purchase successful!');
+        if (result.entitlements) {
+          dispatch({ type: 'SET_ENTITLEMENTS', payload: result.entitlements });
+        }
+        Snackbar.show({
+          text: 'Product purchased successfully!',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      } else if (result.isCanceled) {
+        console.log('ℹ️ [Qonversion] Purchase canceled by user');
+        Snackbar.show({
+          text: 'Purchase was canceled',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      } else if (result.isPending) {
+        console.log('⏳ [Qonversion] Purchase is pending');
+        Snackbar.show({
+          text: 'Purchase is pending approval',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      } else if (result.isError) {
+        console.error('❌ [Qonversion] Purchase failed with error:', result.error);
+        Alert.alert('Purchase Error', result.error?.description || 'An error occurred');
       }
+
+    } catch (error: any) {
+      console.error('❌ [Qonversion] purchaseWithResult() call failed:', error);
+      Alert.alert('Error', error.message);
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }

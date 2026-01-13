@@ -8,14 +8,16 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import {
+import Qonversion, {
   NoCodesAction,
   NoCodesConfigBuilder,
   ScreenPresentationStyle,
   ScreenPresentationConfig,
   NoCodes,
+  NoCodesError,
+  type PurchaseDelegate,
+  Product
 } from '@qonversion/react-native-sdk';
-import type NoCodesError from '../../../../src/dto/NoCodesError';
 import { AppContext } from '../../store/AppStore';
 import styles from './styles';
 import Snackbar from 'react-native-snackbar';
@@ -32,11 +34,53 @@ const NoCodesScreen: React.FC = () => {
     ScreenPresentationStyle.FULL_SCREEN
   );
   const [animated, setAnimated] = useState(false);
+  const [locale, setLocale] = useState('');
 
   useEffect(() => {
     // Initialize No-Codes SDK once
     const initializeNoCodes = () => {
       console.log('🔄 [NoCodes] Starting SDK initialization...');
+      // @ts-ignore - PurchaseDelegate is not used until the comment below is uncommented
+      const purchaseDelegate: PurchaseDelegate = {
+        purchase: async (product: Product) => {
+          console.log('🔄 [PurchaseDelegate] Starting purchase for product:', product.qonversionId);
+          const result = await Qonversion.getSharedInstance().purchaseWithResult(product);
+          console.log('✅ [PurchaseDelegate] Purchase result:', result.status);
+
+          if (result.isSuccess) {
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase completed: ${product.qonversionId}` });
+            Snackbar.show({
+              text: `Purchase completed: ${product.qonversionId}`,
+              duration: Snackbar.LENGTH_SHORT,
+            });
+          } else if (result.isCanceled) {
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase canceled: ${product.qonversionId}` });
+          } else if (result.isPending) {
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase pending: ${product.qonversionId}` });
+          } else if (result.isError) {
+            console.error('❌ [PurchaseDelegate] Purchase failed:', result.error);
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase failed: ${result.error?.description}` });
+            throw new Error(result.error?.description || 'Purchase failed');
+          }
+        },
+        restore: async () => {
+          console.log('🔄 [PurchaseDelegate] Starting restore...');
+          try {
+            const entitlements = await Qonversion.getSharedInstance().restore();
+            console.log('✅ [PurchaseDelegate] Restore successful:', Object.fromEntries(entitlements));
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: 'Restore completed' });
+            Snackbar.show({
+              text: 'Restore completed successfully!',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+          } catch (error: any) {
+            console.error('❌ [PurchaseDelegate] Restore failed:', error);
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Restore failed: ${error.message}` });
+            throw error; // Re-throw to let NoCodes SDK handle the error
+          }
+        },
+      };
+
       const noCodesConfig = new NoCodesConfigBuilder(ProjectKey)
         .setNoCodesListener({
           onScreenShown: (id: string) => {
@@ -71,6 +115,7 @@ const NoCodesScreen: React.FC = () => {
             NoCodes.getSharedInstance().close();
           },
         })
+        // .setPurchaseDelegate(purchaseDelegate) // Uncomment this to use the purchase delegate
         .build();
       console.log('✅ [NoCodes] Config built successfully:', noCodesConfig);
 
@@ -139,6 +184,38 @@ const NoCodesScreen: React.FC = () => {
     }
   };
 
+  const applyLocale = () => {
+    try {
+      const localeValue = locale.trim() || null;
+      console.log('🔄 [NoCodes] Setting locale to:', localeValue);
+      NoCodes.getSharedInstance().setLocale(localeValue);
+      console.log('✅ [NoCodes] setLocale() call successful');
+      Snackbar.show({
+        text: localeValue ? `Locale set to: ${localeValue}` : 'Locale reset to device default',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } catch (error: any) {
+      console.error('❌ [NoCodes] setLocale() call failed:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
+  const resetLocale = () => {
+    try {
+      console.log('🔄 [NoCodes] Resetting locale to device default...');
+      NoCodes.getSharedInstance().setLocale(null);
+      setLocale('');
+      console.log('✅ [NoCodes] Locale reset successful');
+      Snackbar.show({
+        text: 'Locale reset to device default',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } catch (error: any) {
+      console.error('❌ [NoCodes] resetLocale() call failed:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -184,6 +261,25 @@ const NoCodesScreen: React.FC = () => {
 
         <TouchableOpacity style={styles.button} onPress={setPresentationConfig}>
           <Text style={styles.buttonText}>Set Presentation Config</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.sectionTitle}>Locale</Text>
+        <Text style={styles.inputLabel}>Locale code (e.g. "en", "de", "fr"):</Text>
+        <TextInput
+          style={styles.textInput}
+          value={locale}
+          onChangeText={setLocale}
+          placeholder="Leave empty for device default"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        <TouchableOpacity style={styles.button} onPress={applyLocale}>
+          <Text style={styles.buttonText}>Set Locale</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.secondaryButton} onPress={resetLocale}>
+          <Text style={styles.secondaryButtonText}>Reset to Device Default</Text>
         </TouchableOpacity>
       </View>
 

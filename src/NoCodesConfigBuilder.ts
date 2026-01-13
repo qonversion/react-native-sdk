@@ -1,10 +1,13 @@
 import type {NoCodesListener} from './dto/NoCodesListener';
+import type {PurchaseDelegate} from './dto/PurchaseDelegate';
 import NoCodesConfig from './NoCodesConfig';
 
 class NoCodesConfigBuilder {
   private readonly projectKey: string;
   private noCodesListener: NoCodesListener | undefined = undefined;
+  private purchaseDelegate: PurchaseDelegate | undefined = undefined;
   private proxyUrl: string | undefined = undefined;
+  private locale: string | undefined = undefined;
 
   constructor(projectKey: string) {
     this.projectKey = projectKey;
@@ -26,6 +29,18 @@ class NoCodesConfigBuilder {
   }
 
   /**
+   * Provide a delegate for custom purchase and restore handling.
+   * When this delegate is provided, it replaces the default Qonversion SDK purchase flow.
+   *
+   * @param purchaseDelegate delegate to handle purchase and restore operations.
+   * @return builder instance for chain calls.
+   */
+  setPurchaseDelegate(purchaseDelegate: PurchaseDelegate): NoCodesConfigBuilder {
+    this.purchaseDelegate = purchaseDelegate;
+    return this;
+  }
+
+  /**
    * Set proxy URL for NoCodes SDK.
    *
    * @param proxyUrl proxy URL to use for API requests.
@@ -33,6 +48,18 @@ class NoCodesConfigBuilder {
    */
   setProxyURL(proxyUrl: string): NoCodesConfigBuilder {
     this.proxyUrl = proxyUrl;
+    return this;
+  }
+
+  /**
+   * Set the locale for No-Code screens.
+   * Use this to override the device locale for the No-Codes SDK.
+   *
+   * @param locale the locale to use (e.g. "en", "de", "fr").
+   * @return builder instance for chain calls.
+   */
+  setLocale(locale: string): NoCodesConfigBuilder {
+    this.locale = locale;
     return this;
   }
 
@@ -45,7 +72,9 @@ class NoCodesConfigBuilder {
     return new NoCodesConfig(
       this.projectKey,
       this.noCodesListener,
-      this.proxyUrl
+      this.purchaseDelegate,
+      this.proxyUrl,
+      this.locale
     );
   }
 }

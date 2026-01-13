@@ -90,6 +90,33 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
     }
 
     @ReactMethod
+    override fun purchaseWithResult(
+        productId: String,
+        quantity: Double,
+        contextKeys: ReadableArray?,
+        promoOffer: ReadableMap?,
+        offerId: String?,
+        applyOffer: Boolean,
+        oldProductId: String?,
+        updatePolicyKey: String?,
+        promise: Promise
+    ) {
+        var contextKeysList: List<String>? = null
+        if (contextKeys != null) {
+            contextKeysList = EntitiesConverter.convertArrayToStringList(contextKeys)
+        }
+        qonversionSandwich.purchaseWithResult(
+            productId,
+            offerId,
+            applyOffer,
+            oldProductId,
+            updatePolicyKey,
+            contextKeysList,
+            getResultListener(promise)
+        )
+    }
+
+    @ReactMethod
     override fun updatePurchase(
         productId: String,
         offerId: String?,

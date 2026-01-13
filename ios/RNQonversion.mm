@@ -47,6 +47,11 @@
     [self.impl purchase:productId quantity:quantity contextKeys:contextKeys promoOffer:promoOfferDict resolve:resolve reject:reject];
 }
 
+- (void)purchaseWithResult:(nonnull NSString *)productId quantity:(double)quantity contextKeys:(NSArray * _Nullable)contextKeys promoOffer:(JS::NativeQonversionModule::QPromoOfferDetails &)promoOffer offerId:(NSString * _Nullable)offerId applyOffer:(BOOL)applyOffer oldProductId:(NSString * _Nullable)oldProductId updatePolicyKey:(NSString * _Nullable)updatePolicyKey resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    NSDictionary *promoOfferDict = convertPromoOfferDetailsToDictionary(promoOffer);
+    [self.impl purchaseWithResult:productId quantity:quantity contextKeys:contextKeys promoOffer:promoOfferDict resolve:resolve reject:reject];
+}
+
 - (void)setDefinedProperty:(NSString *)property value:(NSString *)value {
     [self.impl setDefinedProperty:property value:value];
 }

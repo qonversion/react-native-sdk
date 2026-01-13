@@ -81,6 +81,13 @@ public class RNQonversionImpl: NSObject {
   }
 
   @objc
+  public func purchaseWithResult(_ productId: String, quantity: Int, contextKeys: [String], promoOffer: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    qonversionSandwich?.purchaseWithResult(productId, quantity: quantity, contextKeys: contextKeys, promoOffer: promoOffer, completion: { result, error in
+      self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
+    })
+  }
+
+  @objc
   public func setDefinedProperty(_ property: String, value: String) {
     qonversionSandwich?.setDefinedProperty(property, value: value)
   }

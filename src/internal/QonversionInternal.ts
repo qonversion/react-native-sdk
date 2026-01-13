@@ -1,10 +1,11 @@
 import {AttributionProvider, QonversionErrorCode, UserPropertyKey} from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
 import Mapper from "./Mapper";
-import type {QEntitlement, QEligibilityInfo, QProduct} from "./Mapper";
+import type {QEntitlement, QEligibilityInfo, QProduct, QPurchaseResult} from "./Mapper";
 import Offerings from "../dto/Offerings";
 import Entitlement from "../dto/Entitlement";
 import Product from "../dto/Product";
+import PurchaseResult from "../dto/PurchaseResult";
 import {isAndroid, isIos} from "./utils";
 import type {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
 import type {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
@@ -23,7 +24,7 @@ import PromotionalOffer from '../dto/PromotionalOffer';
 import RNQonversion from './specs/NativeQonversionModule';
 import type { QPromoOfferDetails } from './specs/NativeQonversionModule';
 
-export const sdkVersion = "10.0.2";
+export const sdkVersion = "10.1.0";
 export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
@@ -71,6 +72,53 @@ export default class QonversionInternal implements QonversionApi {
     const mappedPromoOffer: PromotionalOffer | null = Mapper.convertPromoOffer(promoOffer);
 
     return mappedPromoOffer;
+  }
+
+  async purchaseWithResult(product: Product, options: PurchaseOptions | undefined): Promise<PurchaseResult> {
+    if (!options) {
+      options = new PurchaseOptionsBuilder().build();
+    }
+
+    const promoOffer: QPromoOfferDetails = {
+      productDiscountId: options.promotionalOffer?.productDiscount.identifier,
+      keyIdentifier: options.promotionalOffer?.paymentDiscount.keyIdentifier,
+      nonce: options.promotionalOffer?.paymentDiscount.nonce,
+      signature: options.promotionalOffer?.paymentDiscount.signature,
+      timestamp: options.promotionalOffer?.paymentDiscount.timestamp
+    };
+
+    let purchaseResultPromise: Promise<QPurchaseResult | null | undefined>;
+    if (isIos()) {
+      purchaseResultPromise = RNQonversion.purchaseWithResult(
+        product.qonversionId,
+        options.quantity,
+        options.contextKeys,
+        promoOffer,
+        undefined,
+        false,
+        undefined,
+        undefined,
+      );
+    } else {
+      purchaseResultPromise = RNQonversion.purchaseWithResult(
+        product.qonversionId,
+        1,
+        options.contextKeys,
+        undefined,
+        options.offerId,
+        options.applyOffer,
+        options.oldProduct?.qonversionId,
+        options.updatePolicy,
+      );
+    }
+    const purchaseResult = await purchaseResultPromise;
+    const mappedResult = Mapper.convertPurchaseResult(purchaseResult);
+
+    if (!mappedResult) {
+      throw new Error("Failed to parse PurchaseResult");
+    }
+
+    return mappedResult;
   }
 
   async purchaseProduct(product: Product, options: PurchaseOptions | undefined): Promise<Map<string, Entitlement>> {

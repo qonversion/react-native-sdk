@@ -19,4 +19,13 @@ export default interface NoCodesApi {
    * Close the current opened No-Code screen.
    */
   close(): void;
+
+  /**
+   * Set the locale for No-Code screens.
+   * Use this to override the device locale for the No-Codes SDK.
+   * Pass null to reset to the device default locale.
+   *
+   * @param locale the locale to use (e.g. "en", "de", "fr"), or null to reset to device default.
+   */
+  setLocale(locale: string | null): void;
 }

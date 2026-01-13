@@ -16,6 +16,9 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+# For testing Sandwich SDK locally, uncomment the following line
+# pod 'QonversionSandwich', :path => '../../../sandwich-sdk'
+
 target 'QonversionExample' do
   config = use_native_modules!
 

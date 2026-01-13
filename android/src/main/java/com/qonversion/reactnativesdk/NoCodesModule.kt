@@ -10,6 +10,7 @@ import com.facebook.react.bridge.WritableNativeMap
 import io.qonversion.sandwich.BridgeData
 import io.qonversion.sandwich.NoCodesSandwich
 import io.qonversion.sandwich.NoCodesEventListener
+import io.qonversion.sandwich.NoCodesPurchaseDelegateBridge
 
 @ReactModule(name = NoCodesModule.NAME)
 class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeNoCodesModuleSpec(reactContext) {
@@ -26,15 +27,25 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
             emitOnNoCodeEvent(eventMap)
         }
     }
+    private val purchaseDelegate: NoCodesPurchaseDelegateBridge = object : NoCodesPurchaseDelegateBridge {
+        override fun purchase(product: BridgeData) {
+            val productMap = EntitiesConverter.convertMapToWritableMap(product)
+            emitOnNoCodePurchase(productMap)
+        }
+
+        override fun restore() {
+            emitOnNoCodeRestore()
+        }
+    }
 
     override fun getName(): String {
         return NAME
     }
 
     @ReactMethod
-    override fun initialize(projectKey: String, source: String, version: String, proxyUrl: String?) {
+    override fun initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?) {
         noCodesSandwich.storeSdkInfo(reactContext, source, version)
-        noCodesSandwich.initialize(reactContext, projectKey, null, null, proxyUrl)
+        noCodesSandwich.initialize(reactContext, projectKey, null, null, proxyUrl, locale)
         noCodesSandwich.setDelegate(noCodesEventListener)
         noCodesSandwich.setScreenCustomizationDelegate()
     }
@@ -68,6 +79,36 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
         } catch (e: Exception) {
             promise.reject(e)
         }
+    }
+
+    @ReactMethod
+    override fun setPurchaseDelegate() {
+        noCodesSandwich.setPurchaseDelegate(purchaseDelegate)
+    }
+
+    @ReactMethod
+    override fun delegatedPurchaseCompleted() {
+        noCodesSandwich.delegatedPurchaseCompleted()
+    }
+
+    @ReactMethod
+    override fun delegatedPurchaseFailed(errorMessage: String) {
+        noCodesSandwich.delegatedPurchaseFailed(errorMessage)
+    }
+
+    @ReactMethod
+    override fun delegatedRestoreCompleted() {
+        noCodesSandwich.delegatedRestoreCompleted()
+    }
+
+    @ReactMethod
+    override fun delegatedRestoreFailed(errorMessage: String) {
+        noCodesSandwich.delegatedRestoreFailed(errorMessage)
+    }
+
+    @ReactMethod
+    override fun setLocale(locale: String?) {
+        noCodesSandwich.setLocale(locale)
     }
 
     companion object {

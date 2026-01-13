@@ -1,6 +1,6 @@
 import type {TurboModule} from 'react-native';
 import {TurboModuleRegistry} from 'react-native';
-import type { QPromotionalOffer, QOfferings, QUser, QUserProperties, QRemoteConfig, QRemoteConfigList } from '../Mapper';
+import type { QPromotionalOffer, QOfferings, QUser, QUserProperties, QRemoteConfig, QRemoteConfigList, QPurchaseResult } from '../Mapper';
 import type { EventEmitter } from 'react-native/Libraries/Types/CodegenTypes';
 
 export type QPromoOfferDetails = {
@@ -34,7 +34,17 @@ export interface Spec extends TurboModule {
     applyOffer: boolean, // Android only
     oldProductId: string | null | undefined, // Android only
     updatePolicyKey: string | null | undefined, // Android only
-  ): Promise<Object | null | undefined>; // Record<string, QEntitlement
+  ): Promise<Object | null | undefined>; // Record<string, QEntitlement>
+  purchaseWithResult(
+    productId: string,
+    quantity: number, // iOS only
+    contextKeys: string[] | null | undefined,
+    promoOffer: QPromoOfferDetails | undefined, // iOS only
+    offerId: string | null | undefined, // Android only
+    applyOffer: boolean, // Android only
+    oldProductId: string | null | undefined, // Android only
+    updatePolicyKey: string | null | undefined, // Android only
+  ): Promise<QPurchaseResult | null | undefined>;
   updatePurchase(
     productId: string,
     offerId: string | null | undefined,
