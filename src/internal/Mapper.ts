@@ -8,6 +8,8 @@ import {
   PricingPhaseRecurrenceMode,
   PricingPhaseType,
   ProductType,
+  PurchaseResultSource,
+  PurchaseResultStatus,
   QonversionErrorCode,
   RemoteConfigurationAssignmentType,
   RemoteConfigurationSourceType,
@@ -52,6 +54,8 @@ import SKPaymentDiscount from '../dto/storeProducts/SKPaymentDiscount';
 import NoCodesAction from '../dto/NoCodesAction';
 import QonversionError from '../dto/QonversionError';
 import NoCodesError from '../dto/NoCodesError';
+import PurchaseResult from '../dto/PurchaseResult';
+import StoreTransaction from '../dto/StoreTransaction';
 
 export type QProduct = {
   id: string;
@@ -297,6 +301,25 @@ export type QNoCodesError = QQonversionError & {
 };
 
 export type QNoCodeScreenInfo = { screenId: string };
+
+export type QStoreTransaction = {
+  transactionId?: string | null;
+  originalTransactionId?: string | null;
+  transactionTimestamp?: number | null;
+  productId?: string | null;
+  quantity?: number | null;
+  promoOfferId?: string | null;
+  purchaseToken?: string | null;
+};
+
+export type QPurchaseResult = {
+  status: string;
+  entitlements: Record<string, QEntitlement> | null;
+  error: QQonversionError | null | undefined;
+  isFallbackGenerated: boolean;
+  source: string;
+  storeTransaction: QStoreTransaction | null | undefined;
+};
 
 const priceMicrosRatio = 1000000;
 
@@ -1156,6 +1179,77 @@ class Mapper {
 
     return QonversionErrorCode.UNKNOWN;
   }
+
+  // region PurchaseResult Mappers
+
+  static convertPurchaseResult(
+    purchaseResult: QPurchaseResult | null | undefined
+  ): PurchaseResult | null {
+    if (!purchaseResult) {
+      return null;
+    }
+
+    const status = this.convertPurchaseResultStatus(purchaseResult.status);
+    const entitlements = purchaseResult.entitlements
+      ? this.convertEntitlements(purchaseResult.entitlements)
+      : null;
+    const error = purchaseResult.error ? this.convertQonversionError(purchaseResult.error) : undefined;
+    const source = this.convertPurchaseResultSource(purchaseResult.source);
+    const storeTransaction = this.convertStoreTransaction(purchaseResult.storeTransaction);
+
+    return new PurchaseResult(
+      status,
+      entitlements,
+      error ?? null,
+      purchaseResult.isFallbackGenerated ?? false,
+      source,
+      storeTransaction
+    );
+  }
+
+  static convertPurchaseResultStatus(status: string | null | undefined): PurchaseResultStatus {
+    switch (status) {
+      case "Success":
+        return PurchaseResultStatus.SUCCESS;
+      case "UserCanceled":
+        return PurchaseResultStatus.USER_CANCELED;
+      case "Pending":
+        return PurchaseResultStatus.PENDING;
+      case "Error":
+      default:
+        return PurchaseResultStatus.ERROR;
+    }
+  }
+
+  static convertPurchaseResultSource(source: string | null | undefined): PurchaseResultSource {
+    switch (source) {
+      case "Local":
+        return PurchaseResultSource.LOCAL;
+      case "Api":
+      default:
+        return PurchaseResultSource.API;
+    }
+  }
+
+  static convertStoreTransaction(
+    storeTransaction: QStoreTransaction | null | undefined
+  ): StoreTransaction | null {
+    if (!storeTransaction) {
+      return null;
+    }
+
+    return new StoreTransaction(
+      storeTransaction.transactionId ?? undefined,
+      storeTransaction.originalTransactionId ?? undefined,
+      storeTransaction.transactionTimestamp ?? undefined,
+      storeTransaction.productId ?? undefined,
+      storeTransaction.quantity ?? undefined,
+      storeTransaction.promoOfferId ?? undefined,
+      storeTransaction.purchaseToken ?? undefined
+    );
+  }
+
+  // endregion
 }
 
 export default Mapper;
