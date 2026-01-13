@@ -44,18 +44,23 @@ const NoCodesScreen: React.FC = () => {
       const purchaseDelegate: PurchaseDelegate = {
         purchase: async (product: Product) => {
           console.log('🔄 [PurchaseDelegate] Starting purchase for product:', product.qonversionId);
-          try {
-            const entitlements = await Qonversion.getSharedInstance().purchaseProduct(product);
-            console.log('✅ [PurchaseDelegate] Purchase successful:', Object.fromEntries(entitlements));
+          const result = await Qonversion.getSharedInstance().purchaseWithResult(product);
+          console.log('✅ [PurchaseDelegate] Purchase result:', result.status);
+
+          if (result.isSuccess) {
             dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase completed: ${product.qonversionId}` });
             Snackbar.show({
               text: `Purchase completed: ${product.qonversionId}`,
               duration: Snackbar.LENGTH_SHORT,
             });
-          } catch (error: any) {
-            console.error('❌ [PurchaseDelegate] Purchase failed:', error);
-            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase failed: ${error.message}` });
-            throw error; // Re-throw to let NoCodes SDK handle the error
+          } else if (result.isCanceled) {
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase canceled: ${product.qonversionId}` });
+          } else if (result.isPending) {
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase pending: ${product.qonversionId}` });
+          } else if (result.isError) {
+            console.error('❌ [PurchaseDelegate] Purchase failed:', result.error);
+            dispatch({ type: 'ADD_NOCODES_EVENT', payload: `Purchase failed: ${result.error?.description}` });
+            throw new Error(result.error?.description || 'Purchase failed');
           }
         },
         restore: async () => {

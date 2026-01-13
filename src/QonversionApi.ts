@@ -12,6 +12,7 @@ import UserProperties from './dto/UserProperties';
 import PurchaseModel from './dto/PurchaseModel';
 import PurchaseUpdateModel from './dto/PurchaseUpdateModel';
 import PurchaseOptions from "./dto/PurchaseOptions";
+import PurchaseResult from "./dto/PurchaseResult";
 import SKProductDiscount from './dto/storeProducts/SKProductDiscount';
 import PromotionalOffer from './dto/PromotionalOffer';
 
@@ -49,11 +50,24 @@ export interface QonversionApi {
   getPromotionalOffer(product: Product, discount: SKProductDiscount): Promise<PromotionalOffer | null>;
 
   /**
+   * Make a purchase and validate it through server-to-server using Qonversion's Backend.
+   * Returns a detailed PurchaseResult with status, entitlements, and store transaction details.
+   *
+   * @param product product to purchase
+   * @param options additional options for the purchase process.
+   * @returns the promise with the PurchaseResult containing status, entitlements, and transaction details
+   *
+   * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
+   */
+  purchaseWithResult(product: Product, options?: PurchaseOptions | undefined): Promise<PurchaseResult>
+
+  /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend
    * @param product product to purchase
    * @param options additional options for the purchase process.
    * @returns the promise with the user entitlements including the ones obtained by the purchase
    *
+   * @deprecated Use {@link purchaseWithResult} function instead.
    * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
    */
   purchaseProduct(product: Product, options?: PurchaseOptions | undefined): Promise<Map<string, Entitlement>>
@@ -61,7 +75,7 @@ export interface QonversionApi {
   /**
    * Make a purchase and validate it through server-to-server using Qonversion's Backend.
    *
-   * @deprecated Use {@link purchaseProduct} function instead.
+   * @deprecated Use {@link purchaseWithResult} function instead.
    * @param purchaseModel necessary information for purchase
    * @returns the promise with the user entitlements including the ones obtained by the purchase
    * @see [Making Purchases](https://documentation.qonversion.io/docs/making-purchases)
@@ -73,7 +87,7 @@ export interface QonversionApi {
    *
    * Update (upgrade/downgrade) subscription on Google Play Store and validate it through server-to-server using Qonversion's Backend.
    *
-   * @deprecated Use {@link purchaseProduct} function instead.
+   * @deprecated Use {@link purchaseWithResult} function instead.
    * @param purchaseUpdateModel necessary information for purchase update
    * @returns the promise with the user entitlements including updated ones.
    * @see [Update policy](https://developer.android.com/google/play/billing/subscriptions#replacement-modes)

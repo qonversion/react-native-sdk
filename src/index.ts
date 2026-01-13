@@ -31,6 +31,8 @@ export { default as SKProductDiscount } from './dto/storeProducts/SKProductDisco
 export { default as SKSubscriptionPeriod } from './dto/storeProducts/SKSubscriptionPeriod';
 export { default as PurchaseOptionsBuilder } from './dto/PurchaseOptionsBuilder';
 export { default as PurchaseOptions } from './dto/PurchaseOptionsBuilder';
+export { default as PurchaseResult } from './dto/PurchaseResult';
+export { default as StoreTransaction } from './dto/StoreTransaction';
 
 // NoCode exports
 export { default as ScreenPresentationConfig } from './dto/ScreenPresentationConfig';
