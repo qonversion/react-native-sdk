@@ -16,7 +16,7 @@ end
 
 def upgrade_sandwich_android(new_version)
   path = "../android/build.gradle"
-  common_part = "implementation \"io.qonversion.sandwich:sandwich:"
+  common_part = "implementation \"io.qonversion:sandwich:"
   regex = /#{common_part}.*"/
   result_value = "#{common_part}#{new_version}\""
 
@@ -24,7 +24,7 @@ def upgrade_sandwich_android(new_version)
 end
 
 def upgrade_sandwich_ios(new_version)
-  path = "../react-native-qonversion.podspec"
+  path = "../qonversion-react-native-sdk.podspec"
   common_part = "s.dependency \"QonversionSandwich\", \""
   regex = /#{common_part}.*"/
   result_value = "#{common_part}#{new_version}\""
