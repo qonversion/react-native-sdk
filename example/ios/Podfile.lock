@@ -8,16 +8,16 @@ PODS:
   - hermes-engine (0.80.1):
     - hermes-engine/Pre-built (= 0.80.1)
   - hermes-engine/Pre-built (0.80.1)
-  - Qonversion (6.3.0):
-    - Qonversion/Main (= 6.3.0)
-  - qonversion-react-native-sdk (10.0.2):
+  - Qonversion (6.4.0):
+    - Qonversion/Main (= 6.4.0)
+  - qonversion-react-native-sdk (10.1.1):
     - boost
     - DoubleConversion
     - fast_float
     - fmt
     - glog
     - hermes-engine
-    - QonversionSandwich (= 7.3.0)
+    - QonversionSandwich (= 7.4.0)
     - RCT-Folly
     - RCT-Folly/Fabric
     - RCTRequired
@@ -40,9 +40,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - Qonversion/Main (6.3.0)
-  - QonversionSandwich (7.3.0):
-    - Qonversion (= 6.3.0)
+  - Qonversion/Main (6.4.0)
+  - QonversionSandwich (7.4.0):
+    - Qonversion (= 6.4.0)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2437,9 +2437,9 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 4f07404533b808de66cf48ac4200463068d0e95a
-  Qonversion: 8f8fb604e2b9fb442eeb6a7aefcbc6bd73c3b55a
-  qonversion-react-native-sdk: a11f2ab3bb7f7a89d8c16523e8b7b90985358455
-  QonversionSandwich: 046f2896c41037f3f58df63e4f22bd351312eeef
+  Qonversion: f7620e1cc3b03541b9cf4a0ed357a5646d123fe3
+  qonversion-react-native-sdk: a0520e74e9840f14b110f806dd1e7cbd3d093fae
+  QonversionSandwich: 58a58f43664d2ddb755b315b51adfe9392ede3f9
   RCT-Folly: 59ec0ac1f2f39672a0c6e6cecdd39383b764646f
   RCTDeprecation: efa5010912100e944a7ac9a93a157e1def1988fe
   RCTRequired: bbc4cf999ddc4a4b076e076c74dd1d39d0254630
