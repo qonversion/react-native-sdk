@@ -366,6 +366,28 @@ export enum QonversionErrorCode {
   UNKNOWN_CLIENT_PLATFORM = "UnknownClientPlatform", // The current platform is not supported
 }
 
+/**
+ * Theme mode for No-Code screens.
+ * Use this to control how screens adapt to light/dark themes.
+ */
+export enum NoCodesTheme {
+  /**
+   * Automatically follow the device's system appearance (default).
+   * The screen will use light theme in light mode and dark theme in dark mode.
+   */
+  AUTO = 'auto',
+
+  /**
+   * Force light theme regardless of device settings.
+   */
+  LIGHT = 'light',
+
+  /**
+   * Force dark theme regardless of device settings.
+   */
+  DARK = 'dark',
+}
+
 export enum NoCodesErrorCode {
   UNKNOWN = "Unknown",
   BAD_NETWORK_REQUEST = "BadNetworkRequest",

@@ -65,9 +65,9 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @objc
-    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?) {
+    public func initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?, theme: String?) {
         // Ignore source and version, because it's taken from the Qonversion SDK.
-        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl, locale: locale)
+        noCodesSandwich?.initialize(projectKey: projectKey, proxyUrl: proxyUrl, locale: locale, theme: theme)
     }
 
     @MainActor @objc
@@ -120,5 +120,10 @@ public class RNNoCodesImpl: NSObject {
     @objc
     public func setLocale(_ locale: String?) {
         noCodesSandwich?.setLocale(locale)
+    }
+
+    @objc
+    public func setTheme(_ theme: String?) {
+        noCodesSandwich?.setTheme(theme)
     }
 }
