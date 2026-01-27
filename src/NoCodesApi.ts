@@ -1,4 +1,5 @@
 import ScreenPresentationConfig from './dto/ScreenPresentationConfig';
+import type { NoCodesTheme } from './dto/enums';
 
 export default interface NoCodesApi {
   /**
@@ -28,4 +29,13 @@ export default interface NoCodesApi {
    * @param locale the locale to use (e.g. "en", "de", "fr"), or null to reset to device default.
    */
   setLocale(locale: string | null): void;
+
+  /**
+   * Set the theme mode for No-Code screens.
+   * Controls how screens adapt to light/dark themes.
+   *
+   * @param theme the desired theme mode. Use {@link NoCodesTheme.AUTO} to follow device settings,
+   *              {@link NoCodesTheme.LIGHT} to force light theme, or {@link NoCodesTheme.DARK} to force dark theme.
+   */
+  setTheme(theme: NoCodesTheme): void;
 }

@@ -15,6 +15,7 @@ import Qonversion, {
   ScreenPresentationConfig,
   NoCodes,
   NoCodesError,
+  NoCodesTheme,
   type PurchaseDelegate,
   Product
 } from '@qonversion/react-native-sdk';
@@ -35,6 +36,7 @@ const NoCodesScreen: React.FC = () => {
   );
   const [animated, setAnimated] = useState(false);
   const [locale, setLocale] = useState('');
+  const [theme, setTheme] = useState<NoCodesTheme>(NoCodesTheme.AUTO);
 
   useEffect(() => {
     // Initialize No-Codes SDK once
@@ -216,6 +218,22 @@ const NoCodesScreen: React.FC = () => {
     }
   };
 
+  const applyTheme = (selectedTheme: NoCodesTheme) => {
+    try {
+      console.log('🔄 [NoCodes] Setting theme to:', selectedTheme);
+      setTheme(selectedTheme);
+      NoCodes.getSharedInstance().setTheme(selectedTheme);
+      console.log('✅ [NoCodes] setTheme() call successful');
+      Snackbar.show({
+        text: `Theme set to: ${selectedTheme}`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } catch (error: any) {
+      console.error('❌ [NoCodes] setTheme() call failed:', error);
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -281,6 +299,23 @@ const NoCodesScreen: React.FC = () => {
         <TouchableOpacity style={styles.secondaryButton} onPress={resetLocale}>
           <Text style={styles.secondaryButtonText}>Reset to Device Default</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.sectionTitle}>Theme</Text>
+        <Text style={styles.inputLabel}>Select theme mode:</Text>
+        {Object.values(NoCodesTheme).map((themeOption) => (
+          <TouchableOpacity
+            key={themeOption}
+            style={[
+              styles.radioButton,
+              theme === themeOption && styles.radioButtonSelected,
+            ]}
+            onPress={() => applyTheme(themeOption)}
+          >
+            <Text style={styles.radioButtonText}>{themeOption}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <TouchableOpacity style={styles.button} onPress={close}>

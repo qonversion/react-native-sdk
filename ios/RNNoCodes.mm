@@ -26,8 +26,9 @@
             source:(NSString *)source
            version:(NSString *)version
           proxyUrl:(NSString *)proxyUrl
-            locale:(NSString *)locale {
-    [self.impl initializeWithProjectKey:projectKey source:source version:version proxyUrl:proxyUrl locale:locale];
+            locale:(NSString *)locale
+             theme:(NSString *)theme {
+    [self.impl initializeWithProjectKey:projectKey source:source version:version proxyUrl:proxyUrl locale:locale theme:theme];
 }
 
 - (void)setScreenPresentationConfig:(NSDictionary *)configData
@@ -74,6 +75,10 @@
 
 - (void)setLocale:(NSString *)locale {
     [self.impl setLocale:locale];
+}
+
+- (void)setTheme:(NSString *)theme {
+    [self.impl setTheme:theme];
 }
 
 #pragma mark - NoCodesEventDelegate

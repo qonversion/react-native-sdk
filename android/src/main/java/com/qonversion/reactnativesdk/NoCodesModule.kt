@@ -43,9 +43,9 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
     }
 
     @ReactMethod
-    override fun initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?) {
+    override fun initialize(projectKey: String, source: String, version: String, proxyUrl: String?, locale: String?, theme: String?) {
         noCodesSandwich.storeSdkInfo(reactContext, source, version)
-        noCodesSandwich.initialize(reactContext, projectKey, null, null, proxyUrl, locale)
+        noCodesSandwich.initialize(reactContext, projectKey, null, null, proxyUrl, locale, theme)
         noCodesSandwich.setDelegate(noCodesEventListener)
         noCodesSandwich.setScreenCustomizationDelegate()
     }
@@ -109,6 +109,11 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
     @ReactMethod
     override fun setLocale(locale: String?) {
         noCodesSandwich.setLocale(locale)
+    }
+
+    @ReactMethod
+    override fun setTheme(theme: String?) {
+        noCodesSandwich.setTheme(theme)
     }
 
     companion object {

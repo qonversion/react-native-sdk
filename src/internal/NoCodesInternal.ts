@@ -5,7 +5,7 @@ import type {NoCodesListener} from '../dto/NoCodesListener';
 import type {PurchaseDelegate} from '../dto/PurchaseDelegate';
 import ScreenPresentationConfig from '../dto/ScreenPresentationConfig';
 import NoCodesError from '../dto/NoCodesError';
-import {NoCodesErrorCode} from '../dto/enums';
+import {NoCodesErrorCode, NoCodesTheme} from '../dto/enums';
 import RNNoCodes, {type NoCodeEvent} from './specs/NativeNoCodesModule';
 import {sdkSource, sdkVersion} from './QonversionInternal';
 import Product from '../dto/Product';
@@ -22,7 +22,7 @@ export default class NoCodesInternal implements NoCodesApi {
   private purchaseDelegate: PurchaseDelegate | null = null;
 
   constructor(config: NoCodesConfig) {
-    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion, config.proxyUrl, config.locale);
+    RNNoCodes.initialize(config.projectKey, sdkSource, sdkVersion, config.proxyUrl, config.locale, config.theme);
 
     if (config.noCodesListener) {
       this.setNoCodesListener(config.noCodesListener);
@@ -121,5 +121,9 @@ export default class NoCodesInternal implements NoCodesApi {
 
   setLocale(locale: string | null) {
     RNNoCodes.setLocale(locale);
+  }
+
+  setTheme(theme: NoCodesTheme) {
+    RNNoCodes.setTheme(theme);
   }
 }

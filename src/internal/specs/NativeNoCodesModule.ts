@@ -9,12 +9,13 @@ export type NoCodeEvent = {
 };
 
 export interface Spec extends TurboModule {
-  initialize(projectKey: string, source: string, version: string, proxyUrl?: string, locale?: string): void;
+  initialize(projectKey: string, source: string, version: string, proxyUrl?: string, locale?: string, theme?: string): void;
   setScreenPresentationConfig(configData: Object, contextKey?: string): Promise<boolean>;
   showScreen(contextKey: string): Promise<boolean>;
   close(): Promise<boolean>;
   setPurchaseDelegate(): void;
   setLocale(locale: string | null): void;
+  setTheme(theme: string): void;
 
   // Methods to notify native code about purchase/restore results
   delegatedPurchaseCompleted(): void;
