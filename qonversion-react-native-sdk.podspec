@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
   s.private_header_files = "ios/**/*.h"
 
-  s.dependency "QonversionSandwich", "7.4.0"
+  s.dependency "QonversionSandwich", "7.5.0"
   install_modules_dependencies(s)
 end
