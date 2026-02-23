@@ -1,0 +1,4 @@
+interface:
+  display_name: "Qonversion RN + Expo"
+  short_description: "Integra y depura Qonversion SDK en React Native y Expo"
+  default_prompt: "Implementa o corrige Qonversion SDK en React Native/Expo con setup, identify/logout, offerings, compras, restore y entitlements"
