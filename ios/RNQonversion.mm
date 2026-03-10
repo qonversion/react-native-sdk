@@ -5,6 +5,9 @@
 #import "qonversion_react_native_sdk-Swift.h"
 #endif
 
+#define QNR_LOG_EXCEPTION(method, exception) \
+    NSLog(@"[Qonversion] Caught NSException in %s: %@ — %@", method, exception.name, exception.reason)
+
 @interface RNQonversion () <QonversionEventDelegate>
 
 @property (nonatomic, strong) RNQonversionImpl *impl;
@@ -22,147 +25,304 @@
     return self;
 }
 
+#pragma mark - Void Methods
+
 - (void)storeSDKInfo:(nonnull NSString *)sdkName sdkVersion:(nonnull NSString *)sdkVersion {
-    [self.impl storeSDKInfo:sdkName version:sdkVersion];
+    @try {
+        [self.impl storeSDKInfo:sdkName version:sdkVersion];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("storeSDKInfo", exception);
+    }
 }
 
 - (void)initializeSdk:(nonnull NSString *)projectKey launchMode:(nonnull NSString *)launchModeKey environment:(nonnull NSString *)environmentKey entitlementsCacheLifetime:(nonnull NSString *)cacheLifetimeKey proxyUrl:(NSString * _Nullable)proxyUrl kidsMode:(BOOL)kidsMode {
-    [self.impl initializeSdk:projectKey launchModeKey:launchModeKey environmentKey:environmentKey cacheLifetimeKey:cacheLifetimeKey proxyUrl:proxyUrl kidsMode:kidsMode];
+    @try {
+        [self.impl initializeSdk:projectKey launchModeKey:launchModeKey environmentKey:environmentKey cacheLifetimeKey:cacheLifetimeKey proxyUrl:proxyUrl kidsMode:kidsMode];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("initializeSdk", exception);
+    }
 }
 
 - (void)syncHistoricalData {
-    [self.impl syncHistoricalData];
+    @try {
+        [self.impl syncHistoricalData];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("syncHistoricalData", exception);
+    }
 }
 
 - (void)syncStoreKit2Purchases {
-    [self.impl syncStoreKit2Purchases];
-}
-
-- (void)getPromotionalOffer:(nonnull NSString *)productId discount:(NSString * _Nullable)discountId resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    [self.impl getPromotionalOffer:productId discountId:discountId resolve:resolve reject:reject];
-}
-
-- (void)purchase:(nonnull NSString *)productId quantity:(double)quantity contextKeys:(NSArray * _Nullable)contextKeys promoOffer:(JS::NativeQonversionModule::QPromoOfferDetails &)promoOffer offerId:(NSString * _Nullable)offerId applyOffer:(BOOL)applyOffer oldProductId:(NSString * _Nullable)oldProductId updatePolicyKey:(NSString * _Nullable)updatePolicyKey resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    NSDictionary *promoOfferDict = convertPromoOfferDetailsToDictionary(promoOffer);
-    [self.impl purchase:productId quantity:quantity contextKeys:contextKeys promoOffer:promoOfferDict resolve:resolve reject:reject];
-}
-
-- (void)purchaseWithResult:(nonnull NSString *)productId quantity:(double)quantity contextKeys:(NSArray * _Nullable)contextKeys promoOffer:(JS::NativeQonversionModule::QPromoOfferDetails &)promoOffer offerId:(NSString * _Nullable)offerId applyOffer:(BOOL)applyOffer oldProductId:(NSString * _Nullable)oldProductId updatePolicyKey:(NSString * _Nullable)updatePolicyKey resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    NSDictionary *promoOfferDict = convertPromoOfferDetailsToDictionary(promoOffer);
-    [self.impl purchaseWithResult:productId quantity:quantity contextKeys:contextKeys promoOffer:promoOfferDict resolve:resolve reject:reject];
+    @try {
+        [self.impl syncStoreKit2Purchases];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("syncStoreKit2Purchases", exception);
+    }
 }
 
 - (void)setDefinedProperty:(NSString *)property value:(NSString *)value {
-    [self.impl setDefinedProperty:property value:value];
+    @try {
+        [self.impl setDefinedProperty:property value:value];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("setDefinedProperty", exception);
+    }
 }
 
 - (void)setCustomProperty:(NSString *)property value:(NSString *)value {
-    [self.impl setCustomProperty:property value:value];
-}
-
-- (void)userProperties:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl userProperties:resolve reject:reject];
+    @try {
+        [self.impl setCustomProperty:property value:value];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("setCustomProperty", exception);
+    }
 }
 
 - (void)addAttributionData:(NSDictionary *)data provider:(NSString *)provider {
-    [self.impl addAttributionData:data provider:provider];
-}
-
-- (void)checkEntitlements:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl checkEntitlements:resolve reject:reject];
-}
-
-- (void)products:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl products:resolve reject:reject];
-}
-
-- (void)offerings:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl offerings:resolve reject:reject];
-}
-
-- (void)checkTrialIntroEligibilityForProductIds:(NSArray *)data resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl checkTrialIntroEligibilityForProductIds:data resolve:resolve reject:reject];
-}
-
-- (void)restore:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl restore:resolve reject:reject];
-}
-
-- (void)identify:(NSString *)userId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl identify:userId resolve:resolve reject:reject];
+    @try {
+        [self.impl addAttributionData:data provider:provider];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("addAttributionData", exception);
+    }
 }
 
 - (void)logout {
-    [self.impl logout];
-}
-
-- (void)userInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl userInfo:resolve reject:reject];
-}
-
-- (void)remoteConfig:(NSString * _Nullable)contextKey resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl remoteConfig:contextKey resolve:resolve reject:reject];
-}
-
-- (void)remoteConfigList:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl remoteConfigList:resolve reject:reject];
-}
-
-- (void)remoteConfigListForContextKeys:(NSArray<NSString *> *)contextKeys includeEmptyContextKey:(BOOL)includeEmptyContextKey resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl remoteConfigListForContextKeys:contextKeys includeEmptyContextKey:includeEmptyContextKey resolve:resolve reject:reject];
-}
-
-- (void)attachUserToExperiment:(NSString *)experimentId groupId:(NSString *)groupId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl attachUserToExperiment:experimentId groupId:groupId resolve:resolve reject:reject];
-}
-
-- (void)detachUserFromExperiment:(NSString *)experimentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl detachUserFromExperiment:experimentId resolve:resolve reject:reject];
-}
-
-- (void)attachUserToRemoteConfiguration:(NSString *)remoteConfigurationId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl attachUserToRemoteConfiguration:remoteConfigurationId resolve:resolve reject:reject];
-}
-
-- (void)detachUserFromRemoteConfiguration:(NSString *)remoteConfigurationId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl detachUserFromRemoteConfiguration:remoteConfigurationId resolve:resolve reject:reject];
-}
-
-- (void)isFallbackFileAccessible:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl isFallbackFileAccessible:resolve reject:reject];
+    @try {
+        [self.impl logout];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("logout", exception);
+    }
 }
 
 - (void)collectAdvertisingId {
-    [self.impl collectAdvertisingId];
+    @try {
+        [self.impl collectAdvertisingId];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("collectAdvertisingId", exception);
+    }
 }
 
 - (void)collectAppleSearchAdsAttribution {
-    [self.impl collectAppleSearchAdsAttribution];
-}
-
-- (void)promoPurchase:(NSString *)storeProductId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [self.impl promoPurchase:storeProductId resolve:resolve reject:reject];
+    @try {
+        [self.impl collectAppleSearchAdsAttribution];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("collectAppleSearchAdsAttribution", exception);
+    }
 }
 
 - (void)presentCodeRedemptionSheet {
-    [self.impl presentCodeRedemptionSheet];
+    @try {
+        [self.impl presentCodeRedemptionSheet];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("presentCodeRedemptionSheet", exception);
+    }
 }
 
 - (void)syncPurchases {
     // Android only.
 }
 
+#pragma mark - Promise Methods
+
+- (void)getPromotionalOffer:(nonnull NSString *)productId discount:(NSString * _Nullable)discountId resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl getPromotionalOffer:productId discountId:discountId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("getPromotionalOffer", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)purchase:(nonnull NSString *)productId quantity:(double)quantity contextKeys:(NSArray * _Nullable)contextKeys promoOffer:(JS::NativeQonversionModule::QPromoOfferDetails &)promoOffer offerId:(NSString * _Nullable)offerId applyOffer:(BOOL)applyOffer oldProductId:(NSString * _Nullable)oldProductId updatePolicyKey:(NSString * _Nullable)updatePolicyKey resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    @try {
+        NSDictionary *promoOfferDict = convertPromoOfferDetailsToDictionary(promoOffer);
+        [self.impl purchase:productId quantity:quantity contextKeys:contextKeys promoOffer:promoOfferDict resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("purchase", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)purchaseWithResult:(nonnull NSString *)productId quantity:(double)quantity contextKeys:(NSArray * _Nullable)contextKeys promoOffer:(JS::NativeQonversionModule::QPromoOfferDetails &)promoOffer offerId:(NSString * _Nullable)offerId applyOffer:(BOOL)applyOffer oldProductId:(NSString * _Nullable)oldProductId updatePolicyKey:(NSString * _Nullable)updatePolicyKey resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    @try {
+        NSDictionary *promoOfferDict = convertPromoOfferDetailsToDictionary(promoOffer);
+        [self.impl purchaseWithResult:productId quantity:quantity contextKeys:contextKeys promoOffer:promoOfferDict resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("purchaseWithResult", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)userProperties:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl userProperties:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("userProperties", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)checkEntitlements:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl checkEntitlements:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("checkEntitlements", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)products:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl products:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("products", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)offerings:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl offerings:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("offerings", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)checkTrialIntroEligibilityForProductIds:(NSArray *)data resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl checkTrialIntroEligibilityForProductIds:data resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("checkTrialIntroEligibility", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)restore:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl restore:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("restore", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)identify:(NSString *)userId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl identify:userId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("identify", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)userInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl userInfo:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("userInfo", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)remoteConfig:(NSString * _Nullable)contextKey resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl remoteConfig:contextKey resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("remoteConfig", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)remoteConfigList:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl remoteConfigList:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("remoteConfigList", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)remoteConfigListForContextKeys:(NSArray<NSString *> *)contextKeys includeEmptyContextKey:(BOOL)includeEmptyContextKey resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl remoteConfigListForContextKeys:contextKeys includeEmptyContextKey:includeEmptyContextKey resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("remoteConfigListForContextKeys", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)attachUserToExperiment:(NSString *)experimentId groupId:(NSString *)groupId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl attachUserToExperiment:experimentId groupId:groupId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("attachUserToExperiment", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)detachUserFromExperiment:(NSString *)experimentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl detachUserFromExperiment:experimentId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("detachUserFromExperiment", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)attachUserToRemoteConfiguration:(NSString *)remoteConfigurationId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl attachUserToRemoteConfiguration:remoteConfigurationId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("attachUserToRemoteConfiguration", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)detachUserFromRemoteConfiguration:(NSString *)remoteConfigurationId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl detachUserFromRemoteConfiguration:remoteConfigurationId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("detachUserFromRemoteConfiguration", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)isFallbackFileAccessible:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl isFallbackFileAccessible:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("isFallbackFileAccessible", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
+- (void)promoPurchase:(NSString *)storeProductId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl promoPurchase:storeProductId resolve:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("promoPurchase", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
 - (void)updatePurchase:(nonnull NSString *)productId offerId:(NSString * _Nullable)offerId applyOffer:(BOOL)applyOffer oldProductId:(NSString * _Nullable)oldProductId updatePolicyKey:(NSString * _Nullable)updatePolicyKey resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
     // Android only
 }
 
+#pragma mark - Delegate Callbacks
 
-- (void)qonversionDidReceiveUpdatedEntitlements:(NSDictionary<NSString *,id> * _Nonnull)entitlements { 
-    [self emitOnEntitlementsUpdated:entitlements];
+- (void)qonversionDidReceiveUpdatedEntitlements:(NSDictionary<NSString *,id> * _Nonnull)entitlements {
+    @try {
+        [self emitOnEntitlementsUpdated:entitlements];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("qonversionDidReceiveUpdatedEntitlements", exception);
+    }
 }
 
-- (void)shouldPurchasePromoProductWith:(NSString * _Nonnull)productId { 
-    [self emitOnPromoPurchaseReceived:productId];
+- (void)shouldPurchasePromoProductWith:(NSString * _Nonnull)productId {
+    @try {
+        [self emitOnPromoPurchaseReceived:productId];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("shouldPurchasePromoProductWith", exception);
+    }
 }
 
 #pragma mark - Private
