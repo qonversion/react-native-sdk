@@ -33,6 +33,8 @@ export default class QonversionInternal implements QonversionApi {
   private entitlementsUpdateListener: EntitlementsUpdateListener | null = null;
   private deferredPurchasesListener: DeferredPurchasesListener | null = null;
   private promoPurchasesDelegate: PromoPurchasesListener | null = null;
+  private pendingPurchaseProductIds: Set<string> = new Set();
+  private entitlementsEventSubscribed = false;
 
   constructor(qonversionConfig: QonversionConfig) {
     RNQonversion.storeSDKInfo(sdkSource, sdkVersion);
@@ -122,6 +124,10 @@ export default class QonversionInternal implements QonversionApi {
 
     if (!mappedResult) {
       throw new Error("Failed to parse PurchaseResult");
+    }
+
+    if (mappedResult.isPending) {
+      this.pendingPurchaseProductIds.add(product.qonversionId);
     }
 
     return mappedResult;
@@ -388,14 +394,31 @@ export default class QonversionInternal implements QonversionApi {
     return;
   }
 
-  private entitlementsUpdatedEventHandler = (payload: Object) => {
-    const entitlements = Mapper.convertEntitlements(payload as Record<string, QEntitlement>);
-    this.entitlementsUpdateListener?.onEntitlementsUpdated(entitlements);
+  private subscribeToEntitlementsEvent() {
+    if (!this.entitlementsEventSubscribed) {
+      RNQonversion.onEntitlementsUpdated(this.entitlementsUpdatedEventHandler);
+      this.entitlementsEventSubscribed = true;
+    }
   }
 
-  private deferredPurchaseCompletedEventHandler = (payload: Object) => {
+  private entitlementsUpdatedEventHandler = (payload: Object) => {
     const entitlements = Mapper.convertEntitlements(payload as Record<string, QEntitlement>);
-    this.deferredPurchasesListener?.onDeferredPurchaseCompleted(entitlements);
+
+    this.entitlementsUpdateListener?.onEntitlementsUpdated(entitlements);
+
+    if (this.deferredPurchasesListener && this.hasPendingPurchaseCompleted(entitlements)) {
+      this.deferredPurchasesListener.onDeferredPurchaseCompleted(entitlements);
+    }
+  }
+
+  private hasPendingPurchaseCompleted(entitlements: Map<string, Entitlement>): boolean {
+    for (const [, entitlement] of entitlements) {
+      if (entitlement.isActive && this.pendingPurchaseProductIds.has(entitlement.productId)) {
+        this.pendingPurchaseProductIds.delete(entitlement.productId);
+        return true;
+      }
+    }
+    return false;
   }
 
   private promoPurchaseReceivedEventHandler = (productId: string) => {
@@ -408,18 +431,12 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
-    if (this.entitlementsUpdateListener == null) {
-      RNQonversion.onEntitlementsUpdated(this.entitlementsUpdatedEventHandler);
-    }
-
+    this.subscribeToEntitlementsEvent();
     this.entitlementsUpdateListener = listener;
   }
 
   setDeferredPurchasesListener(listener: DeferredPurchasesListener) {
-    if (this.deferredPurchasesListener == null) {
-      RNQonversion.onDeferredPurchaseCompleted(this.deferredPurchaseCompletedEventHandler);
-    }
-
+    this.subscribeToEntitlementsEvent();
     this.deferredPurchasesListener = listener;
   }
 
