@@ -1,5 +1,6 @@
 import {EntitlementsCacheLifetime, Environment, LaunchMode} from './dto/enums';
 import type {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
+import type {DeferredPurchasesListener} from './dto/DeferredPurchasesListener';
 import QonversionConfig from './QonversionConfig';
 
 class QonversionConfigBuilder {
@@ -14,6 +15,7 @@ class QonversionConfigBuilder {
   private environment: Environment = Environment.PRODUCTION;
   private entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH;
   private entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined;
+  private deferredPurchasesListener: DeferredPurchasesListener | undefined = undefined;
   private proxyUrl: string | undefined = undefined;
   private kidsMode: boolean = false;
 
@@ -51,9 +53,28 @@ class QonversionConfigBuilder {
    *
    * @param entitlementsUpdateListener listener to be called when entitlements update.
    * @return builder instance for chain calls.
+   * @deprecated Use {@link setDeferredPurchasesListener} instead.
    */
   setEntitlementsUpdateListener(entitlementsUpdateListener: EntitlementsUpdateListener): QonversionConfigBuilder {
     this.entitlementsUpdateListener = entitlementsUpdateListener;
+    return this;
+  }
+
+  /**
+   * Provide a listener to be notified about deferred purchase completions.
+   *
+   * Deferred purchases happen when transactions require additional steps to complete,
+   * such as SCA (Strong Customer Authentication), Ask to Buy, or other pending transactions.
+   * This listener will be called when such purchases are finalized.
+   *
+   * Make sure you provide this listener for being up-to-date with deferred purchase completions.
+   * Also, please, consider that this listener should live for the whole lifetime of the application.
+   *
+   * @param listener listener to be called when a deferred purchase completes.
+   * @return builder instance for chain calls.
+   */
+  setDeferredPurchasesListener(listener: DeferredPurchasesListener): QonversionConfigBuilder {
+    this.deferredPurchasesListener = listener;
     return this;
   }
 
@@ -94,7 +115,8 @@ class QonversionConfigBuilder {
       this.entitlementsCacheLifetime,
       this.entitlementsUpdateListener,
       this.proxyUrl,
-      this.kidsMode
+      this.kidsMode,
+      this.deferredPurchasesListener,
     )
   }
 }

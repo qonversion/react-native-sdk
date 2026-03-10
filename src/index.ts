@@ -4,6 +4,7 @@ export { default as QonversionConfig } from './QonversionConfig';
 export { default as QonversionConfigBuilder } from './QonversionConfigBuilder';
 
 export type { EntitlementsUpdateListener } from './dto/EntitlementsUpdateListener';
+export type { DeferredPurchasesListener } from './dto/DeferredPurchasesListener';
 export * from './dto/enums';
 export { default as IntroEligibility } from './dto/IntroEligibility';
 export { default as Offering } from './dto/Offering';

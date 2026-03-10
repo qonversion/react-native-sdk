@@ -312,6 +312,7 @@
 - (void)qonversionDidReceiveUpdatedEntitlements:(NSDictionary<NSString *,id> * _Nonnull)entitlements {
     @try {
         [self emitOnEntitlementsUpdated:entitlements];
+        [self emitOnDeferredPurchaseCompleted:entitlements];
     } @catch (NSException *exception) {
         QNR_LOG_EXCEPTION("qonversionDidReceiveUpdatedEntitlements", exception);
     }

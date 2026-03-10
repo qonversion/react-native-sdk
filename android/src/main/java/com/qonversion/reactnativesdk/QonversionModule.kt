@@ -297,6 +297,7 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
     override fun onEntitlementsUpdated(entitlements: BridgeData) {
         val mappedEntitlements = EntitiesConverter.convertMapToWritableMap(entitlements)
         emitOnEntitlementsUpdated(mappedEntitlements)
+        emitOnDeferredPurchaseCompleted(mappedEntitlements)
     }
 
     companion object {

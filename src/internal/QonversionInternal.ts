@@ -8,6 +8,7 @@ import Product from "../dto/Product";
 import PurchaseResult from "../dto/PurchaseResult";
 import {isAndroid, isIos} from "./utils";
 import type {EntitlementsUpdateListener} from '../dto/EntitlementsUpdateListener';
+import type {DeferredPurchasesListener} from '../dto/DeferredPurchasesListener';
 import type {PromoPurchasesListener} from '../dto/PromoPurchasesListener';
 import User from '../dto/User';
 import PurchaseOptions from '../dto/PurchaseOptions';
@@ -29,7 +30,7 @@ export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
 
-  private entitlementsUpdateListener: EntitlementsUpdateListener | null = null;
+  private deferredPurchasesListener: DeferredPurchasesListener | null = null;
   private promoPurchasesDelegate: PromoPurchasesListener | null = null;
 
   constructor(qonversionConfig: QonversionConfig) {
@@ -43,7 +44,9 @@ export default class QonversionInternal implements QonversionApi {
       qonversionConfig.kidsMode
     );
 
-    if (qonversionConfig.entitlementsUpdateListener) {
+    if (qonversionConfig.deferredPurchasesListener) {
+      this.setDeferredPurchasesListener(qonversionConfig.deferredPurchasesListener);
+    } else if (qonversionConfig.entitlementsUpdateListener) {
       this.setEntitlementsUpdateListener(qonversionConfig.entitlementsUpdateListener);
     }
   }
@@ -382,9 +385,9 @@ export default class QonversionInternal implements QonversionApi {
     return;
   }
 
-  private entitlementsUpdatedEventHandler = (payload: Object) => {
+  private deferredPurchaseCompletedEventHandler = (payload: Object) => {
     const entitlements = Mapper.convertEntitlements(payload as Record<string, QEntitlement>);
-    this.entitlementsUpdateListener?.onEntitlementsUpdated(entitlements);
+    this.deferredPurchasesListener?.onDeferredPurchaseCompleted(entitlements);
   }
 
   private promoPurchaseReceivedEventHandler = (productId: string) => {
@@ -396,12 +399,20 @@ export default class QonversionInternal implements QonversionApi {
     this.promoPurchasesDelegate?.onPromoPurchaseReceived(productId, promoPurchaseExecutor);
   }
 
-  setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
-    if (this.entitlementsUpdateListener == null) {
-      RNQonversion.onEntitlementsUpdated(this.entitlementsUpdatedEventHandler);
+  setDeferredPurchasesListener(listener: DeferredPurchasesListener) {
+    if (this.deferredPurchasesListener == null) {
+      RNQonversion.onDeferredPurchaseCompleted(this.deferredPurchaseCompletedEventHandler);
     }
-    
-    this.entitlementsUpdateListener = listener;
+
+    this.deferredPurchasesListener = listener;
+  }
+
+  setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
+    this.setDeferredPurchasesListener({
+      onDeferredPurchaseCompleted: (entitlements) => {
+        listener.onEntitlementsUpdated(entitlements);
+      },
+    });
   }
 
   setPromoPurchasesDelegate(delegate: PromoPurchasesListener) {
