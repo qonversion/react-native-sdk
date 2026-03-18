@@ -33,8 +33,8 @@ export default class QonversionInternal implements QonversionApi {
   private entitlementsUpdateListener: EntitlementsUpdateListener | null = null;
   private deferredPurchasesListener: DeferredPurchasesListener | null = null;
   private promoPurchasesDelegate: PromoPurchasesListener | null = null;
-  private pendingPurchaseProductIds: Set<string> = new Set();
   private entitlementsEventSubscribed = false;
+  private deferredPurchaseEventSubscribed = false;
 
   constructor(qonversionConfig: QonversionConfig) {
     RNQonversion.storeSDKInfo(sdkSource, sdkVersion);
@@ -124,10 +124,6 @@ export default class QonversionInternal implements QonversionApi {
 
     if (!mappedResult) {
       throw new Error("Failed to parse PurchaseResult");
-    }
-
-    if (mappedResult.isPending) {
-      this.pendingPurchaseProductIds.add(product.qonversionId);
     }
 
     return mappedResult;
@@ -401,24 +397,25 @@ export default class QonversionInternal implements QonversionApi {
     }
   }
 
+  private subscribeToDeferredPurchaseEvent() {
+    if (!this.deferredPurchaseEventSubscribed) {
+      RNQonversion.onDeferredPurchaseCompleted(this.deferredPurchaseCompletedEventHandler);
+      this.deferredPurchaseEventSubscribed = true;
+    }
+  }
+
   private entitlementsUpdatedEventHandler = (payload: Object) => {
     const entitlements = Mapper.convertEntitlements(payload as Record<string, QEntitlement>);
 
     this.entitlementsUpdateListener?.onEntitlementsUpdated(entitlements);
-
-    if (this.deferredPurchasesListener && this.hasPendingPurchaseCompleted(entitlements)) {
-      this.deferredPurchasesListener.onDeferredPurchaseCompleted(entitlements);
-    }
   }
 
-  private hasPendingPurchaseCompleted(entitlements: Map<string, Entitlement>): boolean {
-    for (const [, entitlement] of entitlements) {
-      if (entitlement.isActive && this.pendingPurchaseProductIds.has(entitlement.productId)) {
-        this.pendingPurchaseProductIds.delete(entitlement.productId);
-        return true;
-      }
+  private deferredPurchaseCompletedEventHandler = (payload: Object) => {
+    const transaction = Mapper.convertDeferredTransaction(payload as Record<string, any>);
+
+    if (transaction) {
+      this.deferredPurchasesListener?.onDeferredPurchaseCompleted(transaction);
     }
-    return false;
   }
 
   private promoPurchaseReceivedEventHandler = (productId: string) => {
@@ -436,7 +433,7 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   setDeferredPurchasesListener(listener: DeferredPurchasesListener) {
-    this.subscribeToEntitlementsEvent();
+    this.subscribeToDeferredPurchaseEvent();
     this.deferredPurchasesListener = listener;
   }
 

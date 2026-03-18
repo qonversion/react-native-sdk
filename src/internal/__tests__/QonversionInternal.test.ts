@@ -1,8 +1,7 @@
 import type { EntitlementsUpdateListener } from '../../dto/EntitlementsUpdateListener';
 import type { DeferredPurchasesListener } from '../../dto/DeferredPurchasesListener';
 import type { QEntitlement } from '../Mapper';
-import { PurchaseResultStatus, PurchaseResultSource } from '../../dto/enums';
-import PurchaseResult from '../../dto/PurchaseResult';
+import DeferredTransaction from '../../dto/DeferredTransaction';
 
 // Capture event handlers registered on the native module mock
 const eventHandlers: Record<string, Function> = {};
@@ -31,25 +30,38 @@ jest.mock('../specs/NativeQonversionModule', () => ({
   },
 }));
 
-jest.mock('../Mapper', () => ({
-  __esModule: true,
-  default: {
-    convertEntitlements: jest.fn((payload: Record<string, QEntitlement>) => {
-      const map = new Map<string, unknown>();
-      for (const [key, value] of Object.entries(payload)) {
-        map.set(key, value);
-      }
-      return map;
-    }),
-    convertPurchaseResult: jest.fn(),
-  },
-}));
+jest.mock('../Mapper', () => {
+  const MockDeferredTransaction = require('../../dto/DeferredTransaction').default;
+  return {
+    __esModule: true,
+    default: {
+      convertEntitlements: jest.fn((payload: Record<string, any>) => {
+        const map = new Map<string, unknown>();
+        for (const [key, value] of Object.entries(payload)) {
+          map.set(key, value);
+        }
+        return map;
+      }),
+      convertDeferredTransaction: jest.fn((payload: Record<string, any>) => {
+        if (!payload) return null;
+        return new MockDeferredTransaction(
+          payload.productId ?? '',
+          payload.transactionId ?? null,
+          payload.originalTransactionId ?? null,
+          payload.type ?? 'Unknown',
+          payload.value ?? 0,
+          payload.currency ?? null
+        );
+      }),
+      convertPurchaseResult: jest.fn(),
+    },
+  };
+});
 
 import QonversionInternal from '../QonversionInternal';
 import QonversionConfig from '../../QonversionConfig';
 import { Environment, EntitlementsCacheLifetime, LaunchMode } from '../../dto/enums';
 import RNQonversion from '../specs/NativeQonversionModule';
-import Mapper from '../Mapper';
 
 function createConfig() {
   return new QonversionConfig(
@@ -63,34 +75,20 @@ function createConfig() {
   );
 }
 
-// Entitlements payload where product "premium_product" is active
-const entitlementsWithActiveProduct: Record<string, QEntitlement> = {
+const sampleTransaction = {
+  productId: 'premium_product',
+  transactionId: 'txn_123',
+  originalTransactionId: 'txn_001',
+  type: 'Subscription',
+  value: 9.99,
+  currency: 'USD',
+};
+
+const entitlementsPayload: Record<string, QEntitlement> = {
   premium: { id: 'premium', productId: 'premium_product', isActive: true } as unknown as QEntitlement,
 };
 
-// Entitlements payload with no matching pending product
-const entitlementsUnrelated: Record<string, QEntitlement> = {
-  basic: { id: 'basic', productId: 'basic_product', isActive: true } as unknown as QEntitlement,
-};
-
-// Minimal Product-like object for purchaseWithResult
-const mockProduct = { qonversionId: 'premium_product' } as any;
-
-function mockPendingPurchaseResult() {
-  (RNQonversion.purchaseWithResult as jest.Mock).mockResolvedValue({});
-  (Mapper.convertPurchaseResult as jest.Mock).mockReturnValue(
-    new PurchaseResult(PurchaseResultStatus.PENDING, null, null, false, PurchaseResultSource.API, null),
-  );
-}
-
-function mockSuccessPurchaseResult() {
-  (RNQonversion.purchaseWithResult as jest.Mock).mockResolvedValue({});
-  (Mapper.convertPurchaseResult as jest.Mock).mockReturnValue(
-    new PurchaseResult(PurchaseResultStatus.SUCCESS, new Map(), null, false, PurchaseResultSource.API, null),
-  );
-}
-
-describe('QonversionInternal – DeferredPurchasesListener', () => {
+describe('QonversionInternal - DeferredPurchasesListener (native event)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     for (const key of Object.keys(eventHandlers)) {
@@ -98,7 +96,7 @@ describe('QonversionInternal – DeferredPurchasesListener', () => {
     }
   });
 
-  it('setDeferredPurchasesListener subscribes to onEntitlementsUpdated', () => {
+  it('subscribes to native onDeferredPurchaseCompleted event', () => {
     const instance = new QonversionInternal(createConfig());
     const listener: DeferredPurchasesListener = {
       onDeferredPurchaseCompleted: jest.fn(),
@@ -106,84 +104,34 @@ describe('QonversionInternal – DeferredPurchasesListener', () => {
 
     instance.setDeferredPurchasesListener(listener);
 
-    expect(RNQonversion.onEntitlementsUpdated).toHaveBeenCalled();
+    expect(RNQonversion.onDeferredPurchaseCompleted).toHaveBeenCalled();
   });
 
-  it('does NOT fire new listener when no pending purchases tracked', () => {
+  it('fires listener with DeferredTransaction when native event received', () => {
     const instance = new QonversionInternal(createConfig());
     const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
 
     instance.setDeferredPurchasesListener(listener);
-    fireEvent('onEntitlementsUpdated', entitlementsUnrelated);
-
-    expect(listener.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
-  });
-
-  it('fires new listener when pending purchase product is active in entitlements update', async () => {
-    const instance = new QonversionInternal(createConfig());
-    const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
-
-    instance.setDeferredPurchasesListener(listener);
-
-    // Simulate a pending purchase
-    mockPendingPurchaseResult();
-    await instance.purchaseWithResult(mockProduct, undefined);
-
-    // Fire entitlements update with the pending product now active
-    fireEvent('onEntitlementsUpdated', entitlementsWithActiveProduct);
+    fireEvent('onDeferredPurchaseCompleted', sampleTransaction);
 
     expect(listener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
+    const arg = (listener.onDeferredPurchaseCompleted as jest.Mock).mock.calls[0][0];
+    expect(arg).toBeInstanceOf(DeferredTransaction);
+    expect(arg.productId).toBe('premium_product');
+    expect(arg.transactionId).toBe('txn_123');
+    expect(arg.type).toBe('Subscription');
+    expect(arg.value).toBe(9.99);
+    expect(arg.currency).toBe('USD');
   });
 
-  it('does NOT fire new listener for unrelated entitlement update after pending purchase', async () => {
-    const instance = new QonversionInternal(createConfig());
-    const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
+  it('does not fire listener when no listener is set', () => {
+    void new QonversionInternal(createConfig());
 
-    instance.setDeferredPurchasesListener(listener);
-
-    // Simulate a pending purchase for "premium_product"
-    mockPendingPurchaseResult();
-    await instance.purchaseWithResult(mockProduct, undefined);
-
-    // Fire entitlements update with a DIFFERENT product (not the pending one)
-    fireEvent('onEntitlementsUpdated', entitlementsUnrelated);
-
-    expect(listener.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
+    // No listener set, event handler not registered
+    expect(eventHandlers['onDeferredPurchaseCompleted']).toBeUndefined();
   });
 
-  it('removes product from tracking after deferred purchase completes (no double-fire)', async () => {
-    const instance = new QonversionInternal(createConfig());
-    const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
-
-    instance.setDeferredPurchasesListener(listener);
-
-    mockPendingPurchaseResult();
-    await instance.purchaseWithResult(mockProduct, undefined);
-
-    // First update: deferred purchase completes
-    fireEvent('onEntitlementsUpdated', entitlementsWithActiveProduct);
-    expect(listener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
-
-    // Second update: same entitlements, but product already cleared from tracking
-    fireEvent('onEntitlementsUpdated', entitlementsWithActiveProduct);
-    expect(listener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1); // still 1
-  });
-
-  it('does NOT track product when purchaseWithResult returns success', async () => {
-    const instance = new QonversionInternal(createConfig());
-    const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
-
-    instance.setDeferredPurchasesListener(listener);
-
-    mockSuccessPurchaseResult();
-    await instance.purchaseWithResult(mockProduct, undefined);
-
-    fireEvent('onEntitlementsUpdated', entitlementsWithActiveProduct);
-
-    expect(listener.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
-  });
-
-  it('replaces previous listener when setting a new one', async () => {
+  it('replaces previous listener when setting a new one', () => {
     const instance = new QonversionInternal(createConfig());
     const listener1: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
     const listener2: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
@@ -191,16 +139,34 @@ describe('QonversionInternal – DeferredPurchasesListener', () => {
     instance.setDeferredPurchasesListener(listener1);
     instance.setDeferredPurchasesListener(listener2);
 
-    mockPendingPurchaseResult();
-    await instance.purchaseWithResult(mockProduct, undefined);
-    fireEvent('onEntitlementsUpdated', entitlementsWithActiveProduct);
+    fireEvent('onDeferredPurchaseCompleted', sampleTransaction);
 
     expect(listener1.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
     expect(listener2.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
   });
+
+  it('subscribes to onDeferredPurchaseCompleted only once', () => {
+    const instance = new QonversionInternal(createConfig());
+    const listener1: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
+    const listener2: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
+
+    instance.setDeferredPurchasesListener(listener1);
+    instance.setDeferredPurchasesListener(listener2);
+
+    expect(RNQonversion.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
+  });
+
+  it('deferred listener does NOT subscribe to onEntitlementsUpdated', () => {
+    const instance = new QonversionInternal(createConfig());
+    const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
+
+    instance.setDeferredPurchasesListener(listener);
+
+    expect(RNQonversion.onEntitlementsUpdated).not.toHaveBeenCalled();
+  });
 });
 
-describe('QonversionInternal – deprecated setEntitlementsUpdateListener', () => {
+describe('QonversionInternal - deprecated setEntitlementsUpdateListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     for (const key of Object.keys(eventHandlers)) {
@@ -217,37 +183,18 @@ describe('QonversionInternal – deprecated setEntitlementsUpdateListener', () =
     expect(RNQonversion.onEntitlementsUpdated).toHaveBeenCalled();
   });
 
-  it('always fires for ALL entitlement updates (no filtering)', () => {
+  it('fires for ALL entitlement updates', () => {
     const instance = new QonversionInternal(createConfig());
     const oldListener: EntitlementsUpdateListener = { onEntitlementsUpdated: jest.fn() };
 
     instance.setEntitlementsUpdateListener(oldListener);
-    fireEvent('onEntitlementsUpdated', entitlementsUnrelated);
-
-    expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(1);
-  });
-
-  it('old listener set via config still works', () => {
-    const oldListener: EntitlementsUpdateListener = { onEntitlementsUpdated: jest.fn() };
-
-    const config = new QonversionConfig(
-      'test_key',
-      LaunchMode.SUBSCRIPTION_MANAGEMENT,
-      Environment.SANDBOX,
-      EntitlementsCacheLifetime.MONTH,
-      oldListener,
-      undefined,
-      false,
-    );
-
-    void new QonversionInternal(config);
-    fireEvent('onEntitlementsUpdated', entitlementsUnrelated);
+    fireEvent('onEntitlementsUpdated', entitlementsPayload);
 
     expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(1);
   });
 });
 
-describe('QonversionInternal – both listeners coexist', () => {
+describe('QonversionInternal - both listeners coexist', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     for (const key of Object.keys(eventHandlers)) {
@@ -255,7 +202,7 @@ describe('QonversionInternal – both listeners coexist', () => {
     }
   });
 
-  it('old listener fires for all updates, new listener only for deferred', async () => {
+  it('both listeners fire independently from their own native events', () => {
     const oldListener: EntitlementsUpdateListener = { onEntitlementsUpdated: jest.fn() };
     const newListener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
 
@@ -270,23 +217,20 @@ describe('QonversionInternal – both listeners coexist', () => {
       newListener,
     );
 
-    const instance = new QonversionInternal(config);
+    void new QonversionInternal(config);
 
-    // Unrelated update — old fires, new does NOT
-    fireEvent('onEntitlementsUpdated', entitlementsUnrelated);
+    // Entitlements update fires old listener only
+    fireEvent('onEntitlementsUpdated', entitlementsPayload);
     expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(1);
     expect(newListener.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
 
-    // Now make a pending purchase and fire matching update
-    mockPendingPurchaseResult();
-    await instance.purchaseWithResult(mockProduct, undefined);
-    fireEvent('onEntitlementsUpdated', entitlementsWithActiveProduct);
-
-    expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(2); // fires for all
-    expect(newListener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1); // only deferred
+    // Deferred purchase fires new listener only
+    fireEvent('onDeferredPurchaseCompleted', sampleTransaction);
+    expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(1); // still 1
+    expect(newListener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
   });
 
-  it('subscribes to onEntitlementsUpdated only once when both listeners set', () => {
+  it('subscribes to both native events independently', () => {
     const oldListener: EntitlementsUpdateListener = { onEntitlementsUpdated: jest.fn() };
     const newListener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
 
@@ -304,5 +248,6 @@ describe('QonversionInternal – both listeners coexist', () => {
     void new QonversionInternal(config);
 
     expect(RNQonversion.onEntitlementsUpdated).toHaveBeenCalledTimes(1);
+    expect(RNQonversion.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
   });
 });

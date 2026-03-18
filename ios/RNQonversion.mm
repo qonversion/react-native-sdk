@@ -317,6 +317,14 @@
     }
 }
 
+- (void)qonversionDidCompleteDeferredPurchase:(NSDictionary<NSString *,id> * _Nonnull)transaction {
+    @try {
+        [self emitOnDeferredPurchaseCompleted:transaction];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("qonversionDidCompleteDeferredPurchase", exception);
+    }
+}
+
 - (void)shouldPurchasePromoProductWith:(NSString * _Nonnull)productId {
     @try {
         [self emitOnPromoPurchaseReceived:productId];
