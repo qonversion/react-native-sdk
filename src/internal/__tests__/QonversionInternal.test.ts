@@ -1,7 +1,8 @@
 import type { EntitlementsUpdateListener } from '../../dto/EntitlementsUpdateListener';
 import type { DeferredPurchasesListener } from '../../dto/DeferredPurchasesListener';
 import type { QEntitlement } from '../Mapper';
-import DeferredTransaction from '../../dto/DeferredTransaction';
+import PurchaseResult from '../../dto/PurchaseResult';
+import { PurchaseResultStatus, PurchaseResultSource } from '../../dto/enums';
 
 // Capture event handlers registered on the native module mock
 const eventHandlers: Record<string, Function> = {};
@@ -30,8 +31,16 @@ jest.mock('../specs/NativeQonversionModule', () => ({
   },
 }));
 
+const mockPurchaseResult = new PurchaseResult(
+  PurchaseResultStatus.SUCCESS,
+  null,
+  null,
+  false,
+  PurchaseResultSource.API,
+  null
+);
+
 jest.mock('../Mapper', () => {
-  const MockDeferredTransaction = require('../../dto/DeferredTransaction').default;
   return {
     __esModule: true,
     default: {
@@ -42,18 +51,7 @@ jest.mock('../Mapper', () => {
         }
         return map;
       }),
-      convertDeferredTransaction: jest.fn((payload: Record<string, any>) => {
-        if (!payload) return null;
-        return new MockDeferredTransaction(
-          payload.productId ?? '',
-          payload.transactionId ?? null,
-          payload.originalTransactionId ?? null,
-          payload.type ?? 'Unknown',
-          payload.value ?? 0,
-          payload.currency ?? null
-        );
-      }),
-      convertPurchaseResult: jest.fn(),
+      convertPurchaseResult: jest.fn(() => mockPurchaseResult),
     },
   };
 });
@@ -75,13 +73,13 @@ function createConfig() {
   );
 }
 
-const sampleTransaction = {
-  productId: 'premium_product',
-  transactionId: 'txn_123',
-  originalTransactionId: 'txn_001',
-  type: 'Subscription',
-  value: 9.99,
-  currency: 'USD',
+const samplePurchaseResult = {
+  status: 'Success',
+  entitlements: null,
+  error: null,
+  isFallbackGenerated: false,
+  source: 'Api',
+  storeTransaction: null,
 };
 
 const entitlementsPayload: Record<string, QEntitlement> = {
@@ -107,21 +105,17 @@ describe('QonversionInternal - DeferredPurchasesListener (native event)', () => 
     expect(RNQonversion.onDeferredPurchaseCompleted).toHaveBeenCalled();
   });
 
-  it('fires listener with DeferredTransaction when native event received', () => {
+  it('fires listener with PurchaseResult when native event received', () => {
     const instance = new QonversionInternal(createConfig());
     const listener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
 
     instance.setDeferredPurchasesListener(listener);
-    fireEvent('onDeferredPurchaseCompleted', sampleTransaction);
+    fireEvent('onDeferredPurchaseCompleted', samplePurchaseResult);
 
     expect(listener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
     const arg = (listener.onDeferredPurchaseCompleted as jest.Mock).mock.calls[0][0];
-    expect(arg).toBeInstanceOf(DeferredTransaction);
-    expect(arg.productId).toBe('premium_product');
-    expect(arg.transactionId).toBe('txn_123');
-    expect(arg.type).toBe('Subscription');
-    expect(arg.value).toBe(9.99);
-    expect(arg.currency).toBe('USD');
+    expect(arg).toBeInstanceOf(PurchaseResult);
+    expect(arg.isSuccess).toBe(true);
   });
 
   it('does not fire listener when no listener is set', () => {
@@ -139,7 +133,7 @@ describe('QonversionInternal - DeferredPurchasesListener (native event)', () => 
     instance.setDeferredPurchasesListener(listener1);
     instance.setDeferredPurchasesListener(listener2);
 
-    fireEvent('onDeferredPurchaseCompleted', sampleTransaction);
+    fireEvent('onDeferredPurchaseCompleted', samplePurchaseResult);
 
     expect(listener1.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
     expect(listener2.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
@@ -225,7 +219,7 @@ describe('QonversionInternal - both listeners coexist', () => {
     expect(newListener.onDeferredPurchaseCompleted).not.toHaveBeenCalled();
 
     // Deferred purchase fires new listener only
-    fireEvent('onDeferredPurchaseCompleted', sampleTransaction);
+    fireEvent('onDeferredPurchaseCompleted', samplePurchaseResult);
     expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(1); // still 1
     expect(newListener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
   });

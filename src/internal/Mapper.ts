@@ -56,7 +56,6 @@ import QonversionError from '../dto/QonversionError';
 import NoCodesError from '../dto/NoCodesError';
 import PurchaseResult from '../dto/PurchaseResult';
 import StoreTransaction from '../dto/StoreTransaction';
-import DeferredTransaction from '../dto/DeferredTransaction';
 
 export type QProduct = {
   id: string;
@@ -1251,25 +1250,6 @@ class Mapper {
   }
 
   // endregion
-
-  // region DeferredTransaction
-
-  static convertDeferredTransaction(
-    transaction: Record<string, any> | null | undefined
-  ): DeferredTransaction | null {
-    if (!transaction) {
-      return null;
-    }
-
-    return new DeferredTransaction(
-      transaction.productId ?? '',
-      transaction.transactionId ?? null,
-      transaction.originalTransactionId ?? null,
-      transaction.type ?? 'Unknown',
-      transaction.value ?? 0,
-      transaction.currency ?? null
-    );
-  }
 
   // endregion
 }
