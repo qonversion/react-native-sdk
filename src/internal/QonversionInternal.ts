@@ -33,7 +33,6 @@ export default class QonversionInternal implements QonversionApi {
   private entitlementsUpdateListener: EntitlementsUpdateListener | null = null;
   private deferredPurchasesListener: DeferredPurchasesListener | null = null;
   private promoPurchasesDelegate: PromoPurchasesListener | null = null;
-  private entitlementsEventSubscribed = false;
   private deferredPurchaseEventSubscribed = false;
 
   constructor(qonversionConfig: QonversionConfig) {
@@ -390,13 +389,6 @@ export default class QonversionInternal implements QonversionApi {
     return;
   }
 
-  private subscribeToEntitlementsEvent() {
-    if (!this.entitlementsEventSubscribed) {
-      RNQonversion.onEntitlementsUpdated(this.entitlementsUpdatedEventHandler);
-      this.entitlementsEventSubscribed = true;
-    }
-  }
-
   private subscribeToDeferredPurchaseEvent() {
     if (!this.deferredPurchaseEventSubscribed) {
       RNQonversion.onDeferredPurchaseCompleted(this.deferredPurchaseCompletedEventHandler);
@@ -404,17 +396,15 @@ export default class QonversionInternal implements QonversionApi {
     }
   }
 
-  private entitlementsUpdatedEventHandler = (payload: Object) => {
-    const entitlements = Mapper.convertEntitlements(payload as Record<string, QEntitlement>);
-
-    this.entitlementsUpdateListener?.onEntitlementsUpdated(entitlements);
-  }
-
   private deferredPurchaseCompletedEventHandler = (payload: Object) => {
     const purchaseResult = Mapper.convertPurchaseResult(payload as Record<string, any>);
 
     if (purchaseResult) {
       this.deferredPurchasesListener?.onDeferredPurchaseCompleted(purchaseResult);
+
+      if (purchaseResult.entitlements) {
+        this.entitlementsUpdateListener?.onEntitlementsUpdated(purchaseResult.entitlements);
+      }
     }
   }
 
@@ -428,7 +418,7 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
-    this.subscribeToEntitlementsEvent();
+    this.subscribeToDeferredPurchaseEvent();
     this.entitlementsUpdateListener = listener;
   }
 

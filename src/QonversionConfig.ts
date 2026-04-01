@@ -9,9 +9,9 @@ class QonversionConfig {
   readonly entitlementsCacheLifetime: EntitlementsCacheLifetime;
   /** @deprecated Use {@link deferredPurchasesListener} instead. */
   readonly entitlementsUpdateListener: EntitlementsUpdateListener | undefined;
+  readonly deferredPurchasesListener: DeferredPurchasesListener | undefined;
   readonly proxyUrl: string | undefined;
   readonly kidsMode: boolean;
-  readonly deferredPurchasesListener: DeferredPurchasesListener | undefined;
 
   constructor(
     projectKey: string,
@@ -19,18 +19,18 @@ class QonversionConfig {
     environment: Environment = Environment.PRODUCTION,
     entitlementsCacheLifetime: EntitlementsCacheLifetime = EntitlementsCacheLifetime.MONTH,
     entitlementsUpdateListener: EntitlementsUpdateListener | undefined = undefined,
+    deferredPurchasesListener: DeferredPurchasesListener | undefined = undefined,
     proxyUrl: string | undefined = undefined,
     kidsMode: boolean = false,
-    deferredPurchasesListener: DeferredPurchasesListener | undefined = undefined,
   ) {
     this.projectKey = projectKey;
     this.launchMode = launchMode;
     this.environment = environment;
     this.entitlementsCacheLifetime = entitlementsCacheLifetime;
     this.entitlementsUpdateListener = entitlementsUpdateListener;
+    this.deferredPurchasesListener = deferredPurchasesListener;
     this.proxyUrl = proxyUrl;
     this.kidsMode = kidsMode;
-    this.deferredPurchasesListener = deferredPurchasesListener;
   }
 }
 

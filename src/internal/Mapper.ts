@@ -1250,8 +1250,6 @@ class Mapper {
   }
 
   // endregion
-
-  // endregion
 }
 
 export default Mapper;

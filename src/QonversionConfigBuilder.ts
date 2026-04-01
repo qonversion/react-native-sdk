@@ -19,6 +19,7 @@ class QonversionConfigBuilder {
   private proxyUrl: string | undefined = undefined;
   private kidsMode: boolean = false;
 
+
   /**
    * Set current application {@link Environment}. Used to distinguish sandbox and production users.
    *
@@ -114,9 +115,9 @@ class QonversionConfigBuilder {
       this.environment,
       this.entitlementsCacheLifetime,
       this.entitlementsUpdateListener,
+      this.deferredPurchasesListener,
       this.proxyUrl,
       this.kidsMode,
-      this.deferredPurchasesListener,
     )
   }
 }

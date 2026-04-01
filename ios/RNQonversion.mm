@@ -317,9 +317,9 @@
     }
 }
 
-- (void)qonversionDidCompleteDeferredPurchase:(NSDictionary<NSString *,id> * _Nonnull)transaction {
+- (void)qonversionDidCompleteDeferredPurchase:(NSDictionary<NSString *,id> * _Nonnull)purchaseResult {
     @try {
-        [self emitOnDeferredPurchaseCompleted:transaction];
+        [self emitOnDeferredPurchaseCompleted:purchaseResult];
     } @catch (NSException *exception) {
         QNR_LOG_EXCEPTION("qonversionDidCompleteDeferredPurchase", exception);
     }
