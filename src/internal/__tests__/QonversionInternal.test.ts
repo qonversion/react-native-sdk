@@ -199,7 +199,7 @@ describe('QonversionInternal - deprecated setEntitlementsUpdateListener', () => 
   });
 });
 
-describe('QonversionInternal - both listeners coexist', () => {
+describe('QonversionInternal - setDeferredPurchasesListener replaces wrapped entitlementsUpdateListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     for (const key of Object.keys(eventHandlers)) {
@@ -207,7 +207,7 @@ describe('QonversionInternal - both listeners coexist', () => {
     }
   });
 
-  it('both listeners fire from onDeferredPurchaseCompleted', () => {
+  it('deferredPurchasesListener replaces wrapped entitlementsUpdateListener', () => {
     const oldListener: EntitlementsUpdateListener = { onEntitlementsUpdated: jest.fn() };
     const newListener: DeferredPurchasesListener = { onDeferredPurchaseCompleted: jest.fn() };
 
@@ -228,8 +228,7 @@ describe('QonversionInternal - both listeners coexist', () => {
     fireEvent('onDeferredPurchaseCompleted', samplePurchaseResult);
 
     expect(newListener.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
-    expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledTimes(1);
-    expect(oldListener.onEntitlementsUpdated).toHaveBeenCalledWith(mockEntitlements);
+    expect(oldListener.onEntitlementsUpdated).not.toHaveBeenCalled();
   });
 
   it('subscribes to onDeferredPurchaseCompleted only once for both listeners', () => {

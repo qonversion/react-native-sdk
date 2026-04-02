@@ -30,7 +30,6 @@ export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
 
-  private entitlementsUpdateListener: EntitlementsUpdateListener | null = null;
   private deferredPurchasesListener: DeferredPurchasesListener | null = null;
   private promoPurchasesDelegate: PromoPurchasesListener | null = null;
   private deferredPurchaseEventSubscribed = false;
@@ -401,10 +400,6 @@ export default class QonversionInternal implements QonversionApi {
 
     if (purchaseResult) {
       this.deferredPurchasesListener?.onDeferredPurchaseCompleted(purchaseResult);
-
-      if (purchaseResult.entitlements) {
-        this.entitlementsUpdateListener?.onEntitlementsUpdated(purchaseResult.entitlements);
-      }
     }
   }
 
@@ -418,8 +413,13 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   setEntitlementsUpdateListener(listener: EntitlementsUpdateListener) {
-    this.subscribeToDeferredPurchaseEvent();
-    this.entitlementsUpdateListener = listener;
+    this.setDeferredPurchasesListener({
+      onDeferredPurchaseCompleted: (purchaseResult: PurchaseResult) => {
+        if (purchaseResult.entitlements) {
+          listener.onEntitlementsUpdated(purchaseResult.entitlements);
+        }
+      }
+    });
   }
 
   setDeferredPurchasesListener(listener: DeferredPurchasesListener) {
