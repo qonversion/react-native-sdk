@@ -5,6 +5,7 @@ import Offerings from './dto/Offerings';
 import IntroEligibility from './dto/IntroEligibility';
 import User from './dto/User';
 import type {EntitlementsUpdateListener} from './dto/EntitlementsUpdateListener';
+import type {DeferredPurchasesListener} from './dto/DeferredPurchasesListener';
 import type {PromoPurchasesListener} from './dto/PromoPurchasesListener';
 import RemoteConfig from "./dto/RemoteConfig";
 import RemoteConfigList from "./dto/RemoteConfigList";
@@ -239,8 +240,27 @@ export interface QonversionApi {
    * with {@link Qonversion.initialize}.
    *
    * @param listener listener to be called when entitlements update
+   * @deprecated Use {@link setDeferredPurchasesListener} instead.
    */
   setEntitlementsUpdateListener(listener: EntitlementsUpdateListener): void;
+
+  /**
+   * Provide a listener to be notified about deferred purchase completions.
+   *
+   * Deferred purchases happen when transactions require additional steps to complete,
+   * such as SCA (Strong Customer Authentication), Ask to Buy, or other pending transactions.
+   * This listener will be called when such purchases are finalized.
+   *
+   * Make sure you provide this listener for being up-to-date with deferred purchase completions.
+   * Also, please, consider that this listener should live for the whole lifetime of the application.
+   *
+   * You may set deferred purchases listener both *after* Qonversion SDK initializing
+   * with {@link QonversionApi.setDeferredPurchasesListener} and *while* Qonversion initializing
+   * with {@link Qonversion.initialize}.
+   *
+   * @param listener listener to be called when a deferred purchase completes
+   */
+  setDeferredPurchasesListener(listener: DeferredPurchasesListener): void;
 
   /**
    * iOS only. Does nothing if called on Android.

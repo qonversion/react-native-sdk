@@ -1,5 +1,8 @@
 import Entitlement from './Entitlement';
 
+/**
+ * @deprecated Use {@link DeferredPurchasesListener} instead.
+ */
 export interface EntitlementsUpdateListener {
 
   /**

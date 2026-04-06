@@ -78,6 +78,7 @@ export interface Spec extends TurboModule {
   detachUserFromRemoteConfiguration(remoteConfigurationId: string): Promise<void>;
 
   readonly onEntitlementsUpdated: EventEmitter<Object>; // Record<string, QEntitlement>
+  readonly onDeferredPurchaseCompleted: EventEmitter<Object>; // Record<string, QEntitlement>
   readonly onPromoPurchaseReceived: EventEmitter<string>;
 }
 

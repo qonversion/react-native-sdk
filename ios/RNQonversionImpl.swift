@@ -13,6 +13,7 @@ import React
 public protocol QonversionEventDelegate {
     func shouldPurchasePromoProduct(with productId: String)
     func qonversionDidReceiveUpdatedEntitlements(_ entitlements: [String: Any])
+    func qonversionDidCompleteDeferredPurchase(_ purchaseResult: [String: Any])
 }
 
 class QonversionEventHandler: QonversionEventListener {
@@ -24,6 +25,10 @@ class QonversionEventHandler: QonversionEventListener {
 
     func qonversionDidReceiveUpdatedEntitlements(_ entitlements: [String: Any]) {
         delegate?.qonversionDidReceiveUpdatedEntitlements(entitlements)
+    }
+
+    func qonversionDidCompleteDeferredPurchase(_ purchaseResult: [String: Any]) {
+        delegate?.qonversionDidCompleteDeferredPurchase(purchaseResult)
     }
 }
 
