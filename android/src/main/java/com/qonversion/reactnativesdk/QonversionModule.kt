@@ -299,6 +299,11 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
         emitOnEntitlementsUpdated(mappedEntitlements)
     }
 
+    override fun onDeferredPurchaseCompleted(purchaseResult: BridgeData) {
+        val mappedPurchaseResult = EntitiesConverter.convertMapToWritableMap(purchaseResult)
+        emitOnDeferredPurchaseCompleted(mappedPurchaseResult)
+    }
+
     companion object {
         const val NAME = "RNQonversion"
     }
