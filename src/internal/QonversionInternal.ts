@@ -396,7 +396,7 @@ export default class QonversionInternal implements QonversionApi {
   }
 
   private deferredPurchaseCompletedEventHandler = (payload: Object) => {
-    const purchaseResult = Mapper.convertPurchaseResult(payload as Record<string, any>);
+    const purchaseResult = Mapper.convertPurchaseResult(payload as QPurchaseResult);
 
     if (purchaseResult) {
       this.deferredPurchasesListener?.onDeferredPurchaseCompleted(purchaseResult);
