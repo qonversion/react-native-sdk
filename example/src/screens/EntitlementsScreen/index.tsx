@@ -7,7 +7,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import Qonversion, { Entitlement } from '@qonversion/react-native-sdk';
+import Qonversion, { PurchaseResult } from '@qonversion/react-native-sdk';
 import Snackbar from 'react-native-snackbar';
 import { AppContext } from '../../store/AppStore';
 import SkeletonLoader from '../../components/SkeletonLoader';
@@ -37,22 +37,27 @@ const EntitlementsScreen: React.FC = () => {
     }
   };
 
-  const setEntitlementsListener = () => {
-    console.log('🔄 [Qonversion] Setting entitlements update listener...');
-    Qonversion.getSharedInstance().setEntitlementsUpdateListener({
-      onEntitlementsUpdated(entitlements: Map<string, Entitlement>) {
+  const setDeferredPurchasesListener = () => {
+    console.log('🔄 [Qonversion] Setting deferred purchases listener...');
+    Qonversion.getSharedInstance().setDeferredPurchasesListener({
+      onDeferredPurchaseCompleted(purchaseResult: PurchaseResult) {
         console.log(
-          '📡 [Qonversion] Entitlements updated via listener:',
-          Object.fromEntries(entitlements)
+          '📡 [Qonversion] Deferred purchase completed via listener:',
+          purchaseResult
         );
-        dispatch({ type: 'SET_ENTITLEMENTS', payload: entitlements });
+        if (purchaseResult.entitlements) {
+          dispatch({
+            type: 'SET_ENTITLEMENTS',
+            payload: purchaseResult.entitlements,
+          });
+        }
       },
     });
     console.log(
-      '✅ [Qonversion] Entitlements update listener set successfully'
+      '✅ [Qonversion] Deferred purchases listener set successfully'
     );
     Snackbar.show({
-      text: 'Entitlements listener set successfully!',
+      text: 'Deferred purchases listener set successfully!',
       duration: Snackbar.LENGTH_SHORT,
     });
   };
@@ -148,10 +153,10 @@ const EntitlementsScreen: React.FC = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={setEntitlementsListener}
+          onPress={setDeferredPurchasesListener}
         >
           <Text style={styles.buttonText}>
-            Set Entitlements Updated Listener
+            Set Deferred Purchases Listener
           </Text>
         </TouchableOpacity>
 
