@@ -25,7 +25,7 @@ import PromotionalOffer from '../dto/PromotionalOffer';
 import RNQonversion from './specs/NativeQonversionModule';
 import type { QPromoOfferDetails } from './specs/NativeQonversionModule';
 
-export const sdkVersion = "10.7.0";
+export const sdkVersion = "10.7.1";
 export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
