@@ -159,6 +159,15 @@
     }
 }
 
+- (void)forceSendProperties:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    @try {
+        [self.impl forceSendProperties:resolve reject:reject];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("forceSendProperties", exception);
+        reject(@"QONBridgeException", exception.reason, nil);
+    }
+}
+
 - (void)checkEntitlements:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
     @try {
         [self.impl checkEntitlements:resolve reject:reject];
