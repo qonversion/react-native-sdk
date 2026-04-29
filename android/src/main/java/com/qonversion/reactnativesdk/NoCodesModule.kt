@@ -62,9 +62,18 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
     }
 
     @ReactMethod
-    override fun showScreen(contextKey: String, promise: Promise) {
+    override fun showScreen(contextKey: String, customVariables: ReadableMap?, promise: Promise) {
         try {
-            noCodesSandwich.showScreen(contextKey)
+            val variablesMap: Map<String, String>? = customVariables?.let { map ->
+                buildMap {
+                    val iterator = map.keySetIterator()
+                    while (iterator.hasNextKey()) {
+                        val key = iterator.nextKey()
+                        map.getString(key)?.let { put(key, it) }
+                    }
+                }
+            }
+            noCodesSandwich.showScreen(contextKey, variablesMap)
             promise.resolve(true)
         } catch (e: Exception) {
             promise.reject(e)

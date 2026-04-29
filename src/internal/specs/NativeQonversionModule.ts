@@ -66,6 +66,7 @@ export interface Spec extends TurboModule {
   setDefinedProperty(property: string, value: string): void;
   setCustomProperty(property: string, value: string): void;
   userProperties(): Promise<QUserProperties>;
+  forceSendProperties(): Promise<void>;
   collectAdvertisingId(): void; // iOS only
   collectAppleSearchAdsAttribution(): void; // iOS only
   presentCodeRedemptionSheet(): void; // iOS only

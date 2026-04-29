@@ -110,6 +110,13 @@ public class RNQonversionImpl: NSObject {
   }
 
   @objc
+  public func forceSendProperties(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    qonversionSandwich?.forceSendProperties {
+      resolve(nil)
+    }
+  }
+
+  @objc
   public func addAttributionData(_ data: [String: Any], provider: String) {
     qonversionSandwich?.attribution(providerKey: provider, value: data)
   }

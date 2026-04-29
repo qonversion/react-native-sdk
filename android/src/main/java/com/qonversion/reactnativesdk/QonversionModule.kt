@@ -154,6 +154,13 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
     }
 
     @ReactMethod
+    override fun forceSendProperties(promise: Promise) {
+        qonversionSandwich.forceSendProperties {
+            promise.resolve(null)
+        }
+    }
+
+    @ReactMethod
     override fun addAttributionData(map: ReadableMap?, provider: String) {
         try {
             val attributesHashMap = EntitiesConverter.convertReadableMapToHashMap(

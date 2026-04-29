@@ -76,8 +76,8 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @MainActor @objc
-    public func showScreen(contextKey: String) {
-        noCodesSandwich?.showScreen(contextKey)
+    public func showScreen(contextKey: String, customVariables: [String: String]?) {
+        noCodesSandwich?.showScreen(contextKey, customVariables: customVariables)
     }
 
     @MainActor @objc

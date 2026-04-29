@@ -38,8 +38,8 @@ export default class NoCodesInternal implements NoCodesApi {
     await RNNoCodes.setScreenPresentationConfig(data, contextKey);
   }
 
-  async showScreen(contextKey: string) {
-    await RNNoCodes.showScreen(contextKey);
+  async showScreen(contextKey: string, customVariables?: Record<string, string>) {
+    await RNNoCodes.showScreen(contextKey, customVariables);
   }
 
   async close() {
