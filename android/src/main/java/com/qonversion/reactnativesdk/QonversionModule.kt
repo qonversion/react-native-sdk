@@ -23,7 +23,7 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
         (reactContext.applicationContext as Application),
         object : ActivityProvider {
             override val currentActivity: Activity?
-                get() = this@QonversionModule.currentActivity
+                get() = reactApplicationContext.currentActivity
         },
         this
     )
@@ -299,9 +299,9 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
         emitOnEntitlementsUpdated(mappedEntitlements)
     }
 
-    override fun onDeferredPurchaseCompleted(purchaseResult: BridgeData) {
-        val mappedPurchaseResult = EntitiesConverter.convertMapToWritableMap(purchaseResult)
-        emitOnDeferredPurchaseCompleted(mappedPurchaseResult)
+    override fun onDeferredPurchaseCompleted(transaction: BridgeData) {
+        val mappedTransaction = EntitiesConverter.convertMapToWritableMap(transaction)
+        emitOnDeferredPurchaseCompleted(mappedTransaction)
     }
 
     companion object {
