@@ -299,7 +299,6 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
         emitOnEntitlementsUpdated(mappedEntitlements)
     }
 
-    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun onDeferredPurchaseCompleted(purchaseResult: BridgeData) {
         val mappedPurchaseResult = EntitiesConverter.convertMapToWritableMap(purchaseResult)
         emitOnDeferredPurchaseCompleted(mappedPurchaseResult)
