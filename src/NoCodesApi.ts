@@ -12,9 +12,12 @@ export default interface NoCodesApi {
 
   /**
    * Show the screen using its context key.
-   * @param contextKey the context key of the screen which must be shown
+   * @param contextKey the context key of the screen which must be shown.
+   * @param customVariables optional map of custom variables that will be injected
+   *                        into the screen's JavaScript context. Variables are scoped
+   *                        to the provided contextKey and only applied to that screen.
    */
-  showScreen(contextKey: string): void;
+  showScreen(contextKey: string, customVariables?: Record<string, string>): void;
 
   /**
    * Close the current opened No-Code screen.

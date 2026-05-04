@@ -229,6 +229,13 @@ export interface QonversionApi {
   userProperties(): Promise<UserProperties>;
 
   /**
+   * Force-flushes any pending user property updates to the server immediately.
+   * Use this when you need to ensure all previously set properties have been sent
+   * before performing an operation that depends on them.
+   */
+  forceSendProperties(): Promise<void>;
+
+  /**
    * Provide a listener to be notified about asynchronous user entitlements updates.
    *
    * Make sure you provide this listener for being up-to-date with the user entitlements.
