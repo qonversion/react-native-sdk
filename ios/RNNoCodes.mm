@@ -52,11 +52,23 @@
 }
 
 - (void)showScreen:(NSString *)contextKey
+   customVariables:(NSDictionary *)customVariables
            resolve:(RCTPromiseResolveBlock)resolve
             reject:(RCTPromiseRejectBlock)reject {
+    NSDictionary<NSString *, NSString *> *typedVariables = nil;
+    if ([customVariables isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary<NSString *, NSString *> *typed = [NSMutableDictionary dictionaryWithCapacity:customVariables.count];
+        for (NSString *key in customVariables) {
+            id value = customVariables[key];
+            if ([key isKindOfClass:[NSString class]] && [value isKindOfClass:[NSString class]]) {
+                typed[key] = value;
+            }
+        }
+        typedVariables = typed;
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         @try {
-            [self.impl showScreenWithContextKey:contextKey];
+            [self.impl showScreenWithContextKey:contextKey customVariables:typedVariables];
         } @catch (NSException *exception) {
             QNR_LOG_EXCEPTION("showScreen", exception);
         }
