@@ -23,7 +23,7 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
         (reactContext.applicationContext as Application),
         object : ActivityProvider {
             override val currentActivity: Activity?
-                get() = this@QonversionModule.currentActivity
+                get() = reactApplicationContext.currentActivity
         },
         this
     )
