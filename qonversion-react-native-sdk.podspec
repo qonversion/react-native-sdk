@@ -16,6 +16,20 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
   s.private_header_files = "ios/**/*.h"
 
-  s.dependency "QonversionSandwich", "7.9.0"
+  # Resolve QonversionSandwich via Swift Package Manager (RN 0.75+).
+  # CocoaPods is going read-only on 2026-12-02; spm_dependency lets us continue
+  # to ship the binary XCFramework while autolinking still flows through pod install.
+  # NOTE: spm_dependency forces use_frameworks! :linkage => :dynamic in the host Podfile.
+  if defined?(spm_dependency)
+    spm_dependency(s,
+      url: 'https://github.com/qonversion/sandwich-sdk.git',
+      requirement: { kind: 'exactVersion', version: '7.10.0' },
+      products: ['QonversionSandwich']
+    )
+  else
+    # Fallback for React Native < 0.75 — keep classic pod dependency.
+    s.dependency "QonversionSandwich", "7.10.0"
+  end
+
   install_modules_dependencies(s)
 end
