@@ -1,12 +1,6 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 import type { EventEmitter } from 'react-native/Libraries/Types/CodegenTypes';
-import type { QNoCodeAction, QNoCodesError, QNoCodeScreenInfo } from '../Mapper';
-
-export type NoCodeEvent = {
-  name: string;
-  payload: QNoCodeAction | QNoCodesError | QNoCodeScreenInfo | undefined;
-};
 
 export interface Spec extends TurboModule {
   initialize(projectKey: string, source: string, version: string, proxyUrl?: string, locale?: string, theme?: string): void;
@@ -23,7 +17,7 @@ export interface Spec extends TurboModule {
   delegatedRestoreCompleted(): void;
   delegatedRestoreFailed(errorMessage: string): void;
 
-  readonly onNoCodeEvent: EventEmitter<NoCodeEvent>;
+  readonly onNoCodeEvent: EventEmitter<Object>; // NoCodeEvent (defined in NoCodesInternal.ts)
   readonly onNoCodePurchase: EventEmitter<Object>; // QProduct
   readonly onNoCodeRestore: EventEmitter<void>;
 }
