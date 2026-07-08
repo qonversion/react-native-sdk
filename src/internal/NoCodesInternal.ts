@@ -6,9 +6,14 @@ import type {PurchaseDelegate} from '../dto/PurchaseDelegate';
 import ScreenPresentationConfig from '../dto/ScreenPresentationConfig';
 import NoCodesError from '../dto/NoCodesError';
 import {NoCodesErrorCode, NoCodesTheme} from '../dto/enums';
-import RNNoCodes, {type NoCodeEvent} from './specs/NativeNoCodesModule';
+import RNNoCodes from './specs/NativeNoCodesModule';
 import {sdkSource, sdkVersion} from './QonversionInternal';
 import Product from '../dto/Product';
+
+type NoCodeEvent = {
+  name: string;
+  payload: QNoCodeAction | QNoCodesError | QNoCodeScreenInfo | undefined;
+};
 
 const EVENT_SCREEN_SHOWN = "nocodes_screen_shown";
 const EVENT_FINISHED = "nocodes_finished";
@@ -46,7 +51,8 @@ export default class NoCodesInternal implements NoCodesApi {
     await RNNoCodes.close();
   }
 
-  private noCodeEventHandler = (event: NoCodeEvent) => {
+  private noCodeEventHandler = (rawEvent: Object) => {
+    const event = rawEvent as NoCodeEvent;
     switch (event.name) {
       case EVENT_SCREEN_SHOWN:
         const screenId = (event.payload as QNoCodeScreenInfo)["screenId"] ?? "";
