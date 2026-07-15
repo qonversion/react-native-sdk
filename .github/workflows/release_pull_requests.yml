@@ -1,9 +1,0 @@
-name: Release pull requests from dev by tag
-on:
-  push:
-    tags:
-      - prerelease/*
-
-jobs:
-  handle_prerelease:
-    uses: qonversion/shared-sdk-workflows/.github/workflows/prerelease_handling.yml@main
