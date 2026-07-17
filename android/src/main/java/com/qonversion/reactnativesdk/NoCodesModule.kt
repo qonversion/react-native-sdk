@@ -82,7 +82,11 @@ class NoCodesModule(private val reactContext: ReactApplicationContext) : NativeN
 
     @ReactMethod
     override fun loadScreen(contextKey: String, promise: Promise) {
-        noCodesSandwich.loadScreen(contextKey, Utils.getResultListener(promise))
+        try {
+            noCodesSandwich.loadScreen(contextKey, Utils.getResultListener(promise))
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod

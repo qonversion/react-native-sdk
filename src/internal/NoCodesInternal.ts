@@ -13,7 +13,7 @@ import Product from '../dto/Product';
 
 type NoCodeEvent = {
   name: string;
-  payload: QNoCodeAction | QNoCodesError | QNoCodeScreenInfo | undefined;
+  payload: QNoCodeAction | QNoCodesError | QNoCodeScreenInfo | QNoCodeCustomActionInfo | undefined;
 };
 
 const EVENT_SCREEN_SHOWN = "nocodes_screen_shown";

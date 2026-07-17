@@ -1171,6 +1171,7 @@ class Mapper {
       case NoCodesErrorCode.RATE_LIMIT_EXCEEDED: return NoCodesErrorCode.RATE_LIMIT_EXCEEDED;
       case NoCodesErrorCode.SCREEN_LOADING_FAILED: return NoCodesErrorCode.SCREEN_LOADING_FAILED;
       case NoCodesErrorCode.SDK_INITIALIZATION_ERROR: return NoCodesErrorCode.SDK_INITIALIZATION_ERROR;
+      case NoCodesErrorCode.CLIENT_ERROR: return NoCodesErrorCode.CLIENT_ERROR;
     }
 
     return NoCodesErrorCode.UNKNOWN;

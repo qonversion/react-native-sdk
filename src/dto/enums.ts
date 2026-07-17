@@ -408,7 +408,8 @@ export enum NoCodesErrorCode {
   PRODUCTS_LOADING_FAILED = "ProductsLoadingFailed", // iOS
   RATE_LIMIT_EXCEEDED = "RateLimitExceeded", // iOS
   SCREEN_LOADING_FAILED = "ScreenLoadingFailed", // iOS
-  SDK_INITIALIZATION_ERROR = "SDKInitializationError" // iOS
+  SDK_INITIALIZATION_ERROR = "SDKInitializationError", // iOS
+  CLIENT_ERROR = "ClientError"
 }
 
 /**
