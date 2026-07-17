@@ -22,6 +22,7 @@ import {
   TransactionType,
   UserPropertyKey,
   NoCodesErrorCode,
+  NoCodesScreenVariableKind,
   ActionType,
 } from "../dto/enums";
 import IntroEligibility from "../dto/IntroEligibility";
@@ -52,6 +53,7 @@ import ProductInstallmentPlanDetails from '../dto/storeProducts/ProductInstallme
 import PromotionalOffer from '../dto/PromotionalOffer';
 import SKPaymentDiscount from '../dto/storeProducts/SKPaymentDiscount';
 import NoCodesAction from '../dto/NoCodesAction';
+import NoCodesScreen, {NoCodesScreenVariable} from '../dto/NoCodesScreen';
 import QonversionError from '../dto/QonversionError';
 import NoCodesError from '../dto/NoCodesError';
 import PurchaseResult from '../dto/PurchaseResult';
@@ -301,6 +303,23 @@ export type QNoCodesError = QQonversionError & {
 };
 
 export type QNoCodeScreenInfo = { screenId: string };
+
+export type QNoCodeCustomActionInfo = { value?: string | null };
+
+export type QScreenVariable = {
+  kind?: string | null;
+  key: string;
+  type: string;
+  value?: boolean | string | number | null;
+  stringValue?: string | null;
+};
+
+export type QNoCodeScreen = {
+  id: string;
+  contextKey: string;
+  defaultSelectedProductId?: string | null;
+  defaultVariables?: QScreenVariable[] | null;
+};
 
 export type QStoreTransaction = {
   transactionId?: string | null;
@@ -1062,6 +1081,33 @@ class Mapper {
     );
   }
 
+  static convertScreen(
+    payload: QNoCodeScreen
+  ): NoCodesScreen {
+    const variables = (payload.defaultVariables ?? []).map(variable => new NoCodesScreenVariable(
+      this.convertScreenVariableKind(variable.kind),
+      variable.key,
+      variable.type,
+      variable.value ?? null,
+      variable.stringValue ?? "",
+    ));
+    return new NoCodesScreen(
+      payload.id,
+      payload.contextKey,
+      payload.defaultSelectedProductId ?? undefined,
+      variables,
+    );
+  }
+
+  static convertScreenVariableKind(kind: string | null | undefined): NoCodesScreenVariableKind {
+    switch (kind) {
+      case NoCodesScreenVariableKind.CUSTOM: return NoCodesScreenVariableKind.CUSTOM;
+      case NoCodesScreenVariableKind.PRODUCT: return NoCodesScreenVariableKind.PRODUCT;
+      case NoCodesScreenVariableKind.SELECTED_PRODUCT: return NoCodesScreenVariableKind.SELECTED_PRODUCT;
+      default: return NoCodesScreenVariableKind.UNKNOWN;
+    }
+  }
+
   static convertNoCodesError(
     payload: QNoCodesError | undefined
   ): NoCodesError | undefined {
@@ -1125,6 +1171,7 @@ class Mapper {
       case NoCodesErrorCode.RATE_LIMIT_EXCEEDED: return NoCodesErrorCode.RATE_LIMIT_EXCEEDED;
       case NoCodesErrorCode.SCREEN_LOADING_FAILED: return NoCodesErrorCode.SCREEN_LOADING_FAILED;
       case NoCodesErrorCode.SDK_INITIALIZATION_ERROR: return NoCodesErrorCode.SDK_INITIALIZATION_ERROR;
+      case NoCodesErrorCode.CLIENT_ERROR: return NoCodesErrorCode.CLIENT_ERROR;
     }
 
     return NoCodesErrorCode.UNKNOWN;

@@ -408,7 +408,37 @@ export enum NoCodesErrorCode {
   PRODUCTS_LOADING_FAILED = "ProductsLoadingFailed", // iOS
   RATE_LIMIT_EXCEEDED = "RateLimitExceeded", // iOS
   SCREEN_LOADING_FAILED = "ScreenLoadingFailed", // iOS
-  SDK_INITIALIZATION_ERROR = "SDKInitializationError" // iOS
+  SDK_INITIALIZATION_ERROR = "SDKInitializationError", // iOS
+  CLIENT_ERROR = "ClientError"
+}
+
+/**
+ * Kind of a No-Codes screen default variable — what it was configured as in the builder.
+ * The set may grow in future backend versions; values this SDK version does not know
+ * are mapped to {@link NoCodesScreenVariableKind.UNKNOWN} instead of failing.
+ */
+export enum NoCodesScreenVariableKind {
+  /**
+   * A Screen Variable authored in the builder's Variables section.
+   */
+  CUSTOM = "custom",
+
+  /**
+   * A product slot: the variable key is the slot name and the value is the default
+   * Qonversion product id assigned to it.
+   */
+  PRODUCT = "product",
+
+  /**
+   * The screen's Default Product configured in the builder: the value is
+   * the Qonversion product id selected by default.
+   */
+  SELECTED_PRODUCT = "selected_product",
+
+  /**
+   * A kind introduced on the backend after this SDK version was released.
+   */
+  UNKNOWN = "unknown",
 }
 
 /**

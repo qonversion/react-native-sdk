@@ -6,6 +6,7 @@ export interface Spec extends TurboModule {
   initialize(projectKey: string, source: string, version: string, proxyUrl?: string, locale?: string, theme?: string): void;
   setScreenPresentationConfig(configData: Object, contextKey?: string): Promise<boolean>;
   showScreen(contextKey: string, customVariables?: { [key: string]: string }): Promise<boolean>;
+  loadScreen(contextKey: string): Promise<Object>;
   close(): Promise<boolean>;
   setPurchaseDelegate(): void;
   setLocale(locale: string | null): void;
