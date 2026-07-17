@@ -81,6 +81,21 @@ public class RNNoCodesImpl: NSObject {
     }
 
     @MainActor @objc
+    public func loadScreen(contextKey: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        guard let noCodesSandwich else {
+            reject("SDKInitializationError", "No-Codes SDK is not initialized", nil)
+            return
+        }
+        noCodesSandwich.loadScreen(contextKey) { result, error in
+            if let error {
+                reject(error.code, error.details, nil)
+                return
+            }
+            resolve(result ?? [:])
+        }
+    }
+
+    @MainActor @objc
     public func close() {
         noCodesSandwich?.close()
     }

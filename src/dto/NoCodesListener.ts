@@ -27,6 +27,18 @@ export interface NoCodesListener {
     onActionFinishedExecuting: (action: NoCodesAction) => void;
 
     /**
+     * Called when a custom action configured in the builder is triggered on the screen.
+     * The No-Codes SDK does not execute anything itself — handle the value in your app code.
+     * The screen stays open; close it using {@link NoCodesApi.close} if needed.
+     *
+     * Optional to keep existing listener implementations source-compatible.
+     *
+     * @param value the string value configured for the custom action in the builder,
+     * or an empty string if no value was configured
+     */
+    onCustomAction?: (value: string) => void;
+
+    /**
      * Called when No-Codes flow is finished
      */
     onFinished: () => void;

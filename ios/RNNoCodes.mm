@@ -75,6 +75,19 @@
     });
 }
 
+- (void)loadScreen:(NSString *)contextKey
+           resolve:(RCTPromiseResolveBlock)resolve
+            reject:(RCTPromiseRejectBlock)reject {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @try {
+            [self.impl loadScreenWithContextKey:contextKey resolve:resolve reject:reject];
+        } @catch (NSException *exception) {
+            QNR_LOG_EXCEPTION("loadScreen", exception);
+            reject(@"QONBridgeException", exception.reason, nil);
+        }
+    });
+}
+
 - (void)close:(RCTPromiseResolveBlock)resolve
       reject:(RCTPromiseRejectBlock)reject {
     dispatch_async(dispatch_get_main_queue(), ^{
