@@ -246,6 +246,10 @@ export default class QonversionInternal implements QonversionApi {
     return mappedProducts;
   }
 
+  /**
+   * @deprecated Offerings are deprecated. Manage paywall products with Remote Configs instead: https://documentation.qonversion.io/docs/migrate-offerings-to-remote-configs
+   * @see [Migrate Offerings to Remote Configs](https://documentation.qonversion.io/docs/migrate-offerings-to-remote-configs) for more details
+   */
   async offerings(): Promise<Offerings | null> {
     let offerings = await RNQonversion.offerings();
     const mappedOfferings = Mapper.convertOfferings(offerings);
