@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Offerings,
   Product,
   RemoteConfigList,
   User,
@@ -10,7 +9,6 @@ import Entitlement from '../../../src/dto/Entitlement';
 // Global Store (Redux-like pattern)
 export interface AppState {
   products: Map<string, Product> | null;
-  offerings: Offerings | null;
   entitlements: Map<string, Entitlement> | null;
   remoteConfigs: RemoteConfigList | null;
   userInfo: User | null;
@@ -29,7 +27,6 @@ export interface AppState {
 
 export type AppAction =
   | { type: 'SET_PRODUCTS'; payload: Map<string, Product> }
-  | { type: 'SET_OFFERINGS'; payload: Offerings }
   | { type: 'SET_ENTITLEMENTS'; payload: Map<string, Entitlement> }
   | { type: 'SET_REMOTE_CONFIGS'; payload: RemoteConfigList }
   | { type: 'SET_USER_INFO'; payload: User }
@@ -48,7 +45,6 @@ export type AppAction =
 
 export const initialState: AppState = {
   products: null,
-  offerings: null,
   entitlements: null,
   remoteConfigs: null,
   userInfo: null,
@@ -65,8 +61,6 @@ export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SET_PRODUCTS':
       return { ...state, products: action.payload };
-    case 'SET_OFFERINGS':
-      return { ...state, offerings: action.payload };
     case 'SET_ENTITLEMENTS':
       return { ...state, entitlements: action.payload };
     case 'SET_REMOTE_CONFIGS':

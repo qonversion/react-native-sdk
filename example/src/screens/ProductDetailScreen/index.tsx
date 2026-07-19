@@ -101,7 +101,6 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
         {renderField('Store ID', product.storeId)}
         {renderField('Base Plan ID', product.basePlanId)}
         {renderField('Type', product.type)}
-        {renderField('Offering ID', product.offeringId)}
       </View>
 
       <View style={styles.section}>
