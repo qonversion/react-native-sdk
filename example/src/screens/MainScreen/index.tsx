@@ -21,7 +21,6 @@ const MainScreen: React.FC = () => {
   const menuItems = [
     { id: 'products', title: 'Products' },
     { id: 'entitlements', title: 'Entitlements' },
-    { id: 'offerings', title: 'Offerings' },
     { id: 'remoteConfigs', title: 'Remote Configs' },
     { id: 'user', title: 'User' },
     { id: 'noCodes', title: 'No-Codes' },

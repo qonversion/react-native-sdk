@@ -24,7 +24,6 @@ import ProductsScreen from './screens/ProductsScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import EntitlementsScreen from './screens/EntitlementsScreen';
 import EntitlementDetailScreen from './screens/EntitlementDetailScreen';
-import OfferingsScreen from './screens/OfferingsScreen';
 import RemoteConfigsScreen from './screens/RemoteConfigsScreen';
 import UserScreen from './screens/UserScreen';
 import NoCodesScreen from './screens/NoCodesScreen';
@@ -113,8 +112,6 @@ const App: React.FC = () => {
         ) : (
           <EntitlementsScreen />
         );
-      case 'offerings':
-        return <OfferingsScreen />;
       case 'remoteConfigs':
         return <RemoteConfigsScreen />;
       case 'user':

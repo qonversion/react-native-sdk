@@ -111,9 +111,10 @@ export interface QonversionApi {
    * set of products with discounts later on if a user has not converted.
    * Offerings allow changing the products offered remotely without releasing app updates.
    *
+   * @deprecated Offerings are deprecated. Manage paywall products with Remote Configs instead: https://documentation.qonversion.io/docs/migrate-offerings-to-remote-configs
    * @returns the promise with Qonversion offerings
    *
-   * @see [Offerings](https://qonversion.io/docs/offerings) for more details
+   * @see [Migrate Offerings to Remote Configs](https://documentation.qonversion.io/docs/migrate-offerings-to-remote-configs) for more details
    */
   offerings(): Promise<Offerings | null>;
 

@@ -25,7 +25,7 @@ import PromotionalOffer from '../dto/PromotionalOffer';
 import RNQonversion from './specs/NativeQonversionModule';
 import type { QPromoOfferDetails } from './specs/NativeQonversionModule';
 
-export const sdkVersion = "10.9.0";
+export const sdkVersion = "10.10.0";
 export const sdkSource = "rn";
 
 export default class QonversionInternal implements QonversionApi {
@@ -246,6 +246,10 @@ export default class QonversionInternal implements QonversionApi {
     return mappedProducts;
   }
 
+  /**
+   * @deprecated Offerings are deprecated. Manage paywall products with Remote Configs instead: https://documentation.qonversion.io/docs/migrate-offerings-to-remote-configs
+   * @see [Migrate Offerings to Remote Configs](https://documentation.qonversion.io/docs/migrate-offerings-to-remote-configs) for more details
+   */
   async offerings(): Promise<Offerings | null> {
     let offerings = await RNQonversion.offerings();
     const mappedOfferings = Mapper.convertOfferings(offerings);
