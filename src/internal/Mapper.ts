@@ -63,6 +63,7 @@ export type QProduct = {
   id: string;
   storeId: string;
   basePlanId?: string | null;
+  purchaseOptionId?: string | null;
   type: string;
   subscriptionPeriod?: QSubscriptionPeriod | null;
   trialPeriod?: QSubscriptionPeriod | null;
@@ -622,6 +623,7 @@ class Mapper {
       product.id,
       product.storeId,
       product.basePlanId ?? null,
+      product.purchaseOptionId ?? null,
       storeDetails,
       skProduct,
       offeringId,
