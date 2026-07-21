@@ -75,6 +75,7 @@ export type QProduct = {
 
 type QProductStoreDetails = {
   basePlanId?: string | null,
+  purchaseOptionId?: string | null,
   productId: string,
   name: string,
   title: string
@@ -879,6 +880,7 @@ class Mapper {
 
     return new ProductStoreDetails(
       productStoreDetails.basePlanId ?? null,
+      productStoreDetails.purchaseOptionId ?? null,
       productStoreDetails.productId,
       productStoreDetails.name,
       productStoreDetails.title,
