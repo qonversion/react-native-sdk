@@ -11,9 +11,16 @@ class Product {
   storeId: string | null;
 
   /**
-   * Identifier of the base plan for Google product.
+   * Identifier of the base plan for a Google Play subscription product.
+   * Android only. Null for one-time products - use {@link purchaseOptionId} for those.
    */
   basePlanId: string | null;
+
+  /**
+   * Identifier of the Google Play purchase option for a one-time (in-app) product.
+   * Android only. Null for subscription products - use {@link basePlanId} for those.
+   */
+  purchaseOptionId: string | null;
 
   /**
    * Google Play Store details of this product.
@@ -66,6 +73,7 @@ class Product {
     qonversionId: string,
     storeId: string,
     basePlanId: string | null,
+    purchaseOptionId: string | null,
     storeDetails: ProductStoreDetails | null,
     skProduct: SKProduct | null,
     offeringId: string | null,
@@ -82,6 +90,7 @@ class Product {
     this.qonversionId = qonversionId;
     this.storeId = storeId;
     this.basePlanId = basePlanId;
+    this.purchaseOptionId = purchaseOptionId;
     this.storeDetails = storeDetails;
     this.skProduct = skProduct;
     this.offeringId = offeringId;

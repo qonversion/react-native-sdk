@@ -8,10 +8,16 @@ import ProductInAppDetails from "./ProductInAppDetails";
  */
 class ProductStoreDetails {
   /**
-   * Identifier of the base plan to which these details relate.
-   * Null for in-app products.
+   * Identifier of the base plan for a Google Play subscription product.
+   * Null for one-time products - use {@link purchaseOptionId} for those.
    */
   basePlanId: string | null;
+
+  /**
+   * Identifier of the Google Play purchase option for a one-time (in-app) product.
+   * Null for subscription products - use {@link basePlanId} for those.
+   */
+  purchaseOptionId: string | null;
 
   /**
    * Identifier of the subscription or the in-app product.
@@ -111,6 +117,7 @@ class ProductStoreDetails {
 
   constructor(
     basePlanId: string | null,
+    purchaseOptionId: string | null,
     productId: string,
     name: string,
     title: string,
@@ -129,6 +136,7 @@ class ProductStoreDetails {
     isInstallment: boolean,
   ) {
     this.basePlanId = basePlanId;
+    this.purchaseOptionId = purchaseOptionId;
     this.productId = productId;
     this.name = name;
     this.title = title;
