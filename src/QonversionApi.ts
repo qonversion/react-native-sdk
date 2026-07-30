@@ -338,7 +338,14 @@ export interface QonversionApi {
    * immediately, for example after setting a batch of user properties your
    * remote config targeting depends on. You do NOT need to call it after
    * {@link identify} — the SDK invalidates the cache on identity changes
-   * automatically. Call it after {@link initialize}.
+   * automatically.
+   *
+   * If the re-issued load fails, the previously received evaluation is
+   * delivered instead of an error — the call never degrades below the
+   * pre-invalidation result.
+   *
+   * Call it after {@link Qonversion.initialize}: calling before initialization
+   * throws on Android and does nothing on iOS.
    */
   invalidateRemoteConfigsCache(): void;
 

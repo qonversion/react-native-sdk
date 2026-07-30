@@ -25,6 +25,7 @@ jest.mock('../specs/NativeQonversionModule', () => ({
     }),
     onPromoPurchaseReceived: jest.fn(),
     purchaseWithResult: jest.fn(),
+    invalidateRemoteConfigsCache: jest.fn(),
   },
 }));
 
@@ -250,5 +251,15 @@ describe('QonversionInternal - setDeferredPurchasesListener replaces wrapped ent
     instance.setDeferredPurchasesListener(newListener);
 
     expect(RNQonversion.onDeferredPurchaseCompleted).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('invalidateRemoteConfigsCache', () => {
+  it('passes the call straight through to the native module', () => {
+    const instance = new QonversionInternal(createConfig());
+
+    instance.invalidateRemoteConfigsCache();
+
+    expect(RNQonversion.invalidateRemoteConfigsCache).toHaveBeenCalledTimes(1);
   });
 });
