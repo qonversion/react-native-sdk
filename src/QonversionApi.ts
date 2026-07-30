@@ -325,6 +325,31 @@ export interface QonversionApi {
   remoteConfigListForContextKeys(contextKeys: string[], includeEmptyContextKey: boolean): Promise<RemoteConfigList>
 
   /**
+   * Invalidates the cache of remote configs so the next {@link remoteConfig} or
+   * {@link remoteConfigList} call fetches a fresh targeting evaluation from the
+   * server instead of returning the cached copy.
+   *
+   * This method performs no network request itself — it only marks the cached
+   * values as stale. An in-flight remoteConfig load is re-issued once so its
+   * waiting calls receive a fresh evaluation; an in-flight remoteConfigList
+   * completes with the evaluation it started with.
+   *
+   * Call it when the targeting inputs changed and you need the change reflected
+   * immediately, for example after setting a batch of user properties your
+   * remote config targeting depends on. You do NOT need to call it after
+   * {@link identify} — the SDK invalidates the cache on identity changes
+   * automatically.
+   *
+   * If the re-issued load fails, the previously received evaluation is
+   * delivered instead of an error — the call never degrades below the
+   * pre-invalidation result.
+   *
+   * Call it after {@link Qonversion.initialize}: calling before initialization
+   * throws on Android and does nothing on iOS.
+   */
+  invalidateRemoteConfigsCache(): void;
+
+  /**
    * This function should be used for the test purposes only. Do not forget to delete the usage of this function before the release.
    * Use this function to attach the user to the experiment.
    * @param experimentId identifier of the experiment

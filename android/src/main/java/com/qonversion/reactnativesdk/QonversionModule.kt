@@ -247,6 +247,11 @@ class QonversionModule(reactContext: ReactApplicationContext) : NativeQonversion
     }
 
     @ReactMethod
+    override fun invalidateRemoteConfigsCache() {
+        qonversionSandwich.invalidateRemoteConfigsCache()
+    }
+
+    @ReactMethod
     override fun attachUserToExperiment(experimentId: String, groupId: String, promise: Promise) {
         qonversionSandwich.attachUserToExperiment(experimentId, groupId, getResultListener(promise))
     }
