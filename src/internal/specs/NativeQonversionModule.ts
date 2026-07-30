@@ -73,6 +73,7 @@ export interface Spec extends TurboModule {
   remoteConfig(contextKey: string | undefined): Promise<QRemoteConfig>;
   remoteConfigList(): Promise<QRemoteConfigList>;
   remoteConfigListForContextKeys(contextKeys: string[], includeEmptyContextKey: boolean): Promise<QRemoteConfigList>;
+  invalidateRemoteConfigsCache(): void;
   attachUserToExperiment(experimentId: string, groupId: string): Promise<void>;
   detachUserFromExperiment(experimentId: string): Promise<void>;
   attachUserToRemoteConfiguration(remoteConfigurationId: string): Promise<void>;

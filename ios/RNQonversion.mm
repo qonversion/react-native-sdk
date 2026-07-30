@@ -258,6 +258,14 @@
     }
 }
 
+- (void)invalidateRemoteConfigsCache {
+    @try {
+        [self.impl invalidateRemoteConfigsCache];
+    } @catch (NSException *exception) {
+        QNR_LOG_EXCEPTION("invalidateRemoteConfigsCache", exception);
+    }
+}
+
 - (void)attachUserToExperiment:(NSString *)experimentId groupId:(NSString *)groupId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
     @try {
         [self.impl attachUserToExperiment:experimentId groupId:groupId resolve:resolve reject:reject];

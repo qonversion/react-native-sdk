@@ -197,6 +197,11 @@ public class RNQonversionImpl: NSObject {
   }
 
   @objc
+  public func invalidateRemoteConfigsCache() {
+    qonversionSandwich?.invalidateRemoteConfigsCache()
+  }
+
+  @objc
   public func attachUserToExperiment(_ experimentId: String, groupId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     qonversionSandwich?.attachUserToExperiment(with: experimentId, groupId: groupId) { result, error in
       self.handleResult(result: result, error: error, resolve: resolve, reject: reject)
