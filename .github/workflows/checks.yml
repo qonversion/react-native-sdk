@@ -8,10 +8,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         name: Checkout
         
       - uses: borales/actions-yarn@v3.0.0
         name: Validation
         with:
           cmd: install
+
+      - name: Verify frozen assignment mapping
+        run: yarn test src/internal/__tests__/Mapper.test.ts --runInBand
