@@ -1059,6 +1059,8 @@ class Mapper {
         return RemoteConfigurationAssignmentType.AUTO;
       case "manual":
         return RemoteConfigurationAssignmentType.MANUAL;
+      case "frozen":
+        return RemoteConfigurationAssignmentType.FROZEN;
       default:
         return RemoteConfigurationAssignmentType.UNKNOWN;
     }
