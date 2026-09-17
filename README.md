@@ -16,8 +16,8 @@ Qonversion - In-app subscription monetization: implement subscriptions and grow 
      </a>
 </p>
 
-[![npm](https://img.shields.io/npm/v/react-native-qonversion)](https://www.npmjs.com/package/react-native-qonversion)
-[![MIT License](http://img.shields.io/cocoapods/l/Qonversion.svg?style=flat)](https://qonversion.io)
+[![npm](https://img.shields.io/npm/v/@qonversion/react-native-sdk)](https://www.npmjs.com/package/@qonversion/react-native-sdk)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](#license)
 
 
 ## In-App Subscription Implementation & Management
@@ -96,6 +96,12 @@ Send user-level subscription data to your favorite platforms.
 * **Customer support.** You can always reach out to our customer support and get the help required.
 
 Convinced? Let's go!
+
+## Installation
+
+Follow the [installation guide](https://documentation.qonversion.io/docs/react-native-sdk). React Native integrates native modules through CocoaPods, so the iOS part is installed with `pod install`. CocoaPods trunk becomes read-only on December 2, 2026 — existing builds keep working; see the [React Native installation page](https://documentation.qonversion.io/docs/react-native-sdk) for what changes after that date.
+
+> CocoaPods trunk becomes read-only on December 2, 2026 — see the [CocoaPods → Swift Package Manager migration guide](https://documentation.qonversion.io/docs/dec-2026-migration-guide-cocoapods-to-spm).
 
 ## Documentation
 
