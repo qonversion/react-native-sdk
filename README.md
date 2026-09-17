@@ -99,7 +99,7 @@ Convinced? Let's go!
 
 ## Installation
 
-Follow the [installation guide](https://documentation.qonversion.io/docs/react-native-sdk). React Native integrates native modules through CocoaPods, so the iOS part is installed with `pod install`. CocoaPods trunk becomes read-only on December 2, 2026 — existing builds keep working; see the [React Native installation page](https://documentation.qonversion.io/docs/react-native-sdk) for what changes after that date.
+Follow the [installation guide](https://documentation.qonversion.io/docs/react-native-sdk). React Native integrates native modules through CocoaPods, so the iOS part is installed with `pod install` — see the [iOS section](https://documentation.qonversion.io/docs/react-native-sdk#ios) for what changes after December 2, 2026 (existing builds keep working).
 
 > CocoaPods trunk becomes read-only on December 2, 2026 — see the [CocoaPods → Swift Package Manager migration guide](https://documentation.qonversion.io/docs/dec-2026-migration-guide-cocoapods-to-spm).
 
