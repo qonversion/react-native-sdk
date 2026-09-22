@@ -17,7 +17,7 @@ Qonversion - In-app subscription monetization: implement subscriptions and grow 
 </p>
 
 [![npm](https://img.shields.io/npm/v/@qonversion/react-native-sdk)](https://www.npmjs.com/package/@qonversion/react-native-sdk)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](#license)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
 ## In-App Subscription Implementation & Management
