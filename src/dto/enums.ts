@@ -94,6 +94,7 @@ export enum EntitlementSource {
   PLAY_STORE = "PlayStore",
   STRIPE = "Stripe",
   MANUAL = "Manual",
+  PADDLE = "Paddle",
 }
 
 export enum TransactionEnvironment {
