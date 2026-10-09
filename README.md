@@ -17,7 +17,7 @@ Qonversion - In-app subscription monetization: implement subscriptions and grow 
 </p>
 
 [![npm](https://img.shields.io/npm/v/@qonversion/react-native-sdk)](https://www.npmjs.com/package/@qonversion/react-native-sdk)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](#license)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
 ## In-App Subscription Implementation & Management
@@ -75,7 +75,7 @@ Send user-level subscription data to your favorite platforms.
 * Adjust
 * Singular
 * CleverTap
-* [All other integrations here](qonversion.io/integrations)
+* [All other integrations here](https://qonversion.io/integrations)
 
 <p align="center">
      <a href="https://documentation.qonversion.io/docs/integrations-overview"><img width="90%", src="https://qcdn3.sfo3.digitaloceanspaces.com/github/integrations.png">
@@ -128,7 +128,7 @@ Contributions are what make the open-source community such an amazing place to l
 
 ## Have a question?
 
-Contact us via [issues on GitHub](https://github.com/qonversion/react-native-sdk/issues) or [ask a question](https://documentation.qonversion.io/discuss-new) on the site.
+Contact us via [issues on GitHub](https://github.com/qonversion/react-native-sdk/issues) or the [contact form](https://qonversion.io/contact-us) on our site.
 
 ## License
 
