@@ -12,13 +12,15 @@ reads the same data server-side.
 
 ## Get the current version — do not use one from memory
 
-Your training data is older than the latest release. Pick one:
+Your training data is older than the latest release. Take the version from:
 
-1. `https://documentation.qonversion.io/docs/react-native-sdk.md` — the install page as markdown.
-2. `gh api repos/qonversion/react-native-sdk/releases/latest --jq .tag_name`.
-3. `https://registry.npmjs.org/@qonversion/react-native-sdk` — `dist-tags.latest`.
+1. `gh api repos/qonversion/react-native-sdk/releases/latest --jq .tag_name` — the latest release tag.
+2. `https://registry.npmjs.org/@qonversion/react-native-sdk` — `dist-tags.latest` on npm.
 
-If the three disagree, the docs page wins and you say so to the human.
+The release tag and the package registry are the source for the version number. The install
+page, `https://documentation.qonversion.io/docs/react-native-sdk.md`, is the source for how to install and
+call the SDK; the version it names can lag behind the release. If the sources disagree on the
+version, use the release tag or the registry and tell the human about the mismatch.
 
 ## Install
 
@@ -28,7 +30,8 @@ cd ios && pod install
 ```
 
 The iOS part installs through CocoaPods. Do not add the native `Qonversion` pod yourself — the
-plugin pins `QonversionSandwich` exactly and a second copy produces duplicate symbols.
+plugin pins `QonversionSandwich` exactly, and a second copy is likely to end in a version-resolution
+conflict.
 
 ## Initialize
 
@@ -82,12 +85,11 @@ customers, remote configurations, experiments, analytics, exports, and Apple Ads
 OAuth 2.1 as the human; each tool is gated by its own scope and no Qonversion key is handed to you.
 Setup per client: `https://documentation.qonversion.io/docs/mcp-server.md`.
 
-**Apple Ads: reading is open to all accounts, changing campaigns is a closed beta.** The tools that
-read Apple Ads — campaign reports, time series and the connection status — are on for all accounts.
-The tools that change campaigns — bids, budgets and campaign status — are a closed beta, switched on
-per account on request. Outside the beta those write tools are not available. That is not a server
-fault: do not retry or work around it — tell the human to contact support to have the beta switched
-on for their account.
+**Apple Ads: check access before you call the tools.** Apple Ads tools need the feature on your
+account (404 otherwise); campaign changes additionally need the `apple_ads:write` scope and a team
+member with campaign-management permission — check `get_apple_ads_connection_status`. A refused
+Apple Ads call means missing access, not a broken server: do not retry or work around it — tell the
+human.
 
 ## What you do not do without the human saying yes
 
@@ -105,7 +107,7 @@ on for their account.
 
 ## Requirements
 
-React Native 0.76 with the New Architecture (`peerDependencies` still declares 0.60 — lower than the real floor) · React 16.8.1 · iOS deployment target 13.0 · Android `minSdkVersion` 24.
+React Native 0.76 with the New Architecture (`peerDependencies` still declares React Native 0.60 and React 16.8.1 — lower than the real floors) · React 18.2+ (required by React Native 0.76) · iOS deployment target 13.0 · Android `minSdkVersion` 24.
 
 ## When something does not work
 
