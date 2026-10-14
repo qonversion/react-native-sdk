@@ -88,8 +88,9 @@ Setup per client: `https://documentation.qonversion.io/docs/mcp-server.md`.
 **Apple Ads: check access before you call the tools.** Apple Ads tools need the feature on your
 account (404 otherwise); campaign changes additionally need the `apple_ads:write` scope and a team
 member with campaign-management permission — check `get_apple_ads_connection_status`. A refused
-Apple Ads call means missing access, not a broken server: do not retry or work around it — tell the
-human.
+Apple Ads call usually means missing access or an Apple authorization that needs attention, not a
+broken server: call `get_apple_ads_connection_status`, do not work around it, and tell the human
+what it reports.
 
 ## What you do not do without the human saying yes
 
@@ -99,11 +100,11 @@ human.
 - **Destructive MCP tools** (`delete_*`, `revoke_*`, `detach_*`, `discard_*`, `regenerate_project_secret`) and **Apple Ads changes that increase spend** do not fire on the first call: they return a one-time token addressed to the human. You must surface the pending action to the human and wait for an explicit yes before calling `confirm_destructive_action`. The token is in your hands, so this is a guard, not a lock — never auto-confirm your own token, and never invent the reason that goes into the audit log.
 - **`regenerate_project_secret` is deprecated** and deletes the project's oldest Secret Key immediately, with no overlap. Do not propose it.
 - **SDK version.** Do not bump a major version as a side effect of another task. Major versions have migration guides.
-- **Environment.** Do not switch the SDK between the sandbox and the production environment without being asked — it changes which purchases are counted as real. The identifier differs per platform (`QONEnvironment` on iOS, `QEnvironment` on Android, `Environment` in the wrappers); read it from the SDK, not from memory.
+- **Environment.** Do not switch the SDK between the sandbox and the production environment without being asked — it changes which purchases are counted as real. In this SDK the enum is `Environment` (`src/dto/enums.ts`); read it from the SDK, not from memory.
 
 ## Sample
 
-`example/` — `example/src/App.tsx` is the reference for initialization, `example/src/screens/EntitlementsScreen/index.tsx` for the entitlements call.
+`example/` — a demo app that runs in the sandbox environment: `example/src/App.tsx` sets `Environment.SANDBOX`, an entitlements cache lifetime and a proxy URL, so it is not the reference for initialization — the Initialize snippet above is. `example/src/screens/EntitlementsScreen/index.tsx` shows the entitlements call.
 
 ## Requirements
 

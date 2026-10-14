@@ -126,7 +126,8 @@ Prefer to do it by hand? The steps are in the [quick start](https://documentatio
 ## Sample app
 
 A React Native app that initializes the SDK, lists products, makes a purchase, reads entitlements
-and remote configs: [`example/`](example).
+and remote configs: [`example/`](example). It runs in the sandbox environment; for your own
+initialization, use the Quickstart snippet above.
 
 ## Requirements
 
